@@ -1,0 +1,1090 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>프로젝트 상세 - 상환 | 사업관리시스템 (PMS)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #f1f5f9;
+    --surface: #ffffff;
+    --border: #e5e9f0;
+    --text: #1e293b;
+    --muted: #64748b;
+    --brand: #1d6ff2;
+    --brand-soft: #eff6ff;
+    --navy: #1e3a5f;
+    --green: #10b981;
+    --amber: #f59e0b;
+    --field: #f1f5f9;
+    --radius: 10px;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Noto Sans KR", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a { color: inherit; text-decoration: none; }
+  ul { list-style: none; margin: 0; padding: 0; }
+
+  .sr-only {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+  }
+
+  .layout { display: flex; min-height: 100vh; }
+
+  /* ---------- Sidebar ---------- */
+  .sidebar {
+    width: 248px; flex: 0 0 248px; background: var(--surface);
+    border-right: 1px solid var(--border); display: flex; flex-direction: column;
+  }
+  .sidebar-head {
+    height: 60px; display: flex; align-items: center; justify-content: space-between;
+    padding: 0 20px; border-bottom: 1px solid var(--border);
+  }
+  .logo { display: flex; align-items: center; min-width: 0; }
+  .logo img { display: block; height: 30px; width: auto; max-width: 100%; }
+  .hamburger {
+    background: none; border: 0; padding: 6px; cursor: pointer;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .hamburger i { display: block; width: 18px; height: 2px; background: #334155; border-radius: 2px; }
+
+  .nav { padding: 16px 12px; flex: 1; }
+  .nav-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 14px; border-radius: 8px;
+    color: #475569; font-size: 14.5px; font-weight: 500;
+  }
+  .nav-item .chev {
+    margin-left: auto; width: 8px; height: 8px; flex: none;
+    border-right: 1.6px solid #94a3b8; border-bottom: 1.6px solid #94a3b8;
+    transform: rotate(45deg) translateY(-2px);
+  }
+  .nav-item.active .chev { border-color: var(--brand); }
+  .nav-item .chev.up { transform: rotate(-135deg) translateY(-2px); }
+  .nav-item.open .chev { border-color: #64748b; }
+  .nav-item.active { background: var(--brand-soft); color: var(--brand); font-weight: 700; }
+  .nav-icon { width: 20px; height: 20px; flex: none; color: currentColor; }
+
+  .subnav { padding: 2px 0 6px 26px; }
+  .subnav-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 10px; font-size: 14px; color: #475569;
+  }
+  .subnav-item.active { color: var(--brand); font-weight: 700; }
+  .dot { width: 5px; height: 5px; border-radius: 50%; background: var(--brand); flex: none; }
+
+  .sidebar-foot { padding: 16px 16px 22px; display: grid; gap: 10px; }
+  .side-btn {
+    display: flex; align-items: center; gap: 10px;
+    padding: 12px 14px; border: 1px solid var(--border);
+    border-radius: 8px; font-size: 13.5px; color: #475569; background: var(--surface);
+  }
+  .side-btn.primary { border-color: #bfdbfe; background: var(--brand-soft); color: var(--brand); font-weight: 700; }
+
+  /* ---------- Main ---------- */
+  .main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+  .topbar {
+    height: 60px; background: var(--surface); border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 16px; padding: 0 26px;
+  }
+  .topbar h1 { margin: 0; font-size: 19px; font-weight: 700; letter-spacing: -0.02em; }
+  .badge-pms {
+    background: var(--brand-soft); color: var(--brand);
+    font-size: 12px; font-weight: 700; padding: 4px 9px; border-radius: 6px;
+  }
+  .topbar-right { margin-left: auto; display: flex; align-items: center; gap: 14px; }
+  .seg { display: flex; align-items: center; gap: 6px; }
+  .seg-label { color: var(--muted); font-size: 13px; margin-right: 2px; }
+  .seg-btn {
+    padding: 5px 12px; border-radius: 6px; font-size: 13px;
+    color: var(--muted); background: transparent; border: 0; cursor: pointer; font-family: inherit;
+  }
+  .seg-btn.on { background: #334155; color: #fff; font-weight: 700; }
+  .user { font-size: 13.5px; }
+  .user b { font-weight: 700; }
+  .user small { color: var(--muted); }
+  .logout { color: var(--muted); font-size: 13px; text-decoration: underline; }
+
+  .content { padding: 26px; display: grid; gap: 18px; }
+  .page-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  .page-head h2 { margin: 0; font-size: 25px; font-weight: 700; letter-spacing: -0.03em; }
+  .crumb { display: flex; align-items: center; gap: 10px; color: var(--muted); font-size: 13px; }
+  .crumb .sep { color: #cbd5e1; font-size: 11px; }
+  .crumb .now { color: var(--text); font-weight: 700; }
+
+  .card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+  }
+  .card-body { padding: 20px 24px 24px; }
+
+  /* Tabs */
+  .tabbar { display: flex; align-items: center; gap: 8px; padding: 0 20px; }
+  .tabs { display: flex; }
+  .tab {
+    display: block; padding: 18px 26px; font-size: 15px; color: var(--muted); font-weight: 500;
+    border-bottom: 3px solid transparent; background: none; border-top: 0; border-left: 0; border-right: 0;
+    cursor: pointer; font-family: inherit;
+  }
+  .tab.on { color: var(--brand); font-weight: 700; border-bottom-color: var(--brand); }
+  .tab-right { margin-left: auto; display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--muted); }
+  select {
+    font-family: inherit; font-size: 14px; font-weight: 700; color: var(--text);
+    padding: 8px 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface);
+  }
+
+  /* ---------- Buttons ---------- */
+  .btn {
+    height: 36px; padding: 0 16px; font-family: inherit; font-size: 13.5px; font-weight: 700;
+    border-radius: 8px; cursor: pointer; display: inline-flex; align-items: center;
+    justify-content: center; gap: 7px; border: 1px solid transparent;
+  }
+  .btn-excel { background: var(--green); color: #fff; border-color: var(--green); }
+  .btn-excel:hover { background: #0da271; }
+  .btn-dark { background: var(--navy); color: #fff; border-color: var(--navy); }
+  .btn-dark:hover { background: #16304f; }
+  .btn-line { background: var(--surface); border-color: #cbd5e1; color: #334155; }
+  .btn-line:hover { border-color: var(--brand); color: var(--brand); }
+  .btn:disabled { cursor: not-allowed; opacity: 0.45; }
+  .btn:disabled:hover { border-color: #cbd5e1; color: #334155; background: var(--surface); }
+  .table-action { display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
+  .btn-table { height: 29px; min-width: 48px; padding: 0 10px; border-radius: 5px; font-size: 12px; }
+  .btn-delete { background: #fff; border-color: #fecaca; color: #b91c1c; }
+  .btn-delete:hover { background: #fef2f2; border-color: #f87171; }
+  .btn svg { width: 15px; height: 15px; }
+
+  /* ---------- Section head ---------- */
+  .sec-head { display: flex; align-items: center; gap: 12px; margin-bottom: 6px; }
+  .sec-title { margin: 0; font-size: 16px; font-weight: 700; letter-spacing: -0.02em; }
+  .sec-head .spacer { flex: 1; }
+  .sec-head .acts { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .basis { text-align: right; color: var(--muted); font-size: 12.5px; margin: 0 0 8px; }
+
+  /* ---------- Key / Value 정보 그리드 ---------- */
+  /* 상환 요약 : 항목/값 3세트를 한 행에 배치합니다. */
+  .kv {
+    display: grid; border: 1px solid var(--border); border-radius: 8px; overflow: hidden;
+    background: var(--border); gap: 1px;
+  }
+  .kv.summary { grid-template-columns: repeat(3, 176px minmax(0, 1fr)); }
+  .kv .k {
+    background: #e2e8f0; color: #334155; font-size: 13px; font-weight: 500;
+    padding: 11px 14px; display: flex; align-items: center;
+  }
+  .kv .v {
+    background: #f8fafc; font-size: 13.5px; font-weight: 500;
+    padding: 11px 14px; display: flex; align-items: center; min-width: 0;
+  }
+  .kv .v.num { justify-content: flex-end; font-variant-numeric: tabular-nums; }
+
+  /* ---------- Table ---------- */
+  .table-scroll { overflow-x: auto; border: 1px solid var(--border); border-radius: 8px; }
+  table { width: 100%; border-collapse: collapse; min-width: 1020px; }
+  caption { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  thead th {
+    background: #f8fafc; color: #334155; font-size: 12.5px; font-weight: 700;
+    padding: 11px 10px; border-bottom: 1px solid var(--border); white-space: nowrap;
+  }
+  /* 2단 그룹 헤더 : 그룹 구분선을 명확히 표시합니다. */
+  thead tr:first-child th { border-bottom: 1px solid var(--border); }
+  thead th.group { background: #eef2f7; }
+  thead th + th, tbody td + td { border-left: 1px solid #f1f5f9; }
+  thead th.divide, tbody td.divide { border-left: 1px solid var(--border); }
+  tbody td {
+    padding: 12px 10px; text-align: center; font-size: 13px; color: #334155;
+    border-bottom: 1px solid #f1f5f9; white-space: nowrap;
+  }
+  tbody tr:hover td { background: #fafcff; }
+  tbody tr.total td { background: #f1f5f9; font-weight: 700; border-bottom: 0; }
+  tbody tr.total:hover td { background: #f1f5f9; }
+  .num { text-align: right; font-variant-numeric: tabular-nums; }
+  .pill {
+    display: inline-block; padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 700;
+  }
+  .pill-green { background: #dcfce7; color: #15803d; }
+  .pill-blue { background: #e6effb; color: #1d4ed8; }
+  .pill-amber { background: #fef3c7; color: #b45309; }
+  .pill-gray { background: #eef2f7; color: #64748b; }
+  .schedule-table { min-width: 1100px; table-layout: fixed; }
+
+  /* 사용자 입금 현황 : 5열 고정 비율 (금액 열은 넓게) */
+  .table-deposit { min-width: 780px; table-layout: fixed; }
+  .table-deposit col.c-no { width: 12%; }
+  .table-deposit col.c-date { width: 20%; }
+  .table-deposit col.c-amount { width: 24%; }
+  .table-deposit col.c-payer { width: 22%; }
+
+  /* ---------- Modal ---------- */
+  html.modal-open, body.modal-open { overflow: hidden; }
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(15, 23, 42, 0.45);
+    display: flex; align-items: center; justify-content: center; padding: 24px; z-index: 60;
+  }
+  .modal-overlay[hidden] { display: none; }
+  .modal {
+    background: var(--surface); border-radius: 12px; width: 100%; max-width: 560px;
+    max-height: 86vh; overflow: auto; box-shadow: 0 18px 42px rgba(15, 23, 42, 0.26);
+  }
+  .modal-head {
+    display: flex; align-items: center; gap: 10px;
+    padding: 16px 20px; border-bottom: 1px solid var(--border);
+  }
+  .modal-head h3 { margin: 0; font-size: 16px; font-weight: 700; }
+  .modal-close {
+    margin-left: auto; width: 30px; height: 30px; border: 0; border-radius: 8px;
+    background: #f1f5f9; color: #475569; font-size: 16px; cursor: pointer; font-family: inherit;
+  }
+  .modal-body { padding: 18px 20px; display: grid; gap: 14px; }
+  .modal-foot {
+    display: flex; justify-content: flex-end; gap: 8px;
+    padding: 14px 20px 18px; border-top: 1px solid var(--border);
+  }
+  .field { display: grid; gap: 6px; }
+  .field label { font-size: 13px; font-weight: 500; color: #334155; }
+  .field input, .field textarea, .field select {
+    font-family: inherit; font-size: 13.5px; color: var(--text); width: 100%;
+    padding: 8px 10px; border: 1px solid #cbd5e1; border-radius: 8px; background: var(--surface);
+    font-weight: 500;
+  }
+  .field textarea { min-height: 68px; resize: vertical; }
+  .modal.modal-wide { max-width: 920px; }
+  .modal.prepay-modal { width: min(1320px, calc(100vw - 48px)); max-width: none; }
+  .prepay-modal .modal-body { overflow-x: auto; }
+  .prepay-modal .prepay-table { min-width: 1120px; }
+  .modal.schedule-modal { width: min(1280px, calc(100vw - 48px)); max-width: none; scrollbar-gutter: stable; }
+  .schedule-guide { margin: 0; padding: 14px 18px; border: 1px solid #dbe3ed; border-radius: 7px; background: #f8fafc; color: #475569; line-height: 1.65; }
+  .schedule-edit-wrap { overflow: auto; border: 1px solid var(--border); }
+  .schedule-edit-table { width: 100%; min-width: 1120px; table-layout: fixed; font-size: 12px; }
+  .schedule-edit-table th,.schedule-edit-table td { height: 42px; padding: 6px 7px; }
+  .schedule-edit-table input { width: 100%; height: 30px; padding: 0 7px; border: 1px solid #94a3b8; background: #fff; color: #334155; font: inherit; text-align: right; }
+  .schedule-edit-table input.date-edit { text-align: center; }
+  .schedule-edit-table input.note-edit { text-align: left; }
+  .schedule-edit-table .btn-table { min-width: 70px; }
+  .note-form { display: grid; gap: 14px; }
+  .note-table { display: grid; grid-template-columns: 150px minmax(0, 1fr) 150px minmax(0, 1fr); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; background: var(--border); gap: 1px; }
+  .note-key, .note-value { min-height: 46px; padding: 9px 12px; display: flex; align-items: center; }
+  .note-key { background: var(--field); color: #334155; font-size: 13px; font-weight: 600; }
+  .note-value { background: var(--surface); color: var(--text); font-size: 13.5px; }
+  .note-value.num { justify-content: flex-end; }
+  .note-value input, .note-value select, .note-reason textarea {
+    width: 100%; font-family: inherit; font-size: 13.5px; color: var(--text); font-weight: 500;
+    padding: 8px 10px; border: 1px solid #cbd5e1; border-radius: 6px; background: var(--surface);
+  }
+  .note-value input { text-align: right; }
+  .note-span-3 { grid-column: span 3; }
+  .note-reason { display: grid; grid-template-columns: 150px minmax(0, 1fr); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+  .note-reason .note-key { border-right: 1px solid var(--border); }
+  .note-reason-field { padding: 9px 12px; background: var(--surface); }
+  .note-reason textarea { min-height: 74px; resize: vertical; }
+  .note-count { display: block; margin-top: 4px; color: var(--muted); font-size: 12px; text-align: right; }
+  .note-guide { margin: 0; padding-left: 18px; color: #475569; font-size: 12.5px; line-height: 1.65; }
+  .prepay-table { display: grid; grid-template-columns: repeat(4, 118px minmax(105px,1fr)); border: 1px solid var(--border); border-radius: 7px; overflow: hidden; background: var(--border); gap: 1px; }
+  .prepay-label,.prepay-value { min-height: 44px; display: flex; align-items: center; padding: 8px 10px; background: #fff; }
+  .prepay-label { background: #f1f5f9; color: #334155; font-size: 12.5px; font-weight: 600; white-space: nowrap; }
+  .prepay-value { color: #1e293b; font-size: 13px; }
+  .prepay-value.num { justify-content: flex-end; }
+  .prepay-value input { width: 100%; height: 32px; padding: 0 8px; border: 1px solid #94a3b8; background: #fff; color: #334155; font: inherit; text-align: right; }
+  .prepay-span-7 { grid-column: span 7; }
+  .prepay-reason-value { grid-column: span 7; display: flex; align-items: center; gap: 8px; }
+  .prepay-reason-value textarea { min-height: 36px; flex: 1; padding: 8px 10px; border: 1px solid #94a3b8; resize: vertical; font: inherit; }
+  .prepay-value input[readonly], .prepay-value textarea[readonly] { background: #f8fafc; color: #475569; border-color: #dbe3ed; cursor: default; }
+  [data-note-save][hidden] { display: none; }
+  .prepay-count { flex: none; color: #64748b; font-size: 12px; }
+  .prepay-history[hidden] { display: none; }
+  .prepay-history-table { min-width: 900px; }
+  .prepay-history-table td { text-align: center; }
+  .schedule-prepay-row td { background: #fff7ed; font-weight: 700; }
+  .schedule-future-row td { background: #f8fafc; color: #64748b; }
+  .schedule-unpaid-row td { background: #fff7ed; color: #9a3412; }
+  .schedule-unpaid-row td:first-child { box-shadow: inset 4px 0 0 #f97316; font-weight: 700; }
+  .schedule-unpaid-row:hover td { background: #ffedd5; }
+  .req { color: #dc2626; }
+
+  /* ---------- Toast ---------- */
+  .toast {
+    position: fixed; left: 50%; bottom: 34px; transform: translateX(-50%);
+    background: #0f172a; color: #fff; font-size: 13.5px; font-weight: 500;
+    padding: 11px 18px; border-radius: 999px; z-index: 80;
+  }
+  .toast[hidden] { display: none; }
+
+  @media (max-width: 1280px) {
+    .kv.summary { grid-template-columns: 160px minmax(0, 1fr); }
+  }
+  @media (max-width: 900px) {
+    .sidebar { display: none; }
+    .content { padding: 18px; }
+    .tabs { overflow-x: auto; }
+    .note-table { grid-template-columns: 130px minmax(0, 1fr); }
+    .note-span-3 { grid-column: span 1; }
+    .note-reason { grid-template-columns: 130px minmax(0, 1fr); }
+  }
+</style>
+  <link rel="stylesheet" href="/assets/pms-lnb.css" />
+  <link rel="stylesheet" href="/assets/pms-intake-wizard.css?v=20260917-3" />
+</head>
+<body>
+<div class="layout">
+
+  <!-- ============ Sidebar ============ -->
+  <aside class="sidebar">
+    <div class="sidebar-head">
+      <a class="logo" href="/pms-project-detail.html">
+        <img src="/images/kepco-es-logo.png" alt="켑코이에스 주식회사 KEPCO ENERGY SOLUTION CO., LTD" />
+      </a>
+      <button class="hamburger" type="button" aria-label="메뉴 접기">
+        <i></i><i></i><i></i>
+      </button>
+    </div>
+
+    <nav class="nav" aria-label="주 메뉴">
+      <ul>
+        <li>
+          <a class="nav-item open" href="/pms-new-project.html">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 21V5a1 1 0 0 1 1-1h7a1 1 0 0 1 1 1v16"/><path d="M13 10h6a1 1 0 0 1 1 1v10"/><path d="M7 8h3M7 12h3M7 16h3M16 14h1M16 18h1"/></svg>
+            사업접수 <span class="chev up" aria-hidden="true"></span>
+          </a>
+          <ul class="subnav">
+            <li><a class="subnav-item" href="/pms-new-project.html"><span class="dot" aria-hidden="true"></span>신규 프로젝트 등록</a></li>
+            <li><a class="subnav-item" href="/pms-promotion-status.html"><span class="dot" aria-hidden="true"></span>추진단계 프로젝트 현황</a></li>
+          </ul>
+        </li>
+        <li>
+          <a class="nav-item active" href="#" aria-current="page">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h6a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Z"/><path d="M15 11v4"/></svg>
+            프로젝트 관리 <span class="chev up" aria-hidden="true"></span>
+          </a>
+          <ul class="subnav">
+            <li><a class="subnav-item active" href="/pms-project-status.html"><span class="dot" aria-hidden="true"></span>프로젝트 현황</a></li>
+          </ul>
+        </li>
+        <li>
+          <a class="nav-item" href="/pms-contract-status.html">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h9l5 5v11H5z"/><path d="M9 13h6M9 17h4"/></svg>
+            계약관리 <span class="chev" aria-hidden="true"></span>
+          </a>
+        </li>
+        <li>
+          <a class="nav-item" href="/pms-fund-repayment.html">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8Z"/><path d="M7 12h4"/></svg>
+            자금관리 <span class="chev" aria-hidden="true"></span>
+          </a>
+        </li>
+        <li>
+          <a class="nav-item" href="#">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 20V10M12 20V4M19 20v-7"/></svg>
+            통계(분석) <span class="chev" aria-hidden="true"></span>
+          </a>
+        </li>
+        <li>
+          <a class="nav-item" href="#">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s7-6.3 7-11a7 7 0 1 0-14 0c0 4.7 7 11 7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg>
+            출장관리 <span class="chev" aria-hidden="true"></span>
+          </a>
+        </li>
+        <li>
+          <a class="nav-item" href="#">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M4.5 20a7.5 7.5 0 0 1 15 0"/></svg>
+            마이페이지 <span class="chev" aria-hidden="true"></span>
+          </a>
+        </li>
+        <li>
+          <a class="nav-item" href="#">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-2.9 1.2 2 2 0 1 1-4 0 1.7 1.7 0 0 0-2.9-1.2l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1A1.7 1.7 0 0 0 3 15a2 2 0 1 1 0-4 1.7 1.7 0 0 0 1.5-2.7l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1A1.7 1.7 0 0 0 10 4.3a2 2 0 1 1 4 0 1.7 1.7 0 0 0 2.7 1.2l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1A1.7 1.7 0 0 0 21 11a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 0Z"/></svg>
+            공통관리 <span class="chev" aria-hidden="true"></span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <div class="sidebar-foot">
+      <a class="side-btn" href="#">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 10h6M7 14h4"/></svg>
+        사업관리시스템(PMS)
+      </a>
+      <a class="side-btn" href="#">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="M6 3h9l4 4v14H6z"/><path d="M9 12h6M9 16h6"/></svg>
+        전자입찰시스템(SRM)
+      </a>
+      <a class="side-btn primary" href="#">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 17v.01"/><path d="M12 13.5a2.5 2.5 0 1 0-2.5-3"/></svg>
+        온라인 매뉴얼
+      </a>
+    </div>
+  </aside>
+
+  <!-- ============ Main ============ -->
+  <div class="main">
+    <header class="topbar">
+      <h1>사업관리시스템</h1>
+      <span class="badge-pms">PMS</span>
+
+      <div class="topbar-right">
+        <div class="seg" role="group" aria-label="권한 선택">
+          <span class="seg-label">권한</span>
+          <button class="seg-btn on" type="button">그룹#1</button>
+          <button class="seg-btn" type="button">그룹#3</button>
+          <button class="seg-btn" type="button">그룹#4</button>
+        </div>
+        <p class="user"><b>이희성 부장</b> <small>[시스템관리자]</small></p>
+        <a class="logout" href="#">로그아웃</a>
+      </div>
+    </header>
+
+    <main class="content">
+      <div class="page-head">
+        <h2>프로젝트 상세</h2>
+        <nav class="crumb" aria-label="현재 위치">
+          <a href="#">HOME</a><span class="sep" aria-hidden="true">›</span>
+          <a href="#">프로젝트 관리</a><span class="sep" aria-hidden="true">›</span>
+          <a href="/pms-project-status.html">프로젝트 현황</a><span class="sep" aria-hidden="true">›</span>
+          <span class="now">상환</span>
+        </nav>
+      </div>
+
+      <!-- Tabs -->
+      <section class="card">
+        <div class="tabbar">
+          <div class="tabs" role="tablist" aria-label="프로젝트 상세 탭">
+            <a class="tab" href="/pms-project-detail.html" role="tab" aria-selected="false">HOME</a>
+            <a class="tab" href="/pms-project-promotion.html" role="tab" aria-selected="false">추진</a>
+            <a class="tab" href="/pms-project-contract.html" role="tab" aria-selected="false">계약</a>
+            <a class="tab" href="/pms-project-investment.html" role="tab" aria-selected="false">투자</a>
+            <a class="tab" href="/pms-project-investment-epc.html" role="tab" aria-selected="false">투자(EPC)</a>
+            <button class="tab on" type="button" role="tab" aria-selected="true">상환</button>
+            <a class="tab" href="/pms-project-order.html" role="tab" aria-selected="false">발주</a>
+          </div>
+          <div class="tab-right" data-project-round><span>차수</span><strong class="project-round-current">1차</strong></div>
+        </div>
+      </section>
+
+      <!-- ============ 프로젝트 상환정보 ============ -->
+      <section class="card" aria-labelledby="summaryTitle">
+        <div class="card-body">
+          <div class="sec-head">
+            <h3 class="sec-title">프로젝트 상환정보</h3>
+            <span class="spacer"></span>
+            <button class="btn btn-excel" type="button" data-act="excel">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M5 21h14"/></svg>
+              다운로드(Excel)
+            </button>
+          </div>
+          <p class="basis">기준일 : 2026.10.23</p>
+
+          <div class="sec-head">
+            <h4 class="sec-title" id="summaryTitle">프로젝트 상환 요약</h4>
+          </div>
+
+          <div class="kv summary">
+            <div class="k">프로젝트 번호</div>
+            <div class="v">2026_06_12</div>
+            <div class="k">사업명</div>
+            <div class="v" id="projectName">천안 (주)선영 LED 에너지효율화사업</div>
+            <div class="k">상환조건</div>
+            <div class="v">월별</div>
+
+            <div class="k">에너지 사용자</div>
+            <div class="v">㈜선영</div>
+            <div class="k">상환 담당자</div>
+            <div class="v">홍길동</div>
+            <div class="k">소유권 이전시점</div>
+            <div class="v">상환금액 전액 상환시</div>
+
+            <div class="k">총사업금액(VAT별도/원)</div>
+            <div class="v num">2,143,350,000</div>
+            <div class="k">투자금액(VAT별도/원)</div>
+            <div class="v num">1,850,000,000</div>
+            <div class="k">이윤(원)</div>
+            <div class="v num">293,350,000</div>
+
+            <div class="k">수익률(%)</div>
+            <div class="v">15.817</div>
+            <div class="k">IRR(%)</div>
+            <div class="v">9.410</div>
+            <div class="k">XIRR(%)</div>
+            <div class="v">24.810</div>
+
+            <div class="k">상환 개시일</div>
+            <div class="v">2026.12.09</div>
+            <div class="k">상환 완료일</div>
+            <div class="v">2028.11.10</div>
+            <div class="k">최초세금계산서 발행일</div>
+            <div class="v">2026.12.15</div>
+
+            <div class="k">누적 상환액(원)</div>
+            <div class="v num" id="sumPaid">51,437,100</div>
+            <div class="k">상환비율(%)</div>
+            <div class="v" id="sumRate">12.5</div>
+            <div class="k">상태</div>
+            <div class="v"><span class="pill pill-blue" id="repaymentStatus">상환 진행 중</span></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ 중도상환 처리 이력 ============ -->
+      <section class="card prepay-history" id="prepayHistory" aria-labelledby="prepayHistoryTitle" hidden>
+        <div class="card-body"><div class="sec-head"><h3 class="sec-title" id="prepayHistoryTitle">중도상환</h3></div><div class="table-scroll"><table class="prepay-history-table"><thead><tr><th>구분</th><th>진행일</th><th>일시상환 총액</th><th>XIRR(기존)</th><th>XIRR(변경)</th><th>처리자</th><th>처리일</th><th>비고</th></tr></thead><tbody><tr><td>중도상환</td><td id="prepayDate">-</td><td class="num" id="prepayAmount">-</td><td>18.94</td><td>25.82</td><td><b>홍길동</b></td><td id="prepayProcessed">-</td><td><button class="btn btn-dark btn-table" type="button" data-act="prepay-detail">상세</button></td></tr></tbody></table></div></div>
+      </section>
+
+      <!-- ============ 상환금 회수 스케줄 ============ -->
+      <section class="card" aria-labelledby="scheduleTitle">
+        <div class="card-body">
+          <div class="sec-head">
+            <h3 class="sec-title" id="scheduleTitle">상환금 회수 스케줄</h3>
+            <span class="spacer"></span>
+            <div class="acts">
+              <button class="btn btn-dark" type="button" data-act="notes">중도 상환</button>
+              <button class="btn btn-dark" type="button" data-act="add">스케줄 수정 +</button>
+              <button class="btn btn-dark" type="button" data-act="upload">상환 스케줄 업로드 +</button>
+              <input class="sr-only" type="file" id="scheduleFile" accept=".xlsx,.xls,.csv" />
+            </div>
+          </div>
+
+          <div class="table-scroll">
+            <table class="schedule-table" aria-labelledby="scheduleTitle">
+              <caption>상환금 회수 스케줄 : 회차별 예정 스케줄과 상환 현황</caption>
+              <colgroup>
+                <col style="width:5%"><col style="width:9%"><col style="width:11%"><col style="width:10%"><col style="width:8%"><col style="width:8%"><col style="width:11%"><col style="width:9%"><col style="width:10%"><col style="width:10%"><col style="width:9%">
+              </colgroup>
+              <thead>
+                <tr>
+                  <th scope="col" rowspan="2">회차</th>
+                  <th class="group divide" scope="colgroup" colspan="6">예정 스케줄</th>
+                  <th class="group divide" scope="colgroup" colspan="4">상환 현황</th>
+                </tr>
+                <tr>
+                  <th class="divide" scope="col">상환예정일</th>
+                  <th scope="col">세금계산서발행일</th>
+                  <th scope="col">상환액(원)</th>
+                  <th scope="col">부가세(원)</th>
+                  <th scope="col">지연이자(원)</th>
+                  <th scope="col">회차별 상환총액(원)</th>
+                  <th class="divide" scope="col">실제 상환일</th>
+                  <th scope="col">상환액(원)</th>
+                  <th scope="col">잔여액(원)</th>
+                  <th scope="col">상태</th>
+                </tr>
+              </thead>
+              <tbody id="scheduleBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ 사용자 입금 현황 ============ -->
+      <section class="card" aria-labelledby="depositTitle">
+        <div class="card-body">
+          <div class="sec-head">
+            <h3 class="sec-title" id="depositTitle">사용자 입금 현황</h3>
+          </div>
+
+          <div class="table-scroll">
+            <table class="table-deposit" aria-labelledby="depositTitle">
+              <caption>사용자 입금 현황 : 입금일자별 입금 내역</caption>
+              <colgroup>
+                <col class="c-no" />
+                <col class="c-date" />
+                <col class="c-amount" />
+                <col class="c-payer" />
+                <col />
+              </colgroup>
+              <thead>
+                <tr>
+                  <th scope="col">순번</th>
+                  <th scope="col">입금일</th>
+                  <th scope="col">입금액</th>
+                  <th scope="col">입금자</th>
+                  <th scope="col">적요</th>
+                </tr>
+              </thead>
+              <tbody id="depositBody"></tbody>
+            </table>
+          </div>
+
+        </div>
+      </section>
+    </main>
+  </div>
+</div>
+
+<!-- ============ 상환금 회수 스케줄 수정 모달 ============ -->
+<div class="modal-overlay" id="addOverlay" hidden>
+  <div class="modal schedule-modal" role="dialog" aria-modal="true" aria-labelledby="addTitle">
+    <div class="modal-head">
+      <h3 id="addTitle">상환금 회수 스케줄</h3>
+      <button class="modal-close" type="button" data-close aria-label="닫기">×</button>
+    </div>
+    <div class="modal-body">
+      <p class="schedule-guide">· 상환금 회수 스케줄은 회차 단위로 수정할 수 있습니다.<br>· 상환예정일 기준, 지나간 스케줄은 변경할 수 없습니다.<br>· 수정 진행 후 스케줄 업로드 기능을 통해 최종 저장합니다.</p>
+      <div class="schedule-edit-wrap"><table class="schedule-edit-table"><colgroup><col style="width:54px"><col style="width:118px"><col style="width:128px"><col style="width:122px"><col style="width:108px"><col style="width:108px"><col style="width:132px"><col style="width:220px"><col style="width:92px"></colgroup><thead><tr><th rowspan="2">회차</th><th colspan="6">예정 스케줄</th><th rowspan="2">비고(특이사항)</th><th rowspan="2"><span class="sr-only">수정</span></th></tr><tr><th>상환예정일</th><th>세금계산서발행일</th><th>상환액(원)</th><th>부가세(원)</th><th>지연이자(원)</th><th>회차별 상환총액(원)</th></tr></thead><tbody id="scheduleEditBody"></tbody><tfoot id="scheduleEditTotal"></tfoot></table></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-dark" type="button" data-act="schedule-modal-upload">스케줄 업로드</button>
+      <button class="btn btn-line" type="button" data-close>취소</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 특이사항 관리 모달 ============ -->
+<div class="modal-overlay" id="noteOverlay" hidden>
+  <div class="modal modal-wide prepay-modal" role="dialog" aria-modal="true" aria-labelledby="noteTitle">
+    <div class="modal-head">
+      <h3 id="noteTitle">중도 상환</h3>
+      <button class="modal-close" type="button" data-close aria-label="닫기">×</button>
+    </div>
+    <form class="modal-body note-form" id="noteForm" novalidate>
+      <input type="hidden" id="noteType" value="중도 상환">
+      <div class="prepay-table">
+        <div class="prepay-label">거래처명</div><div class="prepay-value prepay-span-7">에스티엔</div>
+        <div class="prepay-label">전체 상환액(원)</div><div class="prepay-value num" id="notePlanPrincipal">-</div>
+        <div class="prepay-label">부가세(원)</div><div class="prepay-value num" id="notePlanVat">-</div>
+        <div class="prepay-label">전체 상환 총액(원)</div><div class="prepay-value num" id="notePlanTotal">-</div>
+        <div class="prepay-label">기 상환 총액(원)</div><div class="prepay-value num" id="notePaidTotal">-</div>
+        <div class="prepay-label">잔여 상환액(원)</div><div class="prepay-value num" id="noteRemainPrincipal">-</div>
+        <div class="prepay-label">잔여 부가세(원)</div><div class="prepay-value num" id="noteRemainVat">-</div>
+        <div class="prepay-label">잔여 상환 총액(원)</div><div class="prepay-value num" id="noteRemainTotal">-</div>
+        <div class="prepay-label">현 잔여액(원)</div><div class="prepay-value num" id="noteCurrentRemain">-</div>
+        <label class="prepay-label" for="notePayment">상환 입금액(원) <span class="req">*</span></label><div class="prepay-value"><input type="text" id="notePayment" inputmode="numeric"></div>
+        <label class="prepay-label" for="noteVat">부가세(원) <span class="req">*</span></label><div class="prepay-value"><input type="text" id="noteVat" inputmode="numeric"></div>
+        <label class="prepay-label" for="noteChange">기타 변경금액(원) <span class="req">*</span></label><div class="prepay-value"><input type="text" id="noteChange" inputmode="numeric"></div>
+        <label class="prepay-label" for="noteGrandTotal">상환 총액(원) <span class="req">*</span></label><div class="prepay-value"><input type="text" id="noteGrandTotal" inputmode="numeric" readonly></div>
+        <label class="prepay-label" for="noteReason">변경사유 <span class="req">*</span></label><div class="prepay-value prepay-reason-value"><textarea id="noteReason" maxlength="100" placeholder="변경사유를 입력해 주세요."></textarea><span class="prepay-count">(<span id="noteReasonCount">0</span> / 100)</span></div>
+      </div>
+
+      <ul class="note-guide">
+        <li>중도 상환 확정 시 이후 상환 스케줄은 진행되지 않습니다.</li>
+        <li>스케줄의 상환 총액과 실제 상환 총액은 상이할 수 있습니다.</li>
+        <li>기존 XIRR과 실제 XIRR이 달라질 수 있으므로 이를 숙지하시기 바랍니다.</li>
+      </ul>
+    </form>
+    <div class="modal-foot">
+      <button class="btn btn-line" type="button" data-close>취소</button>
+      <button class="btn btn-dark" type="submit" form="noteForm" data-note-save>중도 상환 저장</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" hidden role="status" aria-live="polite"></div>
+
+<script>
+  /* ===== 상환금 회수 스케줄 (1차 구성 : 샘플 데이터) ===== */
+  /* principal/vat/interest 는 숫자로 관리하여 총액을 자동 집계합니다. */
+  var schedule = [
+    {
+      due: "2026.10.23", tax: "2026.10.15",
+      principal: 46761000, vat: 4676100, interest: 0,
+      paidDate: "2026.10.25", paid: 51437100, remain: null,
+      state: "상환완료", note: "",
+    },
+    {
+      due: "2026.11.23", tax: "2026.11.15",
+      principal: 46761000, vat: 4676100, interest: 0,
+      paidDate: "", paid: null, remain: 20000000,
+      state: "미상환", note: "에너지 사용자 자금 사정으로 상환 지연",
+    },
+    {
+      due: "2027.01.23", tax: "2027.01.15",
+      principal: 46761000, vat: 4676100, interest: 0,
+      paidDate: "", paid: null, remain: null,
+      state: "", note: "",
+    },
+  ];
+
+  /* 상환비율 산정 기준 : 총 상환 예정액 (VAT 포함) */
+  var TOTAL_PLAN = 411496800;
+  var editScheduleIndex = null;
+  var scheduleDraft = null;
+  var prepaymentRecord = null;
+
+  var won = function (value) {
+    if (value === null || value === undefined || value === "") return "-";
+    return Number(value).toLocaleString("ko-KR");
+  };
+
+  /* 상태 배지 : 상환완료(초록) / 미상환(주황) / 진행 중(파랑) */
+  function stateBadge(text) {
+    if (!text) return "-";
+    var cls = "pill-gray";
+    if (text === "상환완료") cls = "pill-green";
+    else if (text === "미상환") cls = "pill-amber";
+    else if (text === "상환 진행 중") cls = "pill-blue";
+    return '<span class="pill ' + cls + '">' + text + "</span>";
+  }
+
+  function cell(row, html, opt) {
+    var td = document.createElement("td");
+    if (opt && opt.num) td.classList.add("num");
+    if (opt && opt.divide) td.classList.add("divide");
+    td.innerHTML = html;
+    row.appendChild(td);
+    return td;
+  }
+
+  /* 스케줄 표 렌더링 (+ 총액 행) */
+  function renderSchedule() {
+    var body = document.getElementById("scheduleBody");
+    body.innerHTML = "";
+
+    var sum = { principal: 0, vat: 0, interest: 0, total: 0, paid: 0 };
+
+    schedule.forEach(function (row, i) {
+      if (row.isPrepayment) {
+        sum.principal += row.principal;
+        sum.vat += row.vat;
+        sum.interest += row.interest;
+        sum.total += row.total;
+        sum.paid += row.paid || 0;
+        var prepayRow = document.createElement("tr");
+        prepayRow.className = "schedule-prepay-row";
+        cell(prepayRow, row.round); cell(prepayRow, row.due, { divide: true }); cell(prepayRow, row.tax); cell(prepayRow, won(row.principal), { num: true }); cell(prepayRow, won(row.vat), { num: true }); cell(prepayRow, "-"); cell(prepayRow, won(row.total), { num: true });
+        cell(prepayRow, row.paidDate, { divide: true }); cell(prepayRow, won(row.paid), { num: true }); cell(prepayRow, "0", { num: true }); cell(prepayRow, stateBadge("중도 상환"));
+        body.appendChild(prepayRow);
+        return;
+      }
+      var total = row.principal + row.vat + row.interest;
+      sum.principal += row.principal;
+      sum.vat += row.vat;
+      sum.interest += row.interest;
+      sum.total += total;
+      sum.paid += row.paid || 0;
+
+      var tr = document.createElement("tr");
+      if (row.afterPrepayment) tr.classList.add("schedule-future-row");
+      if (row.state === "미상환") tr.classList.add("schedule-unpaid-row");
+      cell(tr, i + 1);
+      cell(tr, row.due, { divide: true });
+      cell(tr, row.tax);
+      cell(tr, won(row.principal), { num: true });
+      cell(tr, won(row.vat), { num: true });
+      cell(tr, won(row.interest), { num: true });
+      cell(tr, won(total), { num: true });
+      cell(tr, row.paidDate || "", { divide: true });
+      cell(tr, won(row.paid), { num: true });
+      cell(tr, won(row.remain), { num: true });
+      cell(tr, stateBadge(row.state));
+      body.appendChild(tr);
+    });
+
+    var tr = document.createElement("tr");
+    tr.className = "total";
+    cell(tr, "총액");
+    cell(tr, "", { divide: true });
+    cell(tr, "");
+    cell(tr, won(sum.principal), { num: true });
+    cell(tr, won(sum.vat), { num: true });
+    cell(tr, won(sum.interest), { num: true });
+    cell(tr, won(sum.total), { num: true });
+    cell(tr, "", { divide: true });
+    cell(tr, won(sum.paid), { num: true });
+    cell(tr, "", { num: true });
+    cell(tr, "");
+    body.appendChild(tr);
+
+    // 요약 영역의 누��� 상환액 / 상환비율을 표와 동일하게 유지합니다.
+    // 상환비율은 전체 상환 예정 총액(총사업금액 기준) 대비 누적 상환액입니다.
+    document.getElementById("sumPaid").textContent = won(sum.paid);
+    document.getElementById("sumRate").textContent =
+      ((sum.paid / TOTAL_PLAN) * 100).toFixed(1);
+  }
+
+  /* ---------- Toast ---------- */
+  var toastEl = document.getElementById("toast");
+  var toastTimer = null;
+  function showToast(message) {
+    toastEl.textContent = message;
+    toastEl.hidden = false;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { toastEl.hidden = true; }, 2200);
+  }
+
+  /* ---------- Modal ---------- */
+  function openModal(id) {
+    var overlay = document.getElementById(id);
+    overlay.hidden = false;
+    document.documentElement.classList.add("modal-open");
+    document.body.classList.add("modal-open");
+    var focusable = overlay.querySelector("input, textarea, button");
+    if (focusable) focusable.focus();
+  }
+  function closeModal(overlay) {
+    overlay.hidden = true;
+    var hasOpenModal = Array.from(document.querySelectorAll(".modal-overlay")).some(function (item) {
+      return !item.hidden;
+    });
+    if (!hasOpenModal) {
+      document.documentElement.classList.remove("modal-open");
+      document.body.classList.remove("modal-open");
+    }
+  }
+
+  document.querySelectorAll(".modal-overlay").forEach(function (overlay) {
+    overlay.addEventListener("click", function (event) {
+      if (event.target === overlay || event.target.hasAttribute("data-close")) closeModal(overlay);
+    });
+  });
+  document.addEventListener("keydown", function (event) {
+    if (event.key !== "Escape") return;
+    document.querySelectorAll(".modal-overlay").forEach(function (o) {
+      if (!o.hidden) closeModal(o);
+    });
+  });
+
+  /* ---------- 미상환 스케줄 수정 ---------- */
+  function escapeScheduleText(value) {
+    return String(value === null || value === undefined ? "" : value)
+      .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+  }
+
+  function renderScheduleEditor(editIndex) {
+    var body = document.getElementById("scheduleEditBody");
+    var editRows = scheduleDraft || schedule;
+    var total = { principal: 0, vat: 0, interest: 0, all: 0 };
+    body.innerHTML = editRows.map(function (row, index) {
+      total.principal += row.principal;
+      total.vat += row.vat;
+      total.interest += row.interest;
+      total.all += row.principal + row.vat + row.interest;
+      var editable = index === editIndex;
+      var locked = row.state === "상환완료";
+      var value = function (key, css) { return editable ? '<input class="' + (css || "") + '" data-schedule-field="' + key + '" value="' + row[key] + '">' : (key === "due" || key === "tax" ? row[key] : won(row[key])); };
+      var note = editable
+        ? '<input class="note-edit" data-schedule-field="note" type="text" value="' + escapeScheduleText(row.note) + '" placeholder="특이사항 기재">'
+        : (escapeScheduleText(row.note) || "-");
+      var action = locked ? "-" : '<button class="btn ' + (editable ? "btn-dark" : "btn-line") + ' btn-table" type="button" data-schedule-edit="' + index + '">' + (editable ? "반영" : "수정") + '</button>';
+      return '<tr data-schedule-row="' + index + '"><td>' + (index + 1) + '</td><td>' + value("due", "date-edit") + '</td><td>' + value("tax", "date-edit") + '</td><td class="num">' + value("principal") + '</td><td class="num">' + value("vat") + '</td><td class="num">' + value("interest") + '</td><td class="num">' + won(row.principal + row.vat + row.interest) + '</td><td>' + note + '</td><td>' + action + '</td></tr>';
+    }).join("");
+    document.getElementById("scheduleEditTotal").innerHTML = '<tr class="total"><th>총액</th><td></td><td></td><td class="num">' + won(total.principal) + '</td><td class="num">' + won(total.vat) + '</td><td class="num">' + won(total.interest) + '</td><td class="num">' + won(total.all) + '</td><td></td><td></td></tr>';
+  }
+
+  document.querySelector('[data-act="add"]').addEventListener("click", function () {
+    editScheduleIndex = null;
+    scheduleDraft = schedule.map(function (row) { return Object.assign({}, row); });
+    renderScheduleEditor(null);
+    openModal("addOverlay");
+  });
+
+  document.getElementById("scheduleEditBody").addEventListener("click", function (event) {
+    var button = event.target.closest("[data-schedule-edit]");
+    if (!button) return;
+    var index = Number(button.dataset.scheduleEdit);
+    if (editScheduleIndex !== index) {
+      editScheduleIndex = index;
+      renderScheduleEditor(index);
+      return;
+    }
+    var rowElement = document.querySelector('[data-schedule-row="' + index + '"]');
+    ["due", "tax", "principal", "vat", "interest", "note"].forEach(function (key) {
+      var input = rowElement.querySelector('[data-schedule-field="' + key + '"]');
+      scheduleDraft[index][key] = key === "due" || key === "tax" || key === "note" ? input.value.trim() : Number(input.value.replace(/[^0-9]/g, "")) || 0;
+    });
+    editScheduleIndex = null;
+    renderScheduleEditor(null);
+    showToast((index + 1) + "회차 변경 내용을 모달에 반영했습니다.");
+  });
+
+  document.querySelector('[data-act="schedule-modal-upload"]').addEventListener("click", function () {
+    if (!window.confirm("변경된 스케줄을 업로드 하시겠습니까?")) return;
+    schedule = (scheduleDraft || schedule).map(function (row) { return Object.assign({}, row); });
+    scheduleDraft = null;
+    editScheduleIndex = null;
+    renderSchedule();
+    closeModal(document.getElementById("addOverlay"));
+    showToast("변경된 상환 스케줄을 업로드했습니다.");
+  });
+
+  /* ---------- 상환 스케줄 업로드 ---------- */
+  var fileInput = document.getElementById("scheduleFile");
+  document.querySelector('[data-act="upload"]').addEventListener("click", function () {
+    fileInput.click();
+  });
+  fileInput.addEventListener("change", function () {
+    if (!fileInput.files.length) return;
+    showToast(fileInput.files[0].name + " 업로드가 요청되었습니다.");
+    fileInput.value = "";
+  });
+
+  /* ---------- 특이사항 관리 ---------- */
+  var repaymentNote = {
+    type: "", payment: "", vat: "", change: "", reason: ""
+  };
+
+  function numberFromInput(id) {
+    return Number(document.getElementById(id).value.replace(/[^0-9-]/g, "")) || 0;
+  }
+
+  function updateNoteGrandTotal() {
+    document.getElementById("noteGrandTotal").value = won(
+      numberFromInput("notePayment") + numberFromInput("noteVat") + numberFromInput("noteChange")
+    );
+  }
+
+  function setNoteReadonly(readonly) {
+    ["notePayment", "noteVat", "noteChange", "noteGrandTotal", "noteReason"].forEach(function (id) {
+      document.getElementById(id).readOnly = readonly || id === "noteGrandTotal";
+    });
+    document.getElementById("noteReason").style.resize = readonly ? "none" : "vertical";
+    document.querySelector("[data-note-save]").hidden = readonly;
+  }
+
+  function fillNoteSummary() {
+    var planPrincipal = schedule.reduce(function (sum, row) { return sum + row.principal; }, 0);
+    var planVat = schedule.reduce(function (sum, row) { return sum + row.vat; }, 0);
+    var planTotal = schedule.reduce(function (sum, row) { return sum + row.principal + row.vat + row.interest; }, 0);
+    var paidTotal = schedule.reduce(function (sum, row) { return sum + (row.paid || 0); }, 0);
+    var remainTotal = Math.max(planTotal - paidTotal, 0);
+    var remainPrincipal = Math.round(remainTotal / 1.1);
+    var remainVat = remainTotal - remainPrincipal;
+    var currentRemain = schedule.reduce(function (sum, row) { return sum + (row.remain || 0); }, 0);
+
+    document.getElementById("notePlanPrincipal").textContent = won(planPrincipal);
+    document.getElementById("notePlanVat").textContent = won(planVat);
+    document.getElementById("notePlanTotal").textContent = won(planTotal);
+    document.getElementById("notePaidTotal").textContent = won(paidTotal);
+    document.getElementById("noteRemainPrincipal").textContent = won(remainPrincipal);
+    document.getElementById("noteRemainVat").textContent = won(remainVat);
+    document.getElementById("noteRemainTotal").textContent = won(remainTotal);
+    document.getElementById("noteCurrentRemain").textContent = won(currentRemain);
+  }
+
+  document.querySelector('[data-act="notes"]').addEventListener("click", function () {
+    setNoteReadonly(false);
+    fillNoteSummary();
+    document.getElementById("noteType").value = repaymentNote.type;
+    document.getElementById("notePayment").value = repaymentNote.payment;
+    document.getElementById("noteVat").value = repaymentNote.vat;
+    document.getElementById("noteChange").value = repaymentNote.change;
+    document.getElementById("noteReason").value = repaymentNote.reason;
+    document.getElementById("noteReasonCount").textContent = repaymentNote.reason.length;
+    updateNoteGrandTotal();
+    openModal("noteOverlay");
+  });
+
+  ["notePayment", "noteVat", "noteChange"].forEach(function (id) {
+    document.getElementById(id).addEventListener("input", updateNoteGrandTotal);
+  });
+  document.getElementById("noteReason").addEventListener("input", function () {
+    document.getElementById("noteReasonCount").textContent = this.value.length;
+  });
+
+  document.getElementById("noteForm").addEventListener("submit", function (event) {
+    event.preventDefault();
+
+    repaymentNote.type = document.getElementById("noteType").value;
+    repaymentNote.payment = document.getElementById("notePayment").value.trim();
+    repaymentNote.vat = document.getElementById("noteVat").value.trim();
+    repaymentNote.change = document.getElementById("noteChange").value.trim();
+    repaymentNote.reason = document.getElementById("noteReason").value.trim();
+
+    var targetIndex = schedule.findIndex(function (row) { return !row.isPrepayment && row.state !== "상환완료"; });
+    var targetRow = schedule[targetIndex];
+    var amount = numberFromInput("noteGrandTotal");
+    var principalAmount = numberFromInput("notePayment");
+    var vatAmount = numberFromInput("noteVat");
+    var progressDate = "2026.10.23";
+    var processedDate = "2026.10.31";
+    schedule = schedule.filter(function (row) { return !row.isPrepayment; });
+    targetIndex = schedule.findIndex(function (row) { return row === targetRow; });
+    schedule = schedule.slice(0, targetIndex + 1);
+    schedule.push({ isPrepayment: true, round: targetIndex + 2, due: "2026.11.30", tax: "2026.11.29", principal: principalAmount, vat: vatAmount, interest: 0, total: amount, paidDate: processedDate, paid: amount, remain: 0, state: "중도 상환", note: "중도 상환 처리" });
+    prepaymentRecord = { date: progressDate, processed: processedDate, amount: amount };
+    document.getElementById("prepayDate").textContent = prepaymentRecord.date;
+    document.getElementById("prepayProcessed").textContent = prepaymentRecord.processed;
+    document.getElementById("prepayAmount").textContent = won(prepaymentRecord.amount);
+    document.getElementById("prepayHistory").hidden = false;
+    var status = document.getElementById("repaymentStatus");
+    status.className = "pill pill-gray";
+    status.textContent = "중도 상환";
+    document.querySelectorAll('[data-act="notes"],[data-act="add"],[data-act="upload"]').forEach(function (button) { button.disabled = true; });
+    renderSchedule();
+    closeModal(document.getElementById("noteOverlay"));
+    showToast("중도 상환 정보가 저장되었습니다.");
+  });
+
+  document.querySelector('[data-act="prepay-detail"]').addEventListener("click", function () {
+    fillNoteSummary();
+    document.getElementById("notePayment").value = repaymentNote.payment;
+    document.getElementById("noteVat").value = repaymentNote.vat;
+    document.getElementById("noteChange").value = repaymentNote.change;
+    document.getElementById("noteReason").value = repaymentNote.reason;
+    document.getElementById("noteReasonCount").textContent = repaymentNote.reason.length;
+    updateNoteGrandTotal();
+    setNoteReadonly(true);
+    openModal("noteOverlay");
+  });
+
+  /* ---------- 사용자 입금 현황 ---------- */
+  var deposits = [
+    { date: "2026.10.23", amount: 51437100, payer: "㈜선영", memo: "1회차 입금" },
+    { date: "2026.11.23", amount: 20000000, payer: "㈜선영", memo: "2회차 일부 입금" },
+  ];
+
+  function renderDeposits() {
+    var body = document.getElementById("depositBody");
+    body.innerHTML = "";
+
+    if (!deposits.length) {
+      var empty = document.createElement("tr");
+      empty.innerHTML = '<td colspan="5">입금 내역이 없습니다.</td>';
+      body.appendChild(empty);
+    }
+
+    deposits.forEach(function (row, i) {
+      var tr = document.createElement("tr");
+      tr.innerHTML =
+        "<td>" + (i + 1) + "</td>" +
+        "<td>" + row.date + "</td>" +
+        '<td class="num">' + won(row.amount) + "</td>" +
+        "<td>" + row.payer + "</td>" +
+        "<td>" + row.memo + "</td>";
+      body.appendChild(tr);
+    });
+
+    // 총액 : 전체 입금액 합계 (페이지와 무관하게 누적)
+    var total = deposits.reduce(function (acc, row) { return acc + row.amount; }, 0);
+    var totalRow = document.createElement("tr");
+    totalRow.className = "total";
+    totalRow.innerHTML =
+      "<td>총액</td><td></td>" +
+      '<td class="num">' + won(total) + "</td><td></td><td></td>";
+    body.appendChild(totalRow);
+  }
+
+  /* ---------- Excel 다운로드 ---------- */
+  document.querySelector('[data-act="excel"]').addEventListener("click", function () {
+    showToast("상환정보를 Excel로 내려받습니다.");
+  });
+
+  renderSchedule();
+  renderDeposits();
+
+  /* 사업접수에서 전달된 사업명을 요약 정보에 반영합니다. */
+  (function () {
+    var raw = null;
+    try { raw = sessionStorage.getItem("pms.newProject"); } catch (err) { return; }
+    if (!raw) return;
+
+    var data = null;
+    try { data = JSON.parse(raw); } catch (err) { return; }
+    if (data && data.name) document.getElementById("projectName").textContent = data.name;
+  })();
+</script>
+  <script src="/assets/pms-lnb.js"></script>
+  <script src="/assets/pms-intake-wizard.js?v=20260921-2"></script>
+</body>
+</html>

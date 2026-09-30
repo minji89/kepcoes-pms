@@ -1,0 +1,384 @@
+/* ============================================================
+   공통 LNB : 1depth 마우스 오버 시 2depth 리스트가 열립니다.
+   각 페이지의 인라인 <style> 뒤에 연결하여 기존 규칙을 보완합니다.
+   ============================================================ */
+
+.nav > ul > li {
+  position: relative;
+}
+
+/* 2depth 는 기본 닫힘 상태 : 높이를 접어 두고 hover 시 펼칩니다. */
+.nav .subnav {
+  max-height: 0;
+  overflow: hidden;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 26px;
+  transition: max-height 1s ease, padding-top 1s ease, padding-bottom 1s ease;
+}
+
+/* 마우스 오버 / 키보드 포커스 / 현재 페이지 메뉴는 열림 상태 */
+.nav > ul > li:hover > .subnav,
+.nav > ul > li:focus-within > .subnav,
+.nav > ul > li.is-open > .subnav {
+  max-height: 560px;
+  padding-top: 2px;
+  padding-bottom: 10px;
+}
+
+/* 열림 상태의 화살표는 위를 향합니다. */
+.nav > ul > li:hover > .nav-item .chev,
+.nav > ul > li:focus-within > .nav-item .chev,
+.nav > ul > li.is-open > .nav-item .chev {
+  transform: rotate(-135deg) translateY(-2px);
+}
+
+/* 1depth hover 시 배경으로 열린 그룹을 인지할 수 있게 합니다. */
+.nav > ul > li:hover > .nav-item:not(.active) {
+  background: #f1f5f9;
+  color: #1f2937;
+}
+
+.nav .subnav-item:hover {
+  color: var(--brand, #1d4ed8);
+}
+
+/* 하위 메뉴가 없는 1depth 는 화살표를 표시하지 않습니다. */
+.nav > ul > li.no-sub > .nav-item .chev {
+  visibility: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav .subnav {
+    transition: none;
+  }
+}
+
+/* ============================================================
+   PMS 공통 기본 프레임
+   모든 화면에서 LNB, 상단 헤더, 본문 여백을 동일하게 유지한다.
+   ============================================================ */
+:root {
+  --pms-bg: #f1f5f9;
+  --pms-surface: #ffffff;
+  --pms-border: #e5e9f0;
+  --pms-text: #1e293b;
+  --pms-muted: #64748b;
+  --pms-brand: #1d6ff2;
+  --pms-brand-soft: #eff6ff;
+}
+
+html,
+body {
+  font-family: "Noto Sans KR", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.layout {
+  min-height: 100vh;
+  background: var(--pms-bg);
+}
+
+.sidebar {
+  width: 248px;
+  flex: 0 0 248px;
+  display: flex;
+  flex-direction: column;
+  background: var(--pms-surface);
+  border-right: 1px solid var(--pms-border);
+}
+
+.sidebar-head {
+  height: 56px;
+  padding: 0 20px;
+  border-bottom: 1px solid var(--pms-border);
+}
+
+.logo img {
+  height: 30px;
+  width: auto;
+}
+
+.nav {
+  padding: 16px 12px;
+  flex: 1;
+}
+
+.sidebar .nav ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.sidebar .nav a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 8px;
+  color: #475569;
+  font-size: 14.5px;
+  font-weight: 500;
+}
+
+.nav-item .chev {
+  width: 8px;
+  height: 8px;
+  margin-left: auto;
+  flex: none;
+  border-right: 1.6px solid #94a3b8;
+  border-bottom: 1.6px solid #94a3b8;
+  transform: rotate(45deg) translateY(-2px);
+}
+
+.nav-item.active .chev {
+  border-color: var(--pms-brand);
+}
+
+.nav-item.active {
+  background: var(--pms-brand-soft);
+  color: var(--pms-brand);
+  font-weight: 700;
+}
+
+.nav-icon {
+  width: 20px;
+  height: 20px;
+}
+
+.nav .subnav {
+  padding-left: 26px;
+}
+
+.subnav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 40px;
+  height: auto;
+  padding: 9px 10px;
+  color: #475569;
+  font-size: 14px;
+  line-height: 1.55;
+  white-space: normal;
+}
+
+.subnav-item .dot,
+.subnav-item > .dot {
+  width: 5px;
+  height: 5px;
+  flex: none;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.subnav-item.active {
+  color: var(--pms-brand);
+  font-weight: 700;
+}
+
+.main {
+  background: var(--pms-bg);
+}
+
+.topbar {
+  height: 56px;
+  padding: 0 26px;
+  background: var(--pms-surface);
+  border-bottom: 1px solid var(--pms-border);
+}
+
+.topbar h1 {
+  font-size: 19px;
+  font-weight: 700;
+}
+
+.pms-project-search {
+  position: relative;
+  width: clamp(280px, 35vw, 520px);
+  margin-left: clamp(24px, 5vw, 90px);
+  margin-right: auto;
+  z-index: 120;
+}
+
+.pms-project-search .sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.pms-project-search input {
+  width: 100%;
+  height: 38px;
+  padding: 0 42px 0 16px;
+  border: 1px solid #cbd5e1;
+  border-radius: 9px;
+  background: #fff;
+  color: #0f172a;
+  font: inherit;
+  font-size: 13px;
+  outline: none;
+  transition: border-color .15s, box-shadow .15s;
+}
+
+.pms-project-search input:focus {
+  border-color: #1d6ff2;
+  box-shadow: 0 0 0 3px rgba(29, 111, 242, .12);
+}
+
+.pms-project-search input::-webkit-search-cancel-button { display: none; }
+.pms-search-icon { position: absolute; top: 10px; right: 13px; width: 18px; height: 18px; color: #64748b; pointer-events: none; }
+.pms-search-icon svg { display: block; width: 100%; height: 100%; }
+
+.pms-project-search-results {
+  position: absolute;
+  top: calc(100% + 7px);
+  left: 0;
+  right: 0;
+  max-height: 350px;
+  overflow-y: auto;
+  padding: 7px;
+  border: 1px solid #dbe2ea;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, .16);
+}
+
+.pms-project-search-results[hidden] { display: none; }
+.pms-project-search-option { display: grid; grid-template-columns: 118px minmax(0, 1fr) 18px; align-items: center; gap: 12px; width: 100%; min-height: 48px; padding: 8px 10px; border: 0; border-radius: 7px; background: transparent; color: #334155; font: inherit; font-size: 13px; text-align: left; cursor: pointer; }
+.pms-project-search-option:hover, .pms-project-search-option.active { background: #eff6ff; color: #1d4ed8; }
+.pms-project-search-option + .pms-project-search-option { border-top: 1px solid #f1f5f9; }
+.pms-project-search-option svg { width: 17px; height: 17px; color: #94a3b8; }
+.pms-project-number { color: #1d6ff2; font-weight: 700; white-space: nowrap; }
+.pms-project-name { overflow: hidden; color: inherit; text-overflow: ellipsis; white-space: nowrap; }
+.pms-project-search mark { padding: 0; background: #fef08a; color: inherit; font-weight: 700; }
+.pms-project-search-empty { padding: 22px 12px; color: #64748b; font-size: 13px; text-align: center; }
+
+@media (max-width: 1180px) {
+  .pms-project-search { width: min(330px, 31vw); margin-left: 24px; }
+}
+
+@media (max-width: 900px) {
+  .pms-project-search { width: 250px; margin-left: 16px; }
+  .pms-project-search input { font-size: 12px; }
+}
+
+.content {
+  padding: 26px;
+  gap: 18px;
+}
+
+.card {
+  border-color: var(--pms-border);
+  border-radius: 10px;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+}
+
+/* 공통 조회 결과: 페이지를 늘리지 않고 표 영역 내부에서 가로 스크롤한다. */
+.main,
+.content,
+.card,
+.card-body {
+  min-width: 0;
+}
+
+.table-scroll,
+.table-wrap {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+}
+
+.table-scroll > table,
+.table-wrap > table {
+  width: max-content;
+  min-width: 100%;
+  table-layout: auto;
+}
+
+.table-scroll th,
+.table-scroll td,
+.table-wrap th,
+.table-wrap td {
+  white-space: nowrap;
+  word-break: keep-all;
+}
+
+/* 열이 많은 조회 목록은 셀을 압축하지 않고 실제 가로 폭을 유지한다. */
+.table-scroll.table-list > table.master,
+.table-wrap.table-list > table.master {
+  width: 2800px;
+  min-width: 2800px;
+}
+
+/* 경영목표 모달: 입력 박스의 우측 기준선을 단위와 관계없이 통일한다. */
+#goalModal .goal-field {
+  display: grid;
+  grid-template-columns: 220px 76px;
+  justify-content: end;
+}
+
+#goalModal .goal-field input {
+  width: 100%;
+  text-align: right;
+}
+
+#goalModal .goal-field > span,
+#goalModal .energy-line > span {
+  text-align: left;
+  white-space: nowrap;
+}
+
+#goalModal .energy-fields {
+  grid-column: 1 / -1;
+}
+
+#goalModal .energy-line {
+  display: grid;
+  grid-template-columns: 220px 76px;
+  justify-content: end;
+}
+
+/* 목록형 테이블은 셀 줄바꿈 대신 가로 스크롤을 사용한다. */
+.table-wrap.table-list {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+}
+
+.table-wrap.table-list > table {
+  width: max-content;
+  min-width: 100%;
+}
+
+.table-wrap.table-list th,
+.table-wrap.table-list td {
+  white-space: nowrap;
+}
+
+@media (max-width: 900px) {
+  .sidebar {
+    display: none;
+  }
+
+  .content {
+    padding: 18px;
+  }
+}

@@ -1,0 +1,2359 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>프로젝트 상세 - 추진 | 사업관리시스템 (PMS)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #f1f5f9;
+    --surface: #ffffff;
+    --border: #e5e9f0;
+    --text: #1e293b;
+    --muted: #64748b;
+    --brand: #1d6ff2;
+    --brand-soft: #eff6ff;
+    --navy: #14315e;
+    --field: #f8fafc;
+    --radius: 10px;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Noto Sans KR", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a { color: inherit; text-decoration: none; }
+  ul { list-style: none; margin: 0; padding: 0; }
+
+  .sr-only {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+  }
+
+  .layout { display: flex; min-height: 100vh; }
+
+  /* ---------- Sidebar ---------- */
+  .sidebar {
+    width: 248px;
+    flex: 0 0 248px;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .sidebar-head {
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .logo { display: flex; align-items: center; min-width: 0; }
+  .logo img { display: block; height: 30px; width: auto; max-width: 100%; }
+
+  .hamburger {
+    background: none; border: 0; padding: 6px; cursor: pointer;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .hamburger i { display: block; width: 18px; height: 2px; background: #334155; border-radius: 2px; }
+
+  .nav { padding: 16px 12px; flex: 1; }
+  .nav-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 14px; border-radius: 8px;
+    color: #475569; font-size: 14.5px; font-weight: 500;
+  }
+  .nav-item .chev {
+    margin-left: auto; width: 8px; height: 8px; flex: none;
+    border-right: 1.6px solid #94a3b8; border-bottom: 1.6px solid #94a3b8;
+    transform: rotate(45deg) translateY(-2px);
+  }
+  .nav-item.active .chev { border-color: var(--brand); }
+  .nav-item .chev.up { transform: rotate(-135deg) translateY(-2px); }
+  .nav-item.open .chev { border-color: #64748b; }
+  .nav-item.active { background: var(--brand-soft); color: var(--brand); font-weight: 700; }
+  .nav-icon { width: 20px; height: 20px; flex: none; color: currentColor; }
+
+  .subnav { padding: 2px 0 6px 26px; }
+  .subnav-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 10px; font-size: 14px; color: #475569;
+  }
+  .subnav-item.active { color: var(--brand); font-weight: 700; }
+  .dot { width: 5px; height: 5px; border-radius: 50%; background: var(--brand); flex: none; }
+
+  .sidebar-foot { padding: 16px 16px 22px; display: grid; gap: 10px; }
+  .side-btn {
+    display: flex; align-items: center; gap: 10px;
+    padding: 12px 14px; border: 1px solid var(--border);
+    border-radius: 8px; font-size: 13.5px; color: #475569; background: var(--surface);
+  }
+  .side-btn.primary { border-color: #bfdbfe; background: var(--brand-soft); color: var(--brand); font-weight: 700; }
+
+  /* ---------- Main ---------- */
+  .main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+
+  .topbar {
+    height: 60px; background: var(--surface); border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 16px; padding: 0 26px;
+  }
+  .topbar h1 { margin: 0; font-size: 19px; font-weight: 700; letter-spacing: -0.02em; }
+  .badge-pms {
+    background: var(--brand-soft); color: var(--brand);
+    font-size: 12px; font-weight: 700; padding: 4px 9px; border-radius: 6px;
+  }
+  .topbar-right { margin-left: auto; display: flex; align-items: center; gap: 14px; }
+
+  .seg { display: flex; align-items: center; gap: 6px; }
+  .seg-label { color: var(--muted); font-size: 13px; margin-right: 2px; }
+  .seg-btn {
+    padding: 5px 12px; border-radius: 6px; font-size: 13px;
+    color: var(--muted); background: transparent; border: 0; cursor: pointer;
+    font-family: inherit;
+  }
+  .seg-btn.on { background: var(--navy); color: #fff; font-weight: 700; }
+
+  .user { font-size: 13.5px; margin: 0; }
+  .user b { font-weight: 700; }
+  .user small { color: var(--muted); }
+  .logout { color: var(--muted); font-size: 13px; text-decoration: underline; }
+
+  .content { padding: 26px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 18px; }
+
+  .page-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  .page-head h2 { margin: 0; font-size: 25px; font-weight: 700; letter-spacing: -0.03em; }
+
+  .crumb { display: flex; align-items: center; gap: 10px; color: var(--muted); font-size: 13px; }
+  .crumb .sep { color: #cbd5e1; font-size: 11px; }
+  .crumb .now { color: var(--text); font-weight: 700; }
+
+  .card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+  }
+
+  /* Tabs */
+  .tabbar { display: flex; align-items: center; gap: 8px; padding: 0 20px; }
+  .tabs { display: flex; }
+  .tab {
+    display: block; padding: 18px 26px; font-size: 15px; color: var(--muted); font-weight: 500;
+    border-bottom: 3px solid transparent; background: none; border-top: 0; border-left: 0; border-right: 0;
+    cursor: pointer; font-family: inherit;
+  }
+  .tab.on { color: var(--brand); font-weight: 700; border-bottom-color: var(--brand); }
+  .tab-right { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+
+  .btn {
+    font-family: inherit; font-size: 14px; font-weight: 700; cursor: pointer;
+    border-radius: 8px; padding: 11px 20px; border: 1px solid var(--border);
+    background: var(--surface); color: #475569;
+  }
+  .btn.navy { background: var(--navy); border-color: var(--navy); color: #fff; }
+  .btn.sm { padding: 8px 14px; font-size: 13px; }
+
+  /* Step tabs */
+  .steps { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
+  .step {
+    font-family: inherit; font-size: 14.5px; font-weight: 700; cursor: pointer;
+    padding: 8px 10px; border-radius: 8px;
+    border: 1px solid var(--step-border, var(--border));
+    background: var(--step-bg, var(--surface)); color: var(--step-color, #475569);
+    transition: background .16s ease, border-color .16s ease, color .16s ease, transform .16s ease;
+  }
+  .step:nth-child(1) { --step-bg: #f4f8fc; --step-border: #d6e2ee; --step-color: #49627d; --step-active: #486b91; }
+  .step:nth-child(2) { --step-bg: #f6f5fb; --step-border: #dfdcef; --step-color: #625f7d; --step-active: #68658f; }
+  .step:nth-child(3) { --step-bg: #f2f8f7; --step-border: #d4e7e3; --step-color: #4f706b; --step-active: #527c74; }
+  .step:nth-child(4) { --step-bg: #fbf8f1; --step-border: #ebe2cf; --step-color: #796b50; --step-active: #8a7651; }
+  .step:nth-child(5) { --step-bg: #f4f8f3; --step-border: #d9e7d6; --step-color: #587052; --step-active: #627f59; }
+  .step:not(.on):not(.locked):hover { transform: translateY(-1px); filter: brightness(.985); }
+  .step.on { background: var(--step-active, var(--navy)); border-color: var(--step-active, var(--navy)); color: #fff; }
+  /* 아직 진행할 수 없는 단계 (비활성 표현) */
+  .step.locked { background: var(--step-bg); border-color: var(--step-border); color: var(--step-color); cursor: not-allowed; opacity: .58; }
+
+  /* Toast */
+  .toast-wrap {
+    position: fixed; left: 50%; bottom: 108px; transform: translateX(-50%);
+    z-index: 70; display: grid; gap: 10px; pointer-events: none;
+  }
+  .toast {
+    display: flex; align-items: center; gap: 10px;
+    padding: 13px 20px; border-radius: 10px;
+    background: rgba(15, 23, 42, 0.93); color: #fff;
+    font-size: 14px; font-weight: 500; letter-spacing: -0.01em;
+    box-shadow: 0 14px 34px rgba(15, 23, 42, 0.28);
+    opacity: 0; transform: translateY(10px);
+    transition: opacity 0.22s ease, transform 0.22s ease;
+  }
+  .toast.show { opacity: 1; transform: translateY(0); }
+  .toast svg { width: 17px; height: 17px; flex: none; color: #93c5fd; }
+
+  .notes { margin: 0; color: var(--muted); font-size: 13px; display: grid; gap: 4px; }
+
+  /* Section blocks */
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 26px; align-items: start; }
+  .cols .review-customer { order: 1; }
+  .cols .review-epc { order: 2; }
+  .block-title { margin: 0 0 12px; font-size: 15.5px; font-weight: 700; }
+
+  .ftable { border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+  .frow { display: flex; align-items: stretch; border-bottom: 1px solid var(--border); }
+  .frow[data-esco-only][hidden] { display: none !important; }
+  .frow:last-child { border-bottom: 0; }
+  .fkey {
+    width: 164px; flex: none; background: var(--field); border-right: 1px solid var(--border);
+    display: flex; align-items: center; gap: 3px;
+    padding: 14px 12px; font-size: 13px; color: #334155; font-weight: 500;
+    /* 필드 제목은 줄바꿈 없이 한 줄로 표시 */
+    white-space: nowrap; letter-spacing: -0.03em;
+  }
+  .req { color: #ef4444; }
+  /* Alert/Confirm Form */
+  .alert-overlay {
+    position: fixed; inset: 0; z-index: 60;
+    display: flex; align-items: center; justify-content: center; padding: 20px;
+    background: rgba(15, 23, 42, 0.5);
+  }
+  .alert-overlay[hidden] { display: none; }
+  .alert-box {
+    width: 100%; max-width: 420px; background: var(--surface);
+    border: 1px solid var(--border); border-radius: 12px;
+    box-shadow: 0 24px 60px rgba(15, 23, 42, 0.25);
+    padding: 34px 28px 26px; text-align: center;
+  }
+  .alert-msg { margin: 0 0 26px; font-size: 15.5px; font-weight: 500; color: var(--text); line-height: 1.6; }
+  /* 제목이 있는 Alert (예: 사업심의 요청) : 좌측 정렬 + 구분선 */
+  .alert-title {
+    margin: 0 0 14px; padding-bottom: 12px;
+    font-size: 15px; font-weight: 700; color: var(--text); text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  .alert-title[hidden] { display: none; }
+  .alert-box.titled { text-align: left; padding: 22px 24px 22px; }
+  .alert-box.titled .alert-msg { font-size: 14.5px; font-weight: 400; }
+  .alert-foot { display: flex; justify-content: center; gap: 10px; }
+  .alert-btn.ghost { background: var(--surface); color: #334155; border-color: #cbd5e1; }
+  .alert-btn.ghost:hover { background: #f1f5f9; }
+  .alert-btn[hidden] { display: none; }
+  .alert-btn {
+    min-width: 132px; padding: 12px 20px;
+    font-family: inherit; font-size: 15px; font-weight: 700;
+    background: var(--navy); color: #fff;
+    border: 1px solid var(--navy); border-radius: 8px; cursor: pointer;
+  }
+  .alert-btn:hover { background: #0f2140; }
+  .alert-btn:focus-visible { outline: 3px solid #93c5fd; outline-offset: 2px; }
+
+  /* ===== 조회 팝업 (에너지 사용자 / 담당자) ===== */
+  .lookup-overlay {
+    position: fixed; inset: 0; z-index: 55;
+    display: flex; align-items: center; justify-content: center; padding: 24px;
+    background: rgba(15, 23, 42, 0.5); overflow: auto;
+  }
+  .lookup-overlay[hidden] { display: none; }
+  .lookup {
+    width: 100%; max-width: 880px; background: var(--surface);
+    border-radius: 12px; box-shadow: 0 24px 60px rgba(15, 23, 42, 0.3); overflow: hidden;
+  }
+  .lookup.erp-customer { max-width: 760px; }
+  .lookup.staff-lookup { max-width: 640px; }
+  .lookup-head {
+    display: flex; align-items: center; gap: 12px;
+    padding: 18px 22px; border-bottom: 1px solid var(--border);
+  }
+  .lookup-head h2 { margin: 0; font-size: 19px; font-weight: 700; letter-spacing: -0.02em; }
+  .lookup-close {
+    margin-left: auto; width: 34px; height: 34px; display: flex; align-items: center; justify-content: center;
+    background: none; border: 0; border-radius: 8px; cursor: pointer; color: var(--navy);
+  }
+  .lookup-close:hover { background: #f1f5f9; }
+  .lookup-close svg { width: 20px; height: 20px; }
+  .lookup-body { padding: 20px 22px 22px; }
+
+  /* 팝업 검색 영역 */
+  .lookup-search {
+    display: flex; gap: 16px; align-items: flex-start;
+    background: var(--field); border: 1px solid var(--border); border-radius: 10px; padding: 16px 18px;
+  }
+  .lookup-fields { flex: 1; min-width: 0; display: grid; gap: 10px; }
+  .lookup-frow { display: flex; align-items: center; gap: 12px; }
+  .lookup-frow + .lookup-frow { border-top: 1px dashed #d7dfea; padding-top: 12px; }
+  .lookup-frow .lbl {
+    display: flex; align-items: center; gap: 8px;
+    width: 118px; flex: none; font-size: 14px; font-weight: 500; color: #334155;
+  }
+  .lookup-frow .lbl::before { content: ""; width: 5px; height: 5px; border-radius: 50%; background: var(--brand); }
+  .lookup-frow input, .lookup-frow select {
+    font-family: inherit; font-size: 14px; color: var(--text);
+    padding: 10px 12px; background: var(--surface);
+    border: 1px solid #cbd5e1; border-radius: 8px;
+  }
+  .lookup-frow input::placeholder { color: #94a3b8; }
+  .lookup-frow input { max-width: 220px; width: 100%; }
+  .lookup-frow input.grow { flex: 1; min-width: 0; max-width: 620px; }
+  .lookup-frow select { min-width: 190px; }
+  .select-arrow-wrap { position: relative; display: inline-flex; }
+  .select-arrow-wrap select { appearance: none; -webkit-appearance: none; min-width: 120px; padding-right: 32px; }
+  .select-arrow {
+    position: absolute; top: 50%; right: 11px; transform: translateY(-50%);
+    color: #64748b; font-size: 10px; line-height: 1; pointer-events: none;
+  }
+  .lookup-actions { display: grid; gap: 10px; flex: none; }
+  .lookup-actions .btn { min-width: 106px; justify-content: center; }
+
+  /* 팝업 결과 */
+  .lookup-count { margin: 18px 0 10px; font-size: 14px; font-weight: 500; color: #334155; }
+  .lookup-table-wrap { border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+  .lookup-table { border-collapse: collapse; width: 100%; }
+  .lookup-table th {
+    background: #eef3fa; color: #334155; font-size: 13.5px; font-weight: 700;
+    padding: 14px 10px; border-bottom: 1px solid var(--border); white-space: nowrap;
+  }
+  .lookup-table td {
+    padding: 14px 10px; font-size: 13.5px; text-align: center; color: #334155;
+    border-bottom: 1px solid #f1f5f9;
+  }
+  .lookup-table tr:last-child td { border-bottom: 0; }
+  .lookup-table tbody tr:hover { background: #fafcff; }
+  .pick {
+    background: none; border: 0; padding: 0; cursor: pointer;
+    font-family: inherit; font-size: 13.5px; font-weight: 500;
+    color: var(--brand); text-decoration: underline;
+  }
+  .pick:hover { color: #1552c0; }
+  .lookup-empty { padding: 26px 10px; text-align: center; color: var(--muted); font-size: 13.5px; }
+  .lookup-notes { margin: 12px 0 0; display: flex; gap: 6px; font-size: 13px; color: #334155; line-height: 1.5; }
+  .lookup-notes span { color: #ef4444; flex: none; }
+  .erp-customer .lookup-notes { display: block; }
+  .lookup-foot { display: flex; justify-content: center; margin-top: 20px; }
+  .lookup-foot .btn { min-width: 132px; justify-content: center; }
+  .fval {
+    flex: 1; min-width: 0; display: flex; align-items: center; gap: 10px;
+    padding: 11px 16px; font-size: 14.5px; font-weight: 500;
+  }
+  .fval.plain { font-weight: 500; }
+  .hint { color: var(--muted); font-size: 12.5px; font-weight: 400; }
+  .contact-hint { color: #334155; font-size: 12px; font-weight: 400; white-space: nowrap; }
+  .divider-v { color: #cbd5e1; margin: 0 6px; }
+  /* 툴팁 (절감률 산출식 안내) */
+  .tooltip-wrap {
+    display: inline-flex;
+    align-items: center;
+  }
+  .help-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 17px;
+    height: 17px;
+    margin-left: 5px;
+    padding: 0;
+    border: 1px solid #94a3b8;
+    border-radius: 50%;
+    background: #fff;
+    color: #64748b;
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1;
+    cursor: help;
+    vertical-align: middle;
+    transition: border-color .15s ease, color .15s ease, background .15s ease;
+  }
+  .help-btn:hover, .help-btn:focus-visible {
+    border-color: var(--brand);
+    background: #eff6ff;
+    color: var(--brand);
+    outline: none;
+  }
+  .pms-floating-tooltip {
+    position: fixed;
+    z-index: 9999;
+    padding: 7px 12px;
+    border-radius: 6px;
+    background: #1e293b;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1.4;
+    white-space: nowrap;
+    pointer-events: none;
+    box-shadow: 0 6px 18px rgba(15, 23, 42, 0.28);
+  }
+  .pms-floating-tooltip[hidden] {
+    display: none;
+  }
+  .unit {
+    font-size: 13.5px;
+    font-weight: 500;
+    color: var(--muted);
+  }
+
+  input[type="text"] {
+    font-family: inherit; font-size: 14px; color: var(--text);
+    padding: 9px 12px; border: 1px solid var(--border); border-radius: 6px;
+    background: var(--surface); width: 100%; max-width: 148px;
+  }
+  input[readonly] { background: var(--field); color: #475569; }
+  input::placeholder { color: #94a3b8; }
+
+  /* 스텝 패널 */
+  .panel { display: grid; gap: 18px; }
+  .panel[hidden] { display: none; }
+
+  /* 세부 정보 전용 */
+  .panel[data-panel="1"] .fkey { width: 184px; }
+  .fval.stack { flex-direction: column; align-items: stretch; gap: 8px; }
+  .fval.wide input[type="text"] { max-width: 100%; }
+  .date-field { position: relative; display: inline-flex; align-items: center; max-width: 176px; width: 100%; }
+  .date-field input { max-width: none; padding-right: 36px; }
+  .date-field .cal {
+    width: 16px; height: 16px; pointer-events: none;
+    color: #64748b;
+  }
+  /* 캘린더 호출 버튼 */
+  .cal-btn {
+    position: absolute; right: 6px; display: flex; align-items: center; justify-content: center;
+    width: 26px; height: 26px; padding: 0;
+    background: none; border: 0; border-radius: 6px; cursor: pointer;
+  }
+  .cal-btn:hover { background: #eef2f7; }
+  .cal-btn:hover .cal { color: var(--brand); }
+  .cal-btn:focus-visible { outline: 2px solid var(--brand); outline-offset: 1px; }
+  /* 기본 캘린더용 native input (화면 비노출) */
+  .date-native {
+    position: absolute; right: 8px; bottom: 0;
+    width: 1px; height: 1px; padding: 0; border: 0;
+    opacity: 0; pointer-events: none;
+  }
+  select {
+    font-family: inherit; font-size: 14px; color: var(--text);
+    padding: 9px 30px 9px 12px; border: 1px solid var(--border); border-radius: 6px;
+    background: var(--surface); width: 100%; max-width: 148px; cursor: pointer;
+    appearance: none;
+    background-image: linear-gradient(45deg, transparent 50%, #64748b 50%), linear-gradient(135deg, #64748b 50%, transparent 50%);
+    background-position: calc(100% - 17px) 52%, calc(100% - 12px) 52%;
+    background-size: 5px 5px, 5px 5px;
+    background-repeat: no-repeat;
+  }
+  .epc-row { display: flex; align-items: center; gap: 8px; }
+  .epc-row input { max-width: none; flex: 1; min-width: 0; }
+  /* 조회로 등록된 EPC사 목록 */
+  #epcList { display: grid; gap: 8px; }
+  #epcList:empty { display: none; }
+  .ratio-group { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; }
+  .ratio-item { display: flex; align-items: center; gap: 8px; font-size: 14px; color: #334155; }
+  .ratio-item input { max-width: 86px; }
+  .ratio-head { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .ratio-head select { min-width: 110px; }
+  .fval select:disabled { background: #e5e7eb; border-color: #d1d5db; color: transparent; cursor: not-allowed; }
+  .ratio-group[hidden] { display: none; }
+  .inline-label { font-size: 14px; color: #334155; white-space: nowrap; }
+
+  /* ===== 사업심의 : 앞 단계 정보를 수정 불가 형태로 취합 ===== */
+  .review { display: grid; gap: 22px; }
+  .review-group { display: grid; gap: 12px; }
+  .review-head {
+    display: flex; align-items: center; gap: 10px;
+    padding-bottom: 8px; border-bottom: 2px solid var(--navy);
+  }
+  .review-head h3 { margin: 0; font-size: 15px; font-weight: 700; color: var(--navy); }
+  .review-head .badge-ro {
+    padding: 3px 9px; border-radius: 999px;
+    background: #eef2f7; border: 1px solid var(--border);
+    font-size: 12px; font-weight: 600; color: #64748b;
+  }
+  /* 읽기 전용 값 표기 */
+  .ro {
+    flex: 1; min-width: 0; font-size: 14px; color: var(--text);
+    line-height: 1.5; word-break: break-word; white-space: pre-wrap;
+  }
+  .ro.empty { color: #94a3b8; }
+  /* 사업심의 요청 버튼 : 첫 그룹 제목과 같은 라인의 우측 끝 */
+  .review-head .spacer { flex: 1; }
+  /* 사업심의 자료 (파일 첨부) */
+  .fval.file { gap: 10px; flex-wrap: wrap; }
+  .file-native { display: none; }
+
+  /* 첨부파일 목록 : 파일명 칩 + 우측 삭제(X) */
+  .file-list { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .file-list .file-empty { font-size: 14px; color: #94a3b8; }
+  .file-chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    max-width: 320px; padding: 4px 4px 4px 10px;
+    background: var(--field); border: 1px solid var(--border); border-radius: 6px;
+  }
+  .file-chip .name {
+    font-size: 13px; color: var(--text);
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .file-del {
+    flex: none; width: 20px; height: 20px; display: grid; place-items: center;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 4px;
+    font-size: 12px; font-weight: 700; line-height: 1; color: #64748b; cursor: pointer;
+  }
+  .file-del:hover { background: #fee2e2; border-color: #fca5a5; color: #b91c1c; }
+  .file-del:focus-visible { outline: 2px solid var(--brand); outline-offset: 1px; }
+
+  /* 블록 제목 + 우측 액션 버튼 (예: 프로젝트 시행 / 계약 ›) */
+  .block-head { display: flex; align-items: flex-end; gap: 12px; margin-bottom: 8px; }
+  .block-head .block-title { margin: 0; }
+  .block-head .spacer { flex: 1; }
+  .review .frow .fval { background: var(--surface); }
+  .review .ro-list { display: grid; gap: 4px; }
+
+  /* ===== 협력업체 정보 : 심의 정보 (업체명 병합 셀 + 항목 목록) ===== */
+  .co-table { display: flex; align-items: stretch; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+  .co-name {
+    width: 132px; flex: none; display: flex; align-items: center; justify-content: center;
+    padding: 14px 10px; background: var(--field); border-right: 1px solid var(--border);
+    font-size: 14px; font-weight: 600; color: #334155; text-align: center; word-break: keep-all;
+  }
+  .co-rows { flex: 1; min-width: 0; }
+  .co-rows .frow:last-child { border-bottom: 0; }
+  .co-rows .fkey { width: 150px; justify-content: center; text-align: center; }
+  /* 2줄 표기가 필요한 긴 항목명 */
+  .fkey.multi { white-space: normal; line-height: 1.35; }
+  .co-rows .fval { font-size: 14px; }
+  .co-rows .fval.etc { gap: 8px; }
+  .co-rows .fval.etc select { flex: none; width: 132px; }
+  .co-rows .fval.etc input { flex: 1; min-width: 0; max-width: none; }
+
+  /* 특이사항 : 제한 없는 텍스트 입력 */
+  .frow.tall { align-items: stretch; }
+  .frow.tall .fval { padding: 10px 12px; }
+  textarea {
+    font-family: inherit; font-size: 14px; color: var(--text); line-height: 1.5;
+    width: 100%; min-height: 84px; padding: 10px 12px; resize: vertical;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 6px;
+  }
+  textarea:focus-visible { outline: 2px solid var(--brand); outline-offset: 1px; border-color: var(--brand); }
+
+  .foot-actions {
+    position: sticky; bottom: 0; z-index: 20;
+    display: flex; align-items: center; justify-content: center; gap: 14px;
+    margin: 4px -24px -26px; padding: 16px 24px;
+    background: rgba(255, 255, 255, 0.97);
+    backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+    border-top: 1px solid transparent;
+    border-radius: 0 0 var(--radius) var(--radius);
+    transition: box-shadow 0.18s ease, border-color 0.18s ease;
+  }
+  .foot-actions.is-floating {
+    border-top-color: var(--border);
+    box-shadow: 0 -8px 20px rgba(15, 23, 42, 0.08);
+  }
+  .foot-actions .btn { min-width: 178px; padding: 14px 20px; font-size: 15px; }
+  .foot-actions [data-act="edit"] {
+    position: absolute; right: 24px;
+    min-width: 112px;
+    color: var(--brand); background: var(--brand-soft); border-color: #bfdbfe;
+  }
+  .foot-actions [data-act="edit"]:hover { background: #dbeafe; border-color: #93c5fd; }
+
+  @media (max-width: 1240px) {
+    .cols { grid-template-columns: minmax(0, 1fr); gap: 20px; }
+  }
+  @media (max-width: 1024px) {
+    .sidebar { display: none; }
+    .steps { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 720px) {
+    .content { padding: 18px; }
+    .tabs { overflow-x: auto; }
+    .steps { grid-template-columns: minmax(0, 1fr); }
+    .fkey { width: 118px; padding: 12px; }
+  .foot-actions { flex-direction: column; gap: 10px; padding: 14px 24px; }
+  .foot-actions .btn { width: 100%; }
+  .foot-actions [data-act="edit"] { position: static; min-width: 0; }
+  }
+</style>
+  <link rel="stylesheet" href="/assets/pms-lnb.css" />
+  <link rel="stylesheet" href="/assets/pms-intake-wizard.css?v=20260917-3" />
+</head>
+<body>
+<div class="layout">
+
+  <!-- ============ Sidebar ============ -->
+  <aside class="sidebar">
+    <div class="sidebar-head">
+      <a class="logo" href="/pms-project-detail.html">
+        <img src="/images/kepco-es-logo.png" alt="켑코이에스 주식회사 KEPCO ENERGY SOLUTION CO., LTD" />
+      </a>
+      <button class="hamburger" type="button" aria-label="메뉴 접기">
+        <i></i><i></i><i></i>
+      </button>
+    </div>
+
+    <nav class="nav" aria-label="주 메뉴">
+      <ul>
+        <li>
+          <a class="nav-item open" href="/pms-new-project.html">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 21V5a1 1 0 0 1 1-1h7a1 1 0 0 1 1 1v16"/><path d="M13 10h6a1 1 0 0 1 1 1v10"/><path d="M7 8h3M7 12h3M7 16h3M16 14h1M16 18h1"/></svg>
+            사업접수 <span class="chev up" aria-hidden="true"></span>
+          </a>
+          <ul class="subnav">
+            <li><a class="subnav-item" href="/pms-new-project.html"><span class="dot" aria-hidden="true"></span>신규 프로젝트 등록</a></li>
+            <li><a class="subnav-item" href="/pms-promotion-status.html"><span class="dot" aria-hidden="true"></span>추진단계 프로젝트 현황</a></li>
+          </ul>
+        </li>
+        <li>
+          <a class="nav-item active" href="/pms-project-status.html" aria-current="page">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h6a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Z"/><path d="M15 11v4"/></svg>
+            프로젝트 관리 <span class="chev up" aria-hidden="true"></span>
+          </a>
+          <ul class="subnav">
+            <li><a class="subnav-item active" href="/pms-project-status.html"><span class="dot" aria-hidden="true"></span>프로젝트 현황</a></li>
+          </ul>
+        </li>
+        <li>
+          <a class="nav-item" href="/pms-contract-status.html">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h9l5 5v11H5z"/><path d="M9 13h6M9 17h4"/></svg>
+            계약관리 <span class="chev" aria-hidden="true"></span>
+          </a>
+        </li>
+        <li>
+          <a class="nav-item" href="/pms-fund-repayment.html">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8Z"/><path d="M7 12h4"/></svg>
+            자금관리 <span class="chev" aria-hidden="true"></span>
+          </a>
+        </li>
+        <li>
+          <a class="nav-item" href="#">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 20V10M12 20V4M19 20v-7"/></svg>
+            통계(분석) <span class="chev" aria-hidden="true"></span>
+          </a>
+        </li>
+        <li>
+          <a class="nav-item" href="#">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s7-6.3 7-11a7 7 0 1 0-14 0c0 4.7 7 11 7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg>
+            출장관리 <span class="chev" aria-hidden="true"></span>
+          </a>
+        </li>
+        <li>
+          <a class="nav-item" href="#">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M4.5 20a7.5 7.5 0 0 1 15 0"/></svg>
+            마이페이지 <span class="chev" aria-hidden="true"></span>
+          </a>
+        </li>
+        <li>
+          <a class="nav-item" href="#">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-2.9 1.2 2 2 0 1 1-4 0 1.7 1.7 0 0 0-2.9-1.2l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1A1.7 1.7 0 0 0 3 15a2 2 0 1 1 0-4 1.7 1.7 0 0 0 1.5-2.7l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1A1.7 1.7 0 0 0 10 4.3a2 2 0 1 1 4 0 1.7 1.7 0 0 0 2.7 1.2l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1A1.7 1.7 0 0 0 21 11a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 0Z"/></svg>
+            공통관리 <span class="chev" aria-hidden="true"></span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <div class="sidebar-foot">
+      <a class="side-btn" href="#">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 10h6M7 14h4"/></svg>
+        사업관리시스템(PMS)
+      </a>
+      <a class="side-btn" href="#">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="M6 3h9l4 4v14H6z"/><path d="M9 12h6M9 16h6"/></svg>
+        전자입찰시스템(SRM)
+      </a>
+      <a class="side-btn primary" href="#">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 17v.01"/><path d="M12 13.5a2.5 2.5 0 1 0-2.5-3"/></svg>
+        온라인 매뉴얼
+      </a>
+    </div>
+  </aside>
+
+  <!-- ============ Main ============ -->
+  <div class="main">
+    <header class="topbar">
+      <h1>사업관리시스템</h1>
+      <span class="badge-pms">PMS</span>
+
+      <div class="topbar-right">
+        <div class="seg" role="group" aria-label="권한 선택">
+          <span class="seg-label">권한</span>
+          <button class="seg-btn on" type="button">그룹#1</button>
+          <button class="seg-btn" type="button">그룹#2</button>
+          <button class="seg-btn" type="button">그룹#3</button>
+          <button class="seg-btn" type="button">그룹#4</button>
+        </div>
+        <p class="user"><b>이희성 부장</b> <small>[시스템관리자]</small></p>
+        <a class="logout" href="#">로그아웃</a>
+      </div>
+    </header>
+
+    <main class="content">
+      <div class="page-head">
+        <h2>프로젝트 상세</h2>
+        <nav class="crumb" aria-label="현재 위치">
+          <a href="/pms-project-detail.html">HOME</a><span class="sep" aria-hidden="true">›</span>
+          <a href="/pms-project-status.html">프로젝트 관리</a><span class="sep" aria-hidden="true">›</span>
+          <a href="/pms-project-status.html">프로젝트 현황</a><span class="sep" aria-hidden="true">›</span>
+          <span class="now">상세</span>
+        </nav>
+      </div>
+
+      <!-- Tabs -->
+      <section class="card">
+        <div class="tabbar">
+          <div class="tabs" role="tablist" aria-label="프로젝트 상세 탭">
+            <a class="tab" href="/pms-project-detail.html" role="tab" aria-selected="false">HOME</a>
+            <a class="tab on" href="/pms-project-promotion.html" role="tab" aria-selected="true" aria-current="page">추진</a>
+            <a class="tab" href="/pms-project-contract.html" role="tab" aria-selected="false">계약</a>
+            <a class="tab" href="/pms-project-investment.html" role="tab" aria-selected="false">투자</a>
+            <a class="tab" href="/pms-project-investment-epc.html" role="tab" aria-selected="false">투자(EPC)</a>
+            <a class="tab" href="/pms-project-repayment.html" role="tab" aria-selected="false">상환</a>
+            <a class="tab" href="/pms-project-order.html" role="tab" aria-selected="false">발주</a>
+          </div>
+          <div class="tab-right" data-project-round><span>계약 현황 차수</span><strong class="project-round-current">1차</strong></div>
+        </div>
+      </section>
+
+      <!-- Step tabs + form -->
+      <section class="card" aria-label="추진 단계">
+        <div style="padding: 22px 24px 26px; display: grid; gap: 18px;">
+          <div class="steps" role="tablist" aria-label="추진 단계 선택">
+            <button class="step on" type="button" role="tab" aria-selected="true">기본 정보</button>
+          <button class="step locked" type="button" role="tab" aria-selected="false" aria-disabled="true">세부 정보</button>
+          <button class="step locked" type="button" role="tab" aria-selected="false" aria-disabled="true">협력업체 정보</button>
+          <button class="step locked" type="button" role="tab" aria-selected="false" aria-disabled="true">사업심의</button>
+          <button class="step locked" type="button" role="tab" aria-selected="false" aria-disabled="true">사업시행</button>
+          </div>
+
+          <!-- ===== 1) 기본 정보 ===== -->
+          <div class="panel" data-panel="0" role="tabpanel" aria-label="기본 정보">
+          <div class="notes">
+            <p style="margin:0;">기본 정보 및 추가정보를 입력하실 수 있습니다.</p>
+            <p style="margin:0;">프로젝트 진행을 위해 필요한 필수 정보는 모두 입력하셔야 진행이 가능합니다.</p>
+          </div>
+
+          <div class="cols">
+            <!-- 기본 정보 -->
+            <section>
+              <h3 class="block-title">기본 정보</h3>
+              <div class="ftable">
+                <div class="frow">
+                  <div class="fkey"><label for="pno">프로젝트 번호</label></div>
+                  <div class="fval">
+                    <input id="pno" type="text" value="2026_06_12" readonly />
+                    <span class="hint">임시 저장 이후 자동 부여됩니다.</span>
+                  </div>
+                </div>
+                <div class="frow">
+                  <div class="fkey">사업명 <span class="req" aria-hidden="true">*</span></div>
+                  <div class="fval plain" id="rcpName">천안 (주)선영 LED 에너지효율화사업</div>
+                </div>
+                <div class="frow">
+                  <div class="fkey">계약 형태 <span class="req" aria-hidden="true">*</span></div>
+                  <div class="fval plain" id="rcpForm">ESCO 계약</div>
+                </div>
+                <div class="frow">
+                  <div class="fkey">심의 대상 <span class="req" aria-hidden="true">*</span></div>
+                  <div class="fval plain" id="rcpReview">대상</div>
+                </div>
+                <div class="frow">
+                  <div class="fkey">계약 유형 <span class="req" aria-hidden="true">*</span></div>
+                  <div class="fval plain" id="rcpType">수익 사업</div>
+                </div>
+                <div class="frow">
+                  <div class="fkey">접수 경로 <span class="req" aria-hidden="true">*</span></div>
+                  <div class="fval plain" id="rcpChannel">EPC사</div>
+                </div>
+                <div class="frow">
+                  <div class="fkey">사업 구분 <span class="req" aria-hidden="true">*</span></div>
+                  <div class="fval plain" id="rcpBizType">산업체 <span class="divider-v" aria-hidden="true">|</span> 건축물</div>
+                </div>
+                <div class="frow">
+                  <div class="fkey">대상 설비 <span class="req" aria-hidden="true">*</span></div>
+                  <div class="fval plain" id="rcpEquip">LED <span class="divider-v" aria-hidden="true">|</span> 압축기 <span class="divider-v" aria-hidden="true">|</span> 펌프</div>
+                </div>
+              </div>
+            </section>
+
+            <!-- 기본 정보(프로젝트 수행 효과) -->
+            <section>
+              <h3 class="block-title">기본 정보(프로젝트 수행 효과)</h3>
+              <div class="ftable">
+                <div class="frow">
+                  <div class="fkey"><label for="kwh">절감량(kWh/년)</label> <span class="req" aria-hidden="true">*</span></div>
+                  <div class="fval"><input id="kwh" type="text" value="461,444" /></div>
+                </div>
+                <div class="frow">
+                  <div class="fkey"><label for="toe">절감량(toe/년)</label> <span class="req" aria-hidden="true">*</span></div>
+                  <div class="fval"><input id="toe" type="text" value="105.569" /></div>
+                </div>
+                <div class="frow">
+                  <div class="fkey"><label for="co2">온실가스 감축량(tCO2/년)</label> <span class="req" aria-hidden="true">*</span></div>
+                  <div class="fval"><input id="co2" type="text" value="218.837" /></div>
+                </div>
+                <div class="frow">
+                  <div class="fkey"><label for="before">사업전 사용량(toe/년)</label> <span class="req" aria-hidden="true">*</span></div>
+                  <div class="fval"><input id="before" type="text" value="27.51" /></div>
+                </div>
+                <div class="frow">
+                  <div class="fkey"><label for="eers">EERS 절감량(toe/년)</label> <span class="req" aria-hidden="true">*</span></div>
+                  <div class="fval"><input id="eers" type="text" value="47" /></div>
+                </div>
+                <div class="frow">
+                  <div class="fkey">
+                    <label for="rate">절감률</label>
+                    <span class="tooltip-wrap">
+                      <button class="help-btn" id="rateHelpBtn" type="button" aria-label="절감률 산출식 안내" aria-describedby="rateTooltip">?</button>
+                    </span>
+                  </div>
+                  <div class="fval">
+                    <input id="rate" type="text" value="383.75" readonly />
+                    <span class="unit">%</span>
+                  </div>
+                </div>
+                <div class="frow">
+                  <div class="fkey"><label for="expectedSaving">예상 절감량(toe/년)</label></div>
+                  <div class="fval"><input id="expectedSaving" type="text" value="32.2" /></div>
+                </div>
+              </div>
+              <div class="pms-floating-tooltip" id="rateTooltip" role="tooltip" hidden>절감량 ÷ 사업 전 사용량 × 100</div>
+            </section>
+          </div>
+
+          <!-- 에너지사용자 및 담당자 -->
+          <section>
+            <h3 class="block-title">기본 정보(에너지사용자 및 담당자)</h3>
+            <div class="cols" style="gap: 0;">
+              <div class="ftable" style="border-radius: 8px 0 0 8px; border-right: 0;">
+                <div class="frow">
+                  <div class="fkey">에너지 사용자명 <span class="req" aria-hidden="true">*</span></div>
+                  <div class="fval">
+                    <label class="sr-only" for="user1">에너지 사용자명</label>
+                    <input id="user1" type="text" value="" placeholder="사용자명 입력" />
+                    <label class="sr-only" for="erpCustomerName">ERP 사용자 거래처</label>
+                    <input id="erpCustomerName" type="text" value="" placeholder="사용자 거래처 조회" readonly />
+                    <input id="erpBusinessNumber" type="hidden" value="" />
+                    <button class="btn sm" type="button" data-open="erpCustomerModal">조회</button>
+                  </div>
+                </div>
+                <div class="frow">
+                  <div class="fkey"><label for="user2">에너지사용 담당자</label></div>
+                  <div class="fval"><input id="user2" type="text" value="김미영" /></div>
+                </div>
+                <div class="frow">
+                  <div class="fkey">사업 담당자 <span class="req" aria-hidden="true">*</span></div>
+                  <div class="fval">
+                    <label class="sr-only" for="mgr">사업 담당자</label>
+                    <input id="mgr" type="text" value="김미영" placeholder="조회 버튼으로 선택" readonly />
+                    <button class="btn sm" type="button" data-open="staffModal">조회</button>
+                  </div>
+                </div>
+              </div>
+              <div class="ftable" style="border-radius: 0 8px 8px 0;">
+                <div class="frow">
+                  <div class="fkey">사용자 소재지</div>
+                  <div class="fval">
+                    <label class="sr-only" for="addr1">사용자 소재지 시도</label>
+                    <input id="addr1" type="text" value="충남" readonly />
+                    <label class="sr-only" for="addr2">사용자 소재지 시군구</label>
+                    <input id="addr2" type="text" value="천안" readonly />
+                  </div>
+                </div>
+                <div class="frow">
+                  <div class="fkey"><label for="tel">에너지 사용자 담당자 연락처</label></div>
+                  <div class="fval"><input id="tel" type="text" value="010-1234-1234" /><span class="contact-hint">실제 소통이 가능한 담당자 연락처를 입력해 주세요.</span></div>
+                </div>
+                <div class="frow">
+                  <div class="fkey"><label for="team">담당부서</label> <span class="req" aria-hidden="true">*</span></div>
+                  <div class="fval"><input id="team" type="text" value="개발팀" readonly /></div>
+                </div>
+              </div>
+            </div>
+          </section>
+          </div><!-- /panel 0 -->
+
+          <!-- ===== 2) 세부 정보 ===== -->
+          <div class="panel" data-panel="1" role="tabpanel" aria-label="세부 정보" hidden>
+            <div class="notes">
+              <p style="margin:0;">프로젝트에 필요한 계약정보를 등록합니다.</p>
+              <p style="margin:0;">사업심의 요청이 진행된 경우 프로젝트의 정보는 수정할 수 없습니다.</p>
+            </div>
+
+            <div class="cols">
+              <!-- 계약 정보(기본) -->
+              <section>
+                <h3 class="block-title">계약 정보(기본)</h3>
+                <div class="ftable">
+                  <div class="frow">
+                    <div class="fkey"><label for="total-amt">총 사업금액(VAT별도/원)</label> <span class="req" aria-hidden="true">*</span></div>
+                    <div class="fval wide"><input id="total-amt" type="text" /></div>
+                  </div>
+                  <div class="frow">
+                    <div class="fkey"><label for="invest-amt">투자금액(VAT별도/원)</label> <span class="req" aria-hidden="true">*</span></div>
+                    <div class="fval wide"><input id="invest-amt" type="text" /></div>
+                  </div>
+                  <div class="frow">
+                    <div class="fkey"><label for="irr">IRR(%)</label> <span class="req" aria-hidden="true">*</span></div>
+                    <div class="fval wide"><input id="irr" type="text" /></div>
+                  </div>
+                  <div class="frow">
+                    <div class="fkey"><label for="start-date">착공일자</label> <span class="req" aria-hidden="true">*</span></div>
+                    <div class="fval">
+                      <span class="date-field">
+                        <input id="start-date" type="text" value="2026.07.30" />
+                        <svg class="cal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/></svg>
+                      </span>
+                    </div>
+                  </div>
+                  <div class="frow">
+                    <div class="fkey"><label for="end-date">준공(예상) 일자</label> <span class="req" aria-hidden="true">*</span></div>
+                    <div class="fval">
+                      <span class="date-field">
+                        <input id="end-date" type="text" value="2026.07.30" />
+                        <svg class="cal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/></svg>
+                      </span>
+                    </div>
+                  </div>
+                  <div class="frow">
+                    <div class="fkey"><label for="repay-start">상환개시일</label> <span class="req" aria-hidden="true">*</span></div>
+                    <div class="fval">
+                      <span class="date-field">
+                        <input id="repay-start" type="text" value="2026.07.30" />
+                        <svg class="cal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/></svg>
+                      </span>
+                    </div>
+                  </div>
+                  <div class="frow">
+                    <div class="fkey"><label for="repay-end">상환완료일</label> <span class="req" aria-hidden="true">*</span></div>
+                    <div class="fval">
+                      <span class="date-field">
+                        <input id="repay-end" type="text" value="2026.07.30" />
+                        <svg class="cal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/></svg>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <!-- 계약 정보(거래처) -->
+              <section>
+                <h3 class="block-title">계약 정보(EPC사)</h3>
+                <div class="ftable">
+                  <div class="frow">
+                    <div class="fkey"><label for="ctype">계약형태</label></div>
+                    <div class="fval"><input id="ctype" type="text" value="ESCO 계약" readonly /></div>
+                  </div>
+                  <div class="frow">
+                    <div class="fkey"><label for="epc-method">EPC수행방식</label> <span class="req" id="epcMethodRequired" aria-hidden="true" hidden>*</span></div>
+                    <div class="fval">
+                      <select id="epc-method" disabled aria-disabled="true">
+                        <option value="" selected></option>
+                        <option>단독 수행</option>
+                        <option>공동 수행</option>
+                        <option>분리 발주</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="frow">
+                    <div class="fkey">EPC사 <span class="req" aria-hidden="true">*</span></div>
+                    <div class="fval stack">
+                      <div class="epc-row">
+                        <label class="sr-only" for="epc-search">EPC사 검색</label>
+                        <input id="epc-search" type="text" placeholder="조회 버튼으로 선택" readonly />
+                        <button class="btn sm" type="button" data-open="clientModal" data-target="epc">조회</button>
+                      </div>
+                      <!-- 조회 팝업에서 선택한 업체가 순차 등록됩니다. -->
+                      <div id="epcList"><div class="epc-row"><input type="text" value="204313  |  (주)포스무역" aria-label="EPC사 1" readonly /></div></div>
+                    </div>
+                  </div>
+                  <div class="frow">
+                    <div class="fkey"><label for="license">EPC사 필요면허</label></div>
+                    <div class="fval wide"><input id="license" type="text" /></div>
+                  </div>
+                  <div class="frow" data-esco-only>
+                    <div class="fkey">공사금액지급비율(%) <span class="req" aria-hidden="true">*</span></div>
+                    <div class="fval stack">
+                      <div class="ratio-head">
+                        <label class="sr-only" for="pay-method">지급방식</label>
+                        <select id="pay-method">
+                          <option value="split">분할지급</option>
+                          <option value="advance">일괄지급(선금)</option>
+                          <option value="progress">일괄지급(기성금)</option>
+                          <option value="completion">일괄지급(준공금)</option>
+                        </select>
+                        <span class="hint" id="paymentRatioHint">지급 비율은 100%가 되어야 합니다.</span>
+                      </div>
+                      <div class="ratio-group">
+                        <span class="ratio-item"><label for="pay-1">선금</label><input id="pay-1" type="text" /></span>
+                        <span class="ratio-item"><label for="pay-2">기성금</label><input id="pay-2" type="text" /></span>
+                        <span class="ratio-item"><label for="pay-3">준공금</label><input id="pay-3" type="text" /></span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="frow" data-esco-only>
+                    <div class="fkey">계약이행 보증율(%)</div>
+                    <div class="fval">
+                      <span class="inline-label"><label for="bond-1">계약금액의</label></span>
+                      <input id="bond-1" type="text" />
+                      <span class="inline-label">%</span>
+                    </div>
+                  </div>
+                  <div class="frow" data-esco-only>
+                    <div class="fkey">하자이행 보증율(%)</div>
+                    <div class="fval">
+                      <span class="inline-label"><label for="bond-2">계약금액의</label></span>
+                      <input id="bond-2" type="text" />
+                      <span class="inline-label">%</span>
+                    </div>
+                  </div>
+                  <div class="frow" data-esco-only>
+                    <div class="fkey">하자보수기간</div>
+                    <div class="fval">
+                      <span class="inline-label"><label for="warranty-period">준공일로부터</label></span>
+                      <input id="warranty-period" type="text" />
+                      <span class="inline-label">개월</span>
+                    </div>
+                  </div>
+                </div>
+              </section>
+            </div>
+          </div><!-- /panel 1 -->
+
+          <div class="panel" data-panel="2" role="tabpanel" aria-label="협력업체 정보" hidden>
+            <div class="notes">
+              <p style="margin:0;">· 프로젝트의 EPC사 및 에너지 사용자의 상세 정보를 확인합니다.</p>
+              <p style="margin:0;">· EPC사 및 에너지 사용자의 심의정보는 입력 수정이 불가능하며 EPC사관리에서 일부 정보 수정만 가능합니다.(EPC사관리 &gt; EPC사 정보 수정 시, 계약정보에서 EPC사 정보를 다시 호출하여야 합니다)</p>
+              <p style="margin:0;">· 사업심의 요청이 진행된 경우 프로젝트의 정보는 수정할 수 없습니다.</p>
+            </div>
+
+            <div class="cols">
+              <!-- 심의 정보(EPC사) -->
+              <section class="review-epc">
+                <div class="block-head"><h3 class="block-title">심의 정보(EPC사)</h3><span class="spacer"></span><button class="btn sm navy" type="button" data-review-refresh="epc">정보 갱신</button></div>
+                <div class="co-table">
+                  <div class="co-name">(주)포스무역</div>
+                  <div class="co-rows">
+                    <div class="frow">
+                      <div class="fkey">신용등급</div>
+                      <div class="fval">B-</div>
+                    </div>
+                    <div class="frow">
+                      <div class="fkey">부채비율(%)</div>
+                      <div class="fval">77</div>
+                    </div>
+                    <div class="frow">
+                      <div class="fkey multi">기업매출(억원)<br />(-3년/-2년/-1년)</div>
+                      <div class="fval">39.3&nbsp;&nbsp;/&nbsp;&nbsp;44.5&nbsp;&nbsp;/&nbsp;&nbsp;36.8</div>
+                    </div>
+                    <div class="frow">
+                      <div class="fkey">시공경험(3년누계/억원)</div>
+                      <div class="fval">150</div>
+                    </div>
+                    <div class="frow">
+                      <div class="fkey">상시근로자수</div>
+                      <div class="fval">20</div>
+                    </div>
+                    <div class="frow">
+                      <div class="fkey">연대보증(AO 이상)</div>
+                      <div class="fval">없음</div>
+                    </div>
+                    <div class="frow">
+                      <div class="fkey">신인도(ISO)</div>
+                      <div class="fval">없음</div>
+                    </div>
+                    <div class="frow tall">
+                      <div class="fkey"><label for="co-note">특이사항</label></div>
+                      <div class="fval">
+                        <!-- 제한 없는 TEXT 입력 필드 -->
+                        <textarea id="co-note" rows="3" placeholder="특이사항을 입력하세요.">-</textarea>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <!-- 심의 정보(에너지 사용자) -->
+              <section class="review-customer">
+                <div class="block-head"><h3 class="block-title">심의 정보(사용자 거래처 기준)</h3><span class="spacer"></span><button class="btn sm navy" type="button" data-review-refresh="customer">정보 갱신</button></div>
+                <div class="co-table">
+                  <div class="co-name">선영_천안</div>
+                  <div class="co-rows">
+                    <div class="frow">
+                      <div class="fkey">신용등급</div>
+                      <div class="fval">CCC</div>
+                    </div>
+                    <div class="frow">
+                      <div class="fkey">부채비율(%)</div>
+                      <div class="fval">150</div>
+                    </div>
+                    <div class="frow">
+                      <div class="fkey multi">기업매출(억원)<br />(-3년/-2년/-1년)</div>
+                      <div class="fval">20.2&nbsp;&nbsp;/&nbsp;&nbsp;10.0&nbsp;&nbsp;/&nbsp;&nbsp;18.9</div>
+                    </div>
+                    <div class="frow">
+                      <div class="fkey">상시근로자수</div>
+                      <div class="fval">50</div>
+                    </div>
+                    <div class="frow">
+                      <div class="fkey"><label for="user-etc">기타</label></div>
+                      <div class="fval etc">
+                        <select id="user-etc">
+                          <option value="">선택</option>
+                          <option>해당 없음</option>
+                          <option>연대보증</option>
+                          <option>신인도(ISO)</option>
+                        </select>
+                        <label class="sr-only" for="user-etc-desc">기타 내용</label>
+                        <input id="user-etc-desc" type="text" />
+                      </div>
+                    </div>
+                    <div class="frow tall">
+                      <div class="fkey"><label for="user-note">특이사항</label></div>
+                      <div class="fval">
+                        <!-- 제한 없는 TEXT 입력 필드 -->
+                        <textarea id="user-note" rows="3" placeholder="특이사항을 입력하세요.">-</textarea>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+            </div>
+          </div><!-- /panel 2 -->
+
+          <!-- ===== 4) 사업심의 : 앞 단계 등록 정보를 한 페이지에서 확인(수정 불가) ===== -->
+          <div class="panel" data-panel="3" role="tabpanel" aria-label="사업심의" hidden>
+            <div class="notes">
+              <p style="margin:0;">· 기본 정보 · 세부 정보 · 협력업체 정보에 등록된 내용을 한 번에 확인합니다.</p>
+              <p style="margin:0;">· 심의 요청 전 확인 단계로, 이 화면에서는 어떠한 정보도 수정할 수 없습니다.</p>
+              <p style="margin:0;">· 내용을 변경해야 하는 경우 해당 단계로 이동하여 수정한 뒤 다시 진행해 주세요.</p>
+            </div>
+
+            <!-- 사업심의 자료 : 심의 요청에 첨부할 파일 등록 -->
+            <section style="margin-bottom:22px;">
+              <div class="block-head" data-review-request-head>
+                <h3 class="block-title">사업심의 자료</h3>
+                <span class="spacer"></span>
+              </div>
+              <div class="ftable">
+                <div class="frow">
+                  <div class="fkey">사업추진 계획안 <span class="req">*</span></div>
+                  <div class="fval file">
+                    <input class="file-native" type="file" id="doc-plan" />
+                    <button class="btn sm" type="button" data-pick="doc-plan">찾기</button>
+                    <div class="file-list" data-list="doc-plan"></div>
+                  </div>
+                </div>
+                <div class="frow">
+                  <div class="fkey">관련 첨부파일</div>
+                  <div class="fval file">
+                    <input class="file-native" type="file" id="doc-etc" multiple />
+                    <button class="btn sm" type="button" data-pick="doc-etc">찾기</button>
+                    <div class="file-list" data-list="doc-etc"></div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- 앞 단계 패널을 읽기 전용으로 취합해 표시합니다. -->
+            <div class="review" data-review="request"></div>
+          </div><!-- /panel 3 -->
+
+          <!-- ===== 5) 사업시행 : 시행 첨부파일 등록 + 확인 정보 재확인 ===== -->
+          <div class="panel" data-panel="4" role="tabpanel" aria-label="사업시행" hidden>
+            <div class="notes">
+              <p style="margin:0;">· 등록된 프로젝트를 최종 확인하여 사업을 시행합니다.</p>
+              <p style="margin:0;">· 시행된 프로젝트는 계약 단계가 추가 진행되며 사업시행 첨부파일 업로드/저장 후 이동이 가능합니다.</p>
+            </div>
+
+            <!-- 프로젝트 시행 : 시행 첨부파일 등록 -->
+            <section>
+              <div class="block-head">
+                <h3 class="block-title">프로젝트 시행</h3>
+                <span class="spacer"></span>
+                <button class="btn navy" type="button" data-act="go-contract">계약 ›</button>
+              </div>
+              <div class="ftable">
+                <div class="frow">
+                  <div class="fkey">프로젝트 번호</div>
+                  <div class="fval"><span class="ro" id="execNo">2026_06_12</span></div>
+                </div>
+                <div class="frow">
+                  <div class="fkey">사업명</div>
+                  <div class="fval"><span class="ro" id="execName">천안 (주)선영 LED 에너지효율화사업</span></div>
+                </div>
+                <div class="frow">
+                  <div class="fkey">사업추진 계획안</div>
+                  <div class="fval file">
+                    <!-- 사업심의 단계에서 등록된 자료를 이어받아 표시합니다. -->
+                    <div class="file-list" data-list="doc-plan" data-mirror="doc-plan"></div>
+                  </div>
+                </div>
+                <div class="frow">
+                  <div class="fkey">사업추진 시행안 <span class="req">*</span></div>
+                  <div class="fval file">
+                    <input class="file-native" type="file" id="exec-plan" />
+                    <button class="btn sm" type="button" data-pick="exec-plan">찾기</button>
+                    <div class="file-list" data-list="exec-plan"></div>
+                  </div>
+                </div>
+                <div class="frow">
+                  <div class="fkey multi">관련 첨부파일<br />(심의결과 등)</div>
+                  <div class="fval file">
+                    <input class="file-native" type="file" id="exec-etc" multiple />
+                    <button class="btn sm" type="button" data-pick="exec-etc">찾기</button>
+                    <div class="file-list" data-list="exec-etc"></div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- 사업심의와 동일한 확인 정보를 재호출합니다. -->
+            <div class="review" data-review="plain" style="margin-top:22px;"></div>
+          </div><!-- /panel 4 -->
+
+          <div class="foot-actions">
+            <button class="btn" type="button" data-act="save">임시저장 +</button>
+            <button class="btn" type="button" data-act="prev" hidden>이전</button>
+            <button class="btn navy" type="button" data-act="next">다음 ›</button>
+            <button class="btn" type="button" data-act="edit">수정</button>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+</div>
+
+<!-- Toast 영역 -->
+<div class="toast-wrap" id="toastWrap" role="status" aria-live="polite"></div>
+
+<!-- 에너지 사용자 조회 팝업 -->
+<div class="lookup-overlay" id="clientModal" hidden>
+  <div class="lookup" role="dialog" aria-modal="true" aria-labelledby="clientModalTitle">
+    <div class="lookup-head">
+      <h2 id="clientModalTitle">EPC사 조회</h2>
+      <button class="lookup-close" type="button" data-close aria-label="EPC사 조회 닫기">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+      </button>
+    </div>
+    <div class="lookup-body">
+      <div class="lookup-search">
+        <div class="lookup-fields">
+          <div class="lookup-frow">
+            <span class="lbl"><label for="clientCode">EPC사코드</label> :</span>
+            <input id="clientCode" type="text" />
+          </div>
+          <div class="lookup-frow">
+            <span class="lbl"><label for="clientKeyword">키워드 검색</label> :</span>
+            <input class="grow" id="clientKeyword" type="text" placeholder="사업명을 입력하세요." />
+          </div>
+        </div>
+        <div class="lookup-actions">
+          <button class="btn navy" type="button" data-search>검색</button>
+          <button class="btn" type="button" data-reset>초기화</button>
+        </div>
+      </div>
+
+      <p class="lookup-count">조회 결과 : <b data-count>6</b>건</p>
+      <div class="lookup-table-wrap">
+        <table class="lookup-table">
+          <caption class="sr-only">에너지 사용자(EPC사) 조회 결과</caption>
+          <thead>
+            <tr>
+              <th scope="col">순번</th>
+              <th scope="col">EPC사 코드</th>
+              <th scope="col">소재지</th>
+              <th scope="col">EPC사명</th>
+            </tr>
+          </thead>
+          <tbody data-rows>
+            <tr><td>1</td><td>312423B</td><td>서울 강서</td><td><button class="pick" type="button">(주)선영</button></td></tr>
+            <tr><td>2</td><td>1234321A</td><td>충남 아산</td><td><button class="pick" type="button">(주)대한전기</button></td></tr>
+            <tr><td>3</td><td>5423432B</td><td>경기 수원</td><td><button class="pick" type="button">효성케미칼</button></td></tr>
+            <tr><td>4</td><td>2312133B</td><td>충북 제천</td><td><button class="pick" type="button">(주)한일전기</button></td></tr>
+            <tr><td>5</td><td>4325243B</td><td>제주 서귀포</td><td><button class="pick" type="button">(주)아이티피씨</button></td></tr>
+            <tr><td>6</td><td>321435AA</td><td>서울 마포</td><td><button class="pick" type="button">(주)옵션티앤에스</button></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p class="lookup-notes">
+        <span aria-hidden="true">*</span>그룹웨어에서 등록된 EPC사만 검색됩니다.
+      </p>
+      <p class="lookup-notes">
+        <span aria-hidden="true">*</span>EPC사명 선택 시, 선택된 EPC사의 정보가 프로젝트에 입력됩니다.
+      </p>
+
+      <div class="lookup-foot">
+        <button class="btn navy" type="button" data-close>닫기</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ERP 사업자번호 기준 사용자 거래처 조회 팝업 -->
+<div class="lookup-overlay" id="erpCustomerModal" hidden>
+  <div class="lookup erp-customer" role="dialog" aria-modal="true" aria-labelledby="erpCustomerModalTitle">
+    <div class="lookup-head">
+      <h2 id="erpCustomerModalTitle">사용자 거래처 조회</h2>
+      <button class="lookup-close" type="button" data-close aria-label="사용자 거래처 조회 닫기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+    </div>
+    <div class="lookup-body">
+      <div class="lookup-search">
+        <div class="lookup-fields">
+          <div class="lookup-frow"><span class="lbl"><label for="erpBusinessKeyword">거래처코드</label> :</span><input id="erpBusinessKeyword" type="text" placeholder="거래처코드를 입력하세요."></div>
+          <div class="lookup-frow"><span class="lbl"><label for="erpCustomerKeyword">키워드 검색</label> :</span><input class="grow" id="erpCustomerKeyword" type="text" placeholder="사업명을 입력하세요."></div>
+        </div>
+        <div class="lookup-actions"><button class="btn navy" type="button" data-search>검색</button><button class="btn" type="button" data-reset>초기화</button></div>
+      </div>
+      <p class="lookup-count">조회 결과 : <b data-count>6</b>건</p>
+      <div class="lookup-table-wrap"><table class="lookup-table"><caption class="sr-only">사용자 거래처 조회 결과</caption><thead><tr><th scope="col">순번</th><th scope="col">거래처 코드</th><th scope="col">사업자 코드</th><th scope="col">거래처명</th><th scope="col">소재지</th></tr></thead><tbody data-rows>
+        <tr><td>1</td><td>3124233B</td><td>123-45-67891</td><td><button class="pick" type="button">㈜선영</button></td><td>서울 강서구</td></tr>
+        <tr><td>2</td><td>1234321A</td><td>123-45-67891</td><td><button class="pick" type="button">㈜대한전기</button></td><td>부산 해운대구</td></tr>
+        <tr><td>3</td><td>5423432B</td><td>123-45-67891</td><td><button class="pick" type="button">홍성커피샵</button></td><td>충남 아산시</td></tr>
+        <tr><td>4</td><td>2312133B</td><td>123-45-67891</td><td><button class="pick" type="button">㈜한일전기</button></td><td>충남 천안시</td></tr>
+        <tr><td>5</td><td>4325243B</td><td>123-45-67891</td><td><button class="pick" type="button">㈜아이티제씨</button></td><td>서울 양천구</td></tr>
+        <tr><td>6</td><td>3214354A</td><td>123-45-67891</td><td><button class="pick" type="button">㈜유성디엔솔</button></td><td>강원 춘천시</td></tr>
+      </tbody></table></div>
+      <p class="lookup-notes">그룹웨어에서 등록된 거래처만 검색됩니다.<br>거래처명 선택 시, 선택된 거래처의 정보가 프로젝트에 입력됩니다.</p>
+      <div class="lookup-foot"><button class="btn navy" type="button" data-close>닫기</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- 담당자 조회 팝업 -->
+<div class="lookup-overlay" id="staffModal" hidden>
+  <div class="lookup staff-lookup" role="dialog" aria-modal="true" aria-labelledby="staffModalTitle">
+    <div class="lookup-head">
+      <h2 id="staffModalTitle">담당자 조회</h2>
+      <button class="lookup-close" type="button" data-close aria-label="담당자 조회 닫기">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+      </button>
+    </div>
+    <div class="lookup-body">
+      <div class="lookup-search">
+        <div class="lookup-fields">
+          <div class="lookup-frow">
+            <span class="lbl"><label for="staffDept">부서</label> :</span>
+            <span class="select-arrow-wrap">
+              <select id="staffDept">
+                <option value="">선택</option>
+                <option>경영본부</option>
+                <option>경영지원본부</option>
+                <option>기술컨설팅팀</option>
+              </select>
+              <span class="select-arrow" aria-hidden="true">▼</span>
+            </span>
+          </div>
+          <div class="lookup-frow">
+            <span class="lbl"><label for="staffKeyword">키워드 검색</label> :</span>
+            <input class="grow" id="staffKeyword" type="text" placeholder="조회하실 담당자명을 입력하세요." />
+          </div>
+        </div>
+        <div class="lookup-actions">
+          <button class="btn navy" type="button" data-search>검색</button>
+          <button class="btn" type="button" data-reset>초기화</button>
+        </div>
+      </div>
+
+      <p class="lookup-count">조회 결과 : <b data-count>6</b>건</p>
+      <div class="lookup-table-wrap">
+        <table class="lookup-table">
+          <caption class="sr-only">담당자(사원) 조회 결과</caption>
+          <thead>
+            <tr>
+              <th scope="col">순번</th>
+              <th scope="col">부서</th>
+              <th scope="col">사원번호</th>
+              <th scope="col">사원명</th>
+            </tr>
+          </thead>
+          <tbody data-rows>
+            <tr><td>1</td><td>경영본부</td><td>2211001</td><td><button class="pick" type="button">강대근</button></td></tr>
+            <tr><td>2</td><td>기술컨설팅팀</td><td>1910004</td><td><button class="pick" type="button">강병용</button></td></tr>
+            <tr><td>3</td><td>경영지원본부</td><td>1611001</td><td><button class="pick" type="button">김도현</button></td></tr>
+            <tr><td>4</td><td>경영지원본부</td><td>1910005</td><td><button class="pick" type="button">김동환</button></td></tr>
+            <tr><td>5</td><td>경영지원본부</td><td>2120001</td><td><button class="pick" type="button">김만년</button></td></tr>
+            <tr><td>6</td><td>경영지원본부</td><td>2219994</td><td><button class="pick" type="button">김병호</button></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p class="lookup-notes">사원명 선택 시, 선택된 사원의 정보가 프로젝트에 입력됩니다.</p>
+
+      <div class="lookup-foot">
+        <button class="btn navy" type="button" data-close>닫기</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 유효성 검증 Alert (확인 시 Alert Close / 페이지 유지) -->
+<div class="alert-overlay" id="alertOverlay" hidden>
+  <div class="alert-box" id="alertBox" role="alertdialog" aria-modal="true" aria-labelledby="alertMsg">
+      <h2 class="alert-title" id="alertTitle" hidden></h2>
+      <p class="alert-msg" id="alertMsg"></p>
+    <div class="alert-foot">
+      <button class="alert-btn ghost" type="button" id="alertCancel" hidden>취소</button>
+      <button class="alert-btn" type="button" id="alertOk">확인</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Toast 알림 (중복 노출 방지 후 자동 소멸)
+  var showToast = (function () {
+    var wrap = document.getElementById("toastWrap");
+    var timer = null;
+
+    return function (message) {
+      if (timer) clearTimeout(timer);
+      wrap.textContent = "";
+
+      var toast = document.createElement("div");
+      toast.className = "toast";
+      toast.innerHTML =
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">' +
+        '<circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/></svg>';
+      toast.appendChild(document.createTextNode(message));
+      wrap.appendChild(toast);
+
+      requestAnimationFrame(function () { toast.classList.add("show"); });
+      timer = setTimeout(function () {
+        toast.classList.remove("show");
+        setTimeout(function () { toast.remove(); }, 240);
+      }, 2600);
+    };
+  })();
+
+  /* Alert / Confirm Alert (확인 시 Close / 페이지 유지) */
+  var showAlert, showConfirm;
+  (function () {
+    var overlay = document.getElementById("alertOverlay");
+    var box = document.getElementById("alertBox");
+    var titleEl = document.getElementById("alertTitle");
+    var msgEl = document.getElementById("alertMsg");
+    var okBtn = document.getElementById("alertOk");
+    var cancelBtn = document.getElementById("alertCancel");
+    var focusTarget = null;
+    var onConfirm = null;
+
+    function close() {
+      overlay.hidden = true;
+      cancelBtn.hidden = true;
+      titleEl.hidden = true;
+      box.classList.remove("titled");
+      okBtn.textContent = "확인";
+      document.body.style.overflow = "";
+      onConfirm = null;
+      // 페이지는 유지하고 미입력 필드로 포커스를 이동합니다.
+      if (focusTarget) {
+        focusTarget.focus({ preventScroll: true });
+        focusTarget.scrollIntoView({ block: "center", behavior: "smooth" });
+      }
+    }
+
+    okBtn.addEventListener("click", function () {
+      var run = onConfirm;
+      close();
+      if (run) run();
+    });
+    cancelBtn.addEventListener("click", close);
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && !overlay.hidden) close();
+    });
+
+    function open(message, target, confirmHandler, options) {
+      var opt = options || {};
+
+      // 여러 줄 안내문은 개행 문자로 구분해 표기합니다.
+      msgEl.textContent = "";
+      String(message).split("\n").forEach(function (line, i) {
+        if (i) msgEl.appendChild(document.createElement("br"));
+        msgEl.appendChild(document.createTextNode(line));
+      });
+
+      // 제목이 있는 경우 좌측 정렬 + 구분선 형태로 표시합니다.
+      if (opt.title) {
+        titleEl.textContent = opt.title;
+        titleEl.hidden = false;
+        box.classList.add("titled");
+      }
+      if (opt.okText) okBtn.textContent = opt.okText;
+
+      focusTarget = target || null;
+      onConfirm = confirmHandler || null;
+      cancelBtn.hidden = !confirmHandler;
+      overlay.hidden = false;
+      document.body.style.overflow = "hidden";
+      okBtn.focus();
+    }
+
+    // 단순 안내 Alert
+    showAlert = function (message, target, options) { open(message, target, null, options); };
+    // 확인 / 취소 Confirm Alert
+    showConfirm = function (message, handler, options) { open(message, null, handler, options); };
+  })();
+
+  /* 계약 형태에 따라 EPC 수행방식과 ESCO 전용 계약정보를 구분합니다. */
+  window.syncPromotionContractLayout = function () {
+    var contractType = document.getElementById("ctype");
+    var epcMethod = document.getElementById("epc-method");
+    var requiredMark = document.getElementById("epcMethodRequired");
+    var value = contractType ? contractType.value : "";
+    var isEpcService = value.indexOf("EPC") !== -1 && value.indexOf("ESCO") === -1;
+
+    if (epcMethod) {
+      epcMethod.disabled = !isEpcService;
+      epcMethod.setAttribute("aria-disabled", String(!isEpcService));
+      if (!isEpcService) epcMethod.value = "";
+    }
+    if (requiredMark) requiredMark.hidden = !isEpcService;
+    document.querySelectorAll("[data-esco-only]").forEach(function (row) {
+      row.hidden = isEpcService;
+      row.querySelectorAll("input, select, button").forEach(function (control) {
+        control.disabled = isEpcService;
+      });
+    });
+  };
+  window.syncPromotionContractLayout();
+
+  /* ESCO 공사금액 지급방식에 따라 비율 입력 구성을 전환합니다. */
+  (function () {
+    var method = document.getElementById("pay-method");
+    var splitFields = document.querySelector(".ratio-group");
+    var ratioHint = document.getElementById("paymentRatioHint");
+    if (!method || !splitFields) return;
+
+    function syncPaymentFields() {
+      var isSplit = method.value === "split";
+      splitFields.hidden = !isSplit;
+      if (ratioHint) ratioHint.hidden = !isSplit;
+      splitFields.querySelectorAll("input").forEach(function (input) { input.disabled = !isSplit; });
+    }
+
+    method.addEventListener("change", syncPaymentFields);
+    syncPaymentFields();
+  })();
+
+  /* ===== 조회 팝업 (에너지 사용자 / 담당자) =====
+     - 조회 버튼 클릭 시 개별 팝업 호출
+     - 목록에서 EPC사명 / 사원명 선택 시 해당 정보가 페이지에 등록됨 */
+  (function () {
+    var opener = null; // 팝업 호출 버튼 (닫은 후 포커스 복귀)
+
+    function open(modal, trigger) {
+      opener = trigger || null;
+      modal.hidden = false;
+      document.body.style.overflow = "hidden";
+      var first = modal.querySelector("input, select");
+      if (first) first.focus();
+    }
+
+    function close(modal) {
+      modal.hidden = true;
+      document.body.style.overflow = "";
+      if (opener) opener.focus();
+      opener = null;
+    }
+
+    /* EPC사(협력회사) 등록 : 선택한 업체를 하단 영역에 행으로 추가 */
+    function addEpc(code, name) {
+      var list = document.getElementById("epcList");
+      if (!list) return;
+
+      var value = code + "  |  " + name;
+      var contractType = document.getElementById("ctype");
+      var isEsco = contractType && contractType.value.indexOf("ESCO") !== -1;
+      var exists = Array.prototype.some.call(list.querySelectorAll("input"), function (i) {
+        return i.value === value;
+      });
+      if (exists) {
+        showToast("이미 등록된 업체입니다.");
+        return;
+      }
+
+      // ESCO 계약은 EPC사를 한 곳만 등록할 수 있으며, 변경 시 기존 업체를 대체합니다.
+      if (isEsco) list.innerHTML = "";
+
+      var row = document.createElement("div");
+      row.className = "epc-row";
+
+      var input = document.createElement("input");
+      input.type = "text";
+      input.value = value;
+      input.readOnly = true;
+      input.setAttribute("aria-label", "EPC사 " + (list.children.length + 1));
+
+      var del = document.createElement("button");
+      del.className = "btn sm";
+      del.type = "button";
+      del.textContent = "삭제";
+      del.addEventListener("click", function () { row.remove(); });
+
+      row.appendChild(input);
+      if (!isEsco) row.appendChild(del);
+      list.appendChild(row);
+      showToast(name + (isEsco ? " 업체로 변경되었습니다." : " 업체가 등록되었습니다."));
+    }
+
+    // 조회 버튼 → 해당 팝업 호출
+    document.querySelectorAll("[data-open]").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var modal = document.getElementById(btn.getAttribute("data-open"));
+        if (modal) open(modal, btn);
+      });
+    });
+
+    // 팝업별 검색 / 초기화 / 선택 처리
+    document.querySelectorAll(".lookup-overlay").forEach(function (modal) {
+      var rows = Array.prototype.slice.call(modal.querySelectorAll("[data-rows] tr"));
+      var countEl = modal.querySelector("[data-count]");
+      var tbody = modal.querySelector("[data-rows]");
+      var fields = Array.prototype.slice.call(modal.querySelectorAll(".lookup-frow input, .lookup-frow select"));
+
+      // 결과 없음 안내 행
+      var emptyRow = document.createElement("tr");
+      var emptyCell = document.createElement("td");
+      emptyCell.className = "lookup-empty";
+      emptyCell.colSpan = modal.querySelectorAll("thead th").length || 4;
+      emptyCell.textContent = "조회 결과가 없습니다.";
+      emptyRow.appendChild(emptyCell);
+      emptyRow.hidden = true;
+      tbody.appendChild(emptyRow);
+
+      // 입력된 조건으로 목록 필터링 후 건수 갱신
+      function search() {
+        var terms = fields
+          .map(function (f) { return f.value.trim().toLowerCase(); })
+          .filter(function (v) { return v; });
+
+        var shown = 0;
+        rows.forEach(function (row) {
+          var text = row.textContent.toLowerCase();
+          var match = terms.every(function (t) { return text.indexOf(t) !== -1; });
+          row.hidden = !match;
+          if (match) shown++;
+        });
+        emptyRow.hidden = shown !== 0;
+        countEl.textContent = shown;
+      }
+
+      function reset() {
+        fields.forEach(function (f) { f.value = ""; });
+        search();
+      }
+
+      modal.querySelector("[data-search]").addEventListener("click", search);
+      modal.querySelector("[data-reset]").addEventListener("click", reset);
+      fields.forEach(function (f) {
+        f.addEventListener("keydown", function (e) {
+          if (e.key === "Enter" && !e.isComposing && e.keyCode !== 229) search();
+        });
+      });
+
+      // 목록 항목 선택 → 페이지 필드에 등록
+      modal.querySelectorAll(".pick").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          var cells = btn.closest("tr").children;
+
+          var target = opener ? opener.getAttribute("data-target") : null;
+
+          if (target === "epc") {
+            // EPC사(협력회사) : 선택할 때마다 하단 목록에 등록 (중복 제외)
+            addEpc(cells[1].textContent.trim(), btn.textContent.trim());
+            close(modal);
+            return;
+          }
+
+          if (modal.id === "erpCustomerModal") {
+            var erpPlace = cells[4].textContent.trim().split(/\s+/);
+            document.getElementById("erpBusinessNumber").value = cells[2].textContent.trim();
+            document.getElementById("erpCustomerName").value = btn.textContent.trim();
+            document.getElementById("addr1").value = erpPlace[0] || "";
+            document.getElementById("addr2").value = erpPlace.slice(1).join(" ");
+            showToast(btn.textContent.trim() + " 거래처가 사업자번호 기준으로 등록되었습니다.");
+          } else if (modal.id === "clientModal") {
+            // EPC사명 / 소재지(시도 · 시군구)
+            var place = cells[2].textContent.trim().split(/\s+/);
+            document.getElementById("user1").value = btn.textContent.trim();
+            document.getElementById("addr1").value = place[0] || "";
+            document.getElementById("addr2").value = place.slice(1).join(" ");
+          } else {
+            // 사원명 / 부서
+            document.getElementById("mgr").value = btn.textContent.trim();
+            document.getElementById("team").value = cells[1].textContent.trim();
+            try { sessionStorage.setItem("pms.projectManager", btn.textContent.trim()); } catch (err) {}
+          }
+
+          modal.hidden = true;
+          document.body.style.overflow = "";
+          if (opener) opener.focus();
+          opener = null;
+        });
+      });
+
+      // 닫기 (X / 닫기 버튼 / 배경 클릭)
+      modal.querySelectorAll("[data-close]").forEach(function (btn) {
+        btn.addEventListener("click", function () { close(modal); });
+      });
+      modal.addEventListener("click", function (e) {
+        if (e.target === modal) close(modal);
+      });
+    });
+
+    document.addEventListener("keydown", function (e) {
+      if (e.key !== "Escape") return;
+      document.querySelectorAll(".lookup-overlay").forEach(function (modal) {
+        if (!modal.hidden) close(modal);
+      });
+    });
+
+  })();
+
+  /* 협력업체 심의 정보 최신화 */
+  document.querySelectorAll("[data-review-refresh]").forEach(function (button) {
+    button.addEventListener("click", function () {
+      var target = button.getAttribute("data-review-refresh") === "epc" ? "EPC사" : "사용자 거래처";
+      button.disabled = true;
+      button.textContent = "갱신 중...";
+      setTimeout(function () {
+        button.disabled = false;
+        button.textContent = "정보 갱신";
+        button.closest("section").dataset.refreshedAt = new Date().toISOString();
+        showToast(target + " 심의 정보를 최신 정보로 갱신했습니다.");
+      }, 500);
+    });
+  });
+
+  // 하단 임시저장 : 유효성 검증 없이 저장 안내 Toast 노출
+  (function () {
+    var saveBtn = document.querySelector('[data-act="save"]');
+    if (!saveBtn) return;
+    saveBtn.addEventListener("click", function () {
+      showToast("등록 정보가 임시저장되었습니다");
+    });
+  })();
+
+  /* 일자 입력 : 캘린더 아이콘 클릭 시 브라우저 기본 캘린더 호출 */
+  (function () {
+    document.querySelectorAll(".date-field").forEach(function (field) {
+      var text = field.querySelector('input[type="text"]');
+      var icon = field.querySelector(".cal");
+      if (!text || !icon) return;
+
+      // 기본 캘린더 제공용 native date input (화면에는 노출하지 않음)
+      var picker = document.createElement("input");
+      picker.type = "date";
+      picker.className = "date-native";
+      picker.tabIndex = -1;
+      picker.setAttribute("aria-hidden", "true");
+      field.appendChild(picker);
+
+      // 아이콘을 버튼으로 감싸 캘린더 호출 트리거로 사용
+      var trigger = document.createElement("button");
+      trigger.type = "button";
+      trigger.className = "cal-btn";
+      trigger.setAttribute("aria-label", "캘린더 열기");
+      icon.replaceWith(trigger);
+      trigger.appendChild(icon);
+
+      // 표시값(YYYY.MM.DD) ↔ native 값(YYYY-MM-DD) 동기화
+      function syncPicker() {
+        var m = text.value.trim().match(/^(\d{4})[.\-/](\d{1,2})[.\-/](\d{1,2})$/);
+        picker.value = m
+          ? m[1] + "-" + ("0" + m[2]).slice(-2) + "-" + ("0" + m[3]).slice(-2)
+          : "";
+      }
+
+      trigger.addEventListener("click", function () {
+        syncPicker();
+        // showPicker 미지원 브라우저는 focus + click 으로 대체합니다.
+        if (typeof picker.showPicker === "function") {
+          try { picker.showPicker(); return; } catch (err) { /* 아래 대체 동작 */ }
+        }
+        picker.focus();
+        picker.click();
+      });
+
+      picker.addEventListener("change", function () {
+        if (!picker.value) return;
+        text.value = picker.value.replace(/-/g, ".");
+      });
+    });
+  })();
+
+  /* ===== 첨부파일 : [찾기] 로 등록, 파일명 칩의 [X] 로 삭제 =====
+     동일 key 를 참조하는 목록(사업심의 자료 ↔ 사업시행)은 함께 갱신됩니다. */
+  var fileStore = {};
+
+  function renderFiles(key) {
+    var names = fileStore[key] || [];
+
+    document.querySelectorAll('[data-list="' + key + '"]').forEach(function (list) {
+      list.textContent = "";
+
+      if (!names.length) {
+        var empty = document.createElement("span");
+        empty.className = "file-empty";
+        empty.textContent = "선택된 파일 없음";
+        list.appendChild(empty);
+        return;
+      }
+
+      // 다른 단계에서 등록된 자료를 참조만 하는 목록은 삭제 버튼을 두지 않습니다.
+      var readOnly = list.hasAttribute("data-mirror");
+
+      names.forEach(function (name, i) {
+        var chip = document.createElement("span");
+        chip.className = "file-chip";
+
+        var label = document.createElement("span");
+        label.className = "name";
+        label.textContent = name;
+        label.title = name;
+        chip.appendChild(label);
+
+        if (!readOnly) {
+          var del = document.createElement("button");
+          del.className = "file-del";
+          del.type = "button";
+          del.textContent = "X";
+          del.setAttribute("aria-label", name + " 삭제");
+          del.addEventListener("click", function () {
+            fileStore[key].splice(i, 1);
+            var input = document.getElementById(key);
+            if (input && !fileStore[key].length) input.value = "";
+            renderFiles(key);
+            showToast("첨부파일이 삭제되었습니다.");
+          });
+          chip.appendChild(del);
+        }
+        list.appendChild(chip);
+      });
+    });
+  }
+
+  (function () {
+    document.querySelectorAll("[data-pick]").forEach(function (btn) {
+      var key = btn.getAttribute("data-pick");
+      var input = document.getElementById(key);
+      if (!input) return;
+
+      fileStore[key] = fileStore[key] || [];
+      btn.addEventListener("click", function () { input.click(); });
+
+      input.addEventListener("change", function () {
+        var names = Array.prototype.map.call(input.files, function (f) { return f.name; });
+        if (!names.length) return;
+
+        // 단일 첨부 항목은 최신 파일로 교체합니다.
+        fileStore[key] = input.multiple ? fileStore[key].concat(names) : names;
+        renderFiles(key);
+        showToast("자료가 첨부되었습니다.");
+      });
+
+      renderFiles(key);
+    });
+
+    // 참조 전용 목록도 초기 상태를 표시합니다.
+    document.querySelectorAll("[data-mirror]").forEach(function (list) {
+      renderFiles(list.getAttribute("data-mirror"));
+    });
+  })();
+
+  /* 사업심의 요청 : 사업추진 계획안 확인 후 요청 → 사업시행 단계 활성화 */
+  function requestReview() {
+    showConfirm(
+      "사업심의를 요청하시겠습니까?\n요청 이후/사업 시행 전에는 프로젝트 정보를 수정하실 수 없습니다.",
+      function () {
+        showToast("사업심의가 요청되었습니다.");
+        // 심의 요청이 확인되면 사업시행 단계로 이동할 수 있습니다.
+        if (window.pmsSteps) window.pmsSteps.unlock("사업시행");
+      },
+      { title: "사업심의 요청", okText: "요청" }
+    );
+  }
+
+  /* 계약 이동 : 사업추진 시행안 등록 여부를 확인합니다. */
+  function goContract() {
+    showConfirm(
+      "사업을 시행하고 계약 단계로 이동하시겠습니까?\n시행 이후에는 프로젝트 정보를 수정하실 수 없습니다.",
+      function () {
+        persistPromotionReview();
+        showToast("사업이 시행되었습니다.");
+        window.setTimeout(function () {
+          window.location.href = "/pms-project-contract.html";
+        }, 350);
+      },
+      { title: "사업 시행", okText: "시행" }
+    );
+  }
+
+  /* ===== 사업심의 : 기본 정보 / 세부 정보 / 협력업체 정보를 읽기 전용으로 취합 ===== */
+  function buildReview(body) {
+    if (!body) return;
+    // data-review="request" 인 영역에만 사업심의 요청 버튼을 배치합니다.
+    var withRequest = body.getAttribute("data-review") === "request";
+
+    var groups = [
+      { panel: 0, title: "기본 정보" },
+      { panel: 1, title: "세부 정보" },
+      { panel: 2, title: "협력업체 정보" },
+    ];
+
+    // 값을 읽기 전용 텍스트로 변환
+    function toText(el) {
+      var span = document.createElement("span");
+      span.className = "ro";
+      var value = "";
+
+      if (el.tagName === "SELECT") {
+        var opt = el.options[el.selectedIndex];
+        value = opt && opt.value !== "" ? opt.textContent.trim() : "";
+      } else {
+        value = (el.value || "").trim();
+      }
+
+      if (!value || value === "-") {
+        span.classList.add("empty");
+        span.textContent = "-";
+      } else {
+        span.textContent = value;
+      }
+      return span;
+    }
+
+    body.textContent = "";
+
+    groups.forEach(function (group) {
+      var source = document.querySelector('.panel[data-panel="' + group.panel + '"]');
+      if (!source) return;
+
+      var clone = source.cloneNode(true);
+
+      // 안내문 · 입력 보조 요소는 심의 화면에서 제외합니다.
+      clone.querySelectorAll(".notes, .hint, .effect-guide, .contact-hint, .req, button, .date-native, .tooltip-wrap").forEach(function (el) {
+        el.remove();
+      });
+
+      // 공사금액지급비율은 한 줄 요약으로 표기합니다.
+      clone.querySelectorAll(".ratio-group").forEach(function (grp) {
+        if (grp.hidden) {
+          grp.remove();
+          return;
+        }
+        var parts = [];
+        grp.querySelectorAll(".ratio-item").forEach(function (item) {
+          var label = item.querySelector("label");
+          var input = item.querySelector("input");
+          var val = input && input.value.trim() ? input.value.trim() : "-";
+          parts.push((label ? label.textContent.trim() : "") + " " + val);
+        });
+        var line = document.createElement("span");
+        line.className = "ro";
+        line.textContent = parts.join("  /  ");
+        grp.replaceWith(line);
+      });
+
+      // EPC사(협력회사) 등록 목록은 값 목록으로 표기합니다.
+      clone.querySelectorAll(".fval.stack").forEach(function (stack) {
+        var values = [];
+        stack.querySelectorAll(".epc-row input").forEach(function (input) {
+          if (input.value.trim()) values.push(input.value.trim());
+        });
+        if (!stack.querySelector(".epc-row")) return;
+
+        var list = document.createElement("div");
+        list.className = "ro ro-list";
+        if (!values.length) {
+          list.classList.add("empty");
+          list.textContent = "-";
+        } else {
+          values.forEach(function (v) {
+            var row = document.createElement("span");
+            row.textContent = v;
+            list.appendChild(row);
+          });
+        }
+        stack.textContent = "";
+        stack.appendChild(list);
+      });
+
+      // 남은 입력 요소를 모두 텍스트로 치환합니다.
+      clone.querySelectorAll("input, select, textarea").forEach(function (el) {
+        var wrap = el.closest(".date-field") || el;
+        wrap.replaceWith(toText(el));
+      });
+
+      // 중복 id / label 연결 제거
+      clone.querySelectorAll("[id]").forEach(function (el) { el.removeAttribute("id"); });
+      clone.querySelectorAll("label[for]").forEach(function (el) { el.removeAttribute("for"); });
+
+      var wrapper = document.createElement("div");
+      wrapper.className = "review-group";
+      wrapper.innerHTML =
+        '<div class="review-head"><h3>' + group.title +
+        '</h3><span class="badge-ro">수정 불가</span><span class="spacer"></span></div>';
+
+      // 사업심의 요청 버튼은 사업심의 자료 제목과 같은 라인의 우측 끝에 배치합니다.
+      if (withRequest && group.panel === 0) {
+        var requestHead = document.querySelector("[data-review-request-head]");
+        var existingRequest = requestHead && requestHead.querySelector('[data-act="review-request"]');
+        if (existingRequest) existingRequest.remove();
+        var reqBtn = document.createElement("button");
+        reqBtn.className = "btn navy";
+        reqBtn.type = "button";
+        reqBtn.setAttribute("data-act", "review-request");
+        reqBtn.textContent = "사업심의 요청";
+        reqBtn.addEventListener("click", requestReview);
+        if (requestHead) requestHead.appendChild(reqBtn);
+      }
+
+      // 패널 내부 내용만 옮겨옵니다.
+      while (clone.firstChild) wrapper.appendChild(clone.firstChild);
+      body.appendChild(wrapper);
+    });
+  }
+
+  /* 계약 단계에서도 지금까지 입력한 추진 정보를 그대로 확인할 수 있도록 저장합니다. */
+  function persistPromotionPaymentRatio() {
+    var method = document.getElementById("pay-method");
+    if (!method || method.disabled) return;
+
+    var paymentRatio = {
+      method: method.value || "split",
+      advance: (document.getElementById("pay-1") || {}).value || "",
+      progress: (document.getElementById("pay-2") || {}).value || "",
+      completion: (document.getElementById("pay-3") || {}).value || "",
+      savedAt: new Date().toISOString()
+    };
+
+    try {
+      sessionStorage.setItem("pms.promotionPaymentRatio", JSON.stringify(paymentRatio));
+    } catch (err) {
+      /* 저장소를 사용할 수 없는 환경에서도 화면 입력은 계속 허용합니다. */
+    }
+  }
+
+  function persistPromotionReview() {
+    var snapshot = document.createElement("div");
+    snapshot.className = "review";
+    snapshot.setAttribute("data-review", "plain");
+    buildReview(snapshot);
+
+    try {
+      sessionStorage.setItem("pms.promotionReview", JSON.stringify({
+        html: snapshot.innerHTML,
+        savedAt: new Date().toISOString()
+      }));
+    } catch (err) {
+      /* 저장소를 사용할 수 없는 환경에서도 화면 입력은 계속 허용합니다. */
+    }
+    persistPromotionPaymentRatio();
+  }
+
+  document.addEventListener("input", function (e) {
+    if (e.target.closest('.panel[data-panel="0"], .panel[data-panel="1"], .panel[data-panel="2"]')) {
+      persistPromotionReview();
+    }
+  });
+  document.addEventListener("change", function (e) {
+    if (e.target.closest('.panel[data-panel="0"], .panel[data-panel="1"], .panel[data-panel="2"]')) {
+      persistPromotionReview();
+    }
+  });
+
+  /* 심의대상 여부 확인 : 사업접수에서 "면제" 선택 시 사업심의 Step 을 제거합니다.
+     (단계 전환 로직보다 먼저 실행되어야 하므로 상단에 배치) */
+  (function () {
+    var raw = null;
+    try { raw = sessionStorage.getItem("pms.newProject"); } catch (err) { return; }
+    if (!raw) return;
+
+    var data = null;
+    try { data = JSON.parse(raw); } catch (err) { return; }
+    if (!data || data.reviewTarget !== "면제") return;
+
+    // 사업심의 Step 버튼 및 해당 패널 제거
+    var reviewStep = Array.prototype.filter.call(
+      document.querySelectorAll(".step"),
+      function (btn) { return btn.textContent.trim() === "사업심의"; }
+    )[0];
+    if (reviewStep) reviewStep.remove();
+
+    var reviewPanel = document.querySelector('.panel[data-panel="3"]');
+    if (reviewPanel) reviewPanel.remove();
+
+    // 남은 패널의 순번을 단계 순서에 맞게 다시 정렬
+    document.querySelectorAll(".panel").forEach(function (panel, i) {
+      panel.setAttribute("data-panel", String(i));
+    });
+  })();
+
+  // 추진 단계 탭 전환 + 해당 패널 표시
+  (function () {
+    var steps = Array.prototype.slice.call(document.querySelectorAll(".step"));
+    var panels = Array.prototype.slice.call(document.querySelectorAll(".panel"));
+    var prevBtn = document.querySelector('[data-act="prev"]');
+    var nextBtn = document.querySelector('[data-act="next"]');
+    var saveBtn = document.querySelector('[data-act="save"]');
+    var editBtn = document.querySelector('[data-act="edit"]');
+    var current = 0;
+
+    function select(index) {
+      if (index < 0 || index >= steps.length) return;
+      current = index;
+
+      steps.forEach(function (b, i) {
+        b.classList.toggle("on", i === index);
+        b.setAttribute("aria-selected", i === index ? "true" : "false");
+      });
+      // 확인 화면(사업심의 · 사업시행) 진입 시 앞 단계 정보를 최신 값으로 다시 취합합니다.
+      if (panels[index]) {
+        panels[index].querySelectorAll("[data-review]").forEach(buildReview);
+      }
+
+      // 패널이 준비되지 않은 단계는 첫 패널을 유지합니다.
+      var target = panels[index] ? index : 0;
+      panels.forEach(function (p, i) {
+        p.hidden = i !== target;
+      });
+
+      // 사업심의 화면은 [이전]과 [다음]을 제공하고, 사업시행에서는 계약 버튼을 사용합니다.
+      var isReview = !!(panels[target] && panels[target].querySelector("[data-review]"));
+      var isBusinessReview = steps[index] && steps[index].textContent.trim() === "사업심의";
+
+      prevBtn.hidden = index === 0;
+      nextBtn.hidden = (isReview && !isBusinessReview) || index === steps.length - 1;
+      if (saveBtn) saveBtn.hidden = isReview;
+      if (editBtn) editBtn.hidden = isReview;
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    steps.forEach(function (btn, i) {
+      btn.addEventListener("click", function () {
+        // 비활성 단계는 직접 이동할 수 없고 안내 Toast 를 노출합니다.
+        if (btn.classList.contains("locked")) {
+          showToast("순차적으로 등록하실 수 있습니다.");
+          return;
+        }
+        select(i);
+      });
+    });
+    // 단계 이름으로 index 찾기
+    function indexOfStep(label) {
+      for (var i = 0; i < steps.length; i++) {
+        if (steps[i].textContent.trim() === label) return i;
+      }
+      return -1;
+    }
+
+    // 다른 스크립트에서 단계를 제어할 수 있도록 공개합니다.
+    window.pmsSteps = {
+      unlock: function (label) {
+        var i = indexOfStep(label);
+        if (i < 0) return;
+        steps[i].classList.remove("locked");
+        steps[i].removeAttribute("aria-disabled");
+      },
+      go: function (label) {
+        var i = indexOfStep(label);
+        if (i >= 0) select(i);
+      },
+    };
+
+    // 이전 이동 시 미저장 정보 삭제 확인
+    prevBtn.addEventListener("click", function () {
+      showConfirm("저장되지 않은 정보는 삭제될 수 있습니다. 이동하시겠습니까?", function () {
+        // 사업시행에서는 사업심의를 건너뛰고 심의 정보(협력업체 정보)로 돌아갑니다.
+        var isExec = steps[current] && steps[current].textContent.trim() === "사업시행";
+        var back = isExec ? indexOfStep("협력업체 정보") : current - 1;
+        select(back >= 0 ? back : current - 1);
+      });
+    });
+
+    // 계약 이동
+    var contractBtn = document.querySelector('[data-act="go-contract"]');
+    if (contractBtn) contractBtn.addEventListener("click", goContract);
+    nextBtn.addEventListener("click", function () {
+      // 다음 단계의 비활성 상태를 해제한 뒤 이동합니다.
+      var next = steps[current + 1];
+      if (next) {
+        next.classList.remove("locked");
+        next.removeAttribute("aria-disabled");
+      }
+      select(current + 1);
+    });
+
+    if (editBtn) editBtn.addEventListener("click", function () {
+      showToast("현재 탭의 정보가 수정되었습니다.");
+    });
+  })();
+
+  // 하단 액션바 플로팅 상태 (스크롤 중 화면 하단에 고정되어 있을 때만 그림자 표시)
+  (function () {
+    var bar = document.querySelector(".foot-actions");
+    if (!bar) return;
+
+    var raf = null;
+    function update() {
+      raf = null;
+      var rect = bar.getBoundingClientRect();
+      var pinned = Math.round(rect.bottom) >= Math.round(window.innerHeight) - 1;
+      bar.classList.toggle("is-floating", pinned);
+    }
+    function onScroll() {
+      if (raf === null) raf = window.requestAnimationFrame(update);
+    }
+
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+  })();
+
+  // 사업접수(신규 프로젝트 등록)에서 전달된 데이터를 동적 컬럼에 주입
+  (function () {
+    var raw;
+    try { raw = sessionStorage.getItem("pms.newProject"); } catch (err) { return; }
+    if (!raw) return;
+
+    var data;
+    try { data = JSON.parse(raw); } catch (err) { return; }
+    if (!data) return;
+
+    // 단일 값 텍스트 주입
+    function setText(id, value) {
+      var el = document.getElementById(id);
+      if (el && value) el.textContent = value;
+    }
+    // 복수 선택 값은 세로 구분자(|)로 연결해 주입
+    function setList(id, values) {
+      var el = document.getElementById(id);
+      if (!el || !values || !values.length) return;
+      el.innerHTML = "";
+      values.forEach(function (v, i) {
+        if (i > 0) {
+          var sep = document.createElement("span");
+          sep.className = "divider-v";
+          sep.setAttribute("aria-hidden", "true");
+          sep.textContent = "|";
+          el.appendChild(document.createTextNode(" "));
+          el.appendChild(sep);
+          el.appendChild(document.createTextNode(" "));
+        }
+        el.appendChild(document.createTextNode(v));
+      });
+    }
+
+    setText("rcpName", data.name);
+    setText("rcpForm", data.contractForm);
+    setText("rcpReview", data.reviewTarget);
+    var isEpcContract = /^EPC/i.test(data.contractForm || "");
+    var contractTypeCell = document.getElementById("rcpType");
+    if (contractTypeCell) contractTypeCell.textContent = isEpcContract ? "" : (data.contractType || "");
+    setText("rcpChannel", data.channel);
+    setList("rcpBizType", data.bizTypes);
+    setList("rcpEquip", data.equipments);
+
+    // 계약 정보(EPC사)의 계약형태도 동일 값으로 동기화
+    var ctype = document.getElementById("ctype");
+    if (ctype && data.contractForm) ctype.value = data.contractForm;
+
+    window.syncPromotionContractLayout();
+  })();
+
+  // 최초 진입 시의 기본값도 계약 화면에서 확인할 수 있도록 보관합니다.
+  persistPromotionReview();
+
+  // 기본 정보(프로젝트 수행 효과) : 절감률 자동 계산 (절감량 ÷ 사업 전 사용량 × 100)
+  (function setupSavingRateCalculation() {
+    var toeInput = document.getElementById("toe");
+    var beforeInput = document.getElementById("before");
+    var rateInput = document.getElementById("rate");
+    if (!toeInput || !beforeInput || !rateInput) return;
+
+    function calcSavingRate() {
+      var toeVal = parseFloat((toeInput.value || "").replace(/,/g, ""));
+      var beforeVal = parseFloat((beforeInput.value || "").replace(/,/g, ""));
+      if (!isNaN(toeVal) && !isNaN(beforeVal) && beforeVal > 0) {
+        var rate = (toeVal / beforeVal) * 100;
+        rateInput.value = (Math.round(rate * 100) / 100).toFixed(2);
+      } else {
+        rateInput.value = "";
+      }
+    }
+
+    toeInput.addEventListener("input", function () {
+      calcSavingRate();
+      persistPromotionReview();
+    });
+    beforeInput.addEventListener("input", function () {
+      calcSavingRate();
+      persistPromotionReview();
+    });
+    calcSavingRate();
+  })();
+
+  // 기본 정보(프로젝트 수행 효과) : 절감률 산출식 플로팅 툴팁 (overflow:hidden 잘림 방지)
+  (function setupRateTooltip() {
+    var btn = document.getElementById("rateHelpBtn");
+    var tooltip = document.getElementById("rateTooltip");
+    if (!btn || !tooltip) return;
+
+    function showTooltip() {
+      tooltip.hidden = false;
+      var rect = btn.getBoundingClientRect();
+      var tipW = tooltip.offsetWidth;
+      var tipH = tooltip.offsetHeight;
+
+      // 수평 위치: 버튼 중심에 맞추되 뷰포트 좌우 여백(최소 10px) 확보
+      var left = rect.left + (rect.width / 2) - (tipW / 2);
+      left = Math.max(10, Math.min(left, window.innerWidth - tipW - 10));
+
+      // 수직 위치: 기본은 버튼 상단 8px 위, 상단 공간 부족 시 버튼 하단 8px 아래
+      var top = rect.top - tipH - 8;
+      if (top < 8) {
+        top = rect.bottom + 8;
+      }
+
+      tooltip.style.left = left + "px";
+      tooltip.style.top = top + "px";
+    }
+
+    function hideTooltip() {
+      tooltip.hidden = true;
+    }
+
+    btn.addEventListener("mouseenter", showTooltip);
+    btn.addEventListener("mouseleave", hideTooltip);
+    btn.addEventListener("focus", showTooltip);
+    btn.addEventListener("blur", hideTooltip);
+    btn.addEventListener("click", function (e) {
+      e.stopPropagation();
+      if (tooltip.hidden) showTooltip(); else hideTooltip();
+    });
+    document.addEventListener("click", function (e) {
+      if (!btn.contains(e.target) && !tooltip.contains(e.target)) hideTooltip();
+    });
+    window.addEventListener("scroll", hideTooltip, true);
+    window.addEventListener("resize", hideTooltip);
+  })();
+
+  // 권한 그룹 전환
+  document.querySelectorAll(".seg-btn").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      document.querySelectorAll(".seg-btn").forEach(function (b) { b.classList.remove("on"); });
+      btn.classList.add("on");
+    });
+  });
+</script>
+  <script src="/assets/pms-lnb.js"></script>
+  <script src="/assets/pms-intake-wizard.js?v=20260921-2"></script>
+</body>
+</html>

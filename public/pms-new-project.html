@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>신규 프로젝트 등록 | 사업관리시스템 (PMS)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #f1f5f9;
+    --surface: #ffffff;
+    --border: #e5e9f0;
+    --text: #1e293b;
+    --muted: #64748b;
+    --brand: #1d6ff2;
+    --brand-soft: #eff6ff;
+    --navy: #172c53;
+    --radius: 10px;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Noto Sans KR", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a { color: inherit; text-decoration: none; }
+  ul { list-style: none; margin: 0; padding: 0; }
+
+  .sr-only {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+  }
+
+  .layout { display: flex; min-height: 100vh; }
+
+  /* ---------- Sidebar ---------- */
+  .sidebar {
+    width: 248px;
+    flex: 0 0 248px;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .sidebar-head {
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .logo { display: flex; align-items: center; min-width: 0; }
+  .logo img { display: block; height: 30px; width: auto; max-width: 100%; }
+
+  .hamburger {
+    background: none; border: 0; padding: 6px; cursor: pointer;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .hamburger i { display: block; width: 18px; height: 2px; background: #334155; border-radius: 2px; }
+
+  .nav { padding: 16px 12px; flex: 1; }
+  .nav-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 14px; border-radius: 8px;
+    color: #475569; font-size: 14.5px; font-weight: 500;
+  }
+  .nav-item .chev {
+    margin-left: auto; width: 8px; height: 8px; flex: none;
+    border-right: 1.6px solid #94a3b8; border-bottom: 1.6px solid #94a3b8;
+    transform: rotate(45deg) translateY(-2px);
+  }
+  .nav-item .chev.up { transform: rotate(-135deg) translateY(-2px); }
+  .nav-item.active { background: var(--brand-soft); color: var(--brand); font-weight: 700; }
+  .nav-item.active .chev { border-color: var(--brand); }
+  .nav-item.open .chev { border-color: #64748b; }
+  .nav-icon { width: 20px; height: 20px; flex: none; color: currentColor; }
+
+  .subnav { padding: 2px 0 6px 26px; }
+  .subnav-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 10px; font-size: 14px; color: #475569;
+  }
+  .subnav-item.active { color: var(--brand); font-weight: 700; }
+  .dot { width: 5px; height: 5px; border-radius: 50%; background: var(--brand); flex: none; }
+  .subnav-item:not(.active) .dot { background: #94a3b8; }
+
+  .sidebar-foot { padding: 16px 16px 22px; display: grid; gap: 10px; }
+  .side-btn {
+    display: flex; align-items: center; gap: 10px;
+    padding: 12px 14px; border: 1px solid var(--border);
+    border-radius: 8px; font-size: 13.5px; color: #475569; background: var(--surface);
+  }
+  .side-btn.primary { border-color: #bfdbfe; background: var(--brand-soft); color: var(--brand); font-weight: 700; }
+
+  /* ---------- Main ---------- */
+  .main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+
+  .topbar {
+    height: 60px; background: var(--surface); border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 16px; padding: 0 26px;
+  }
+  .topbar h1 { margin: 0; font-size: 19px; font-weight: 700; letter-spacing: -0.02em; }
+  .badge-pms {
+    background: var(--brand-soft); color: var(--brand);
+    font-size: 12px; font-weight: 700; padding: 4px 9px; border-radius: 6px;
+  }
+  .topbar-right { margin-left: auto; display: flex; align-items: center; gap: 14px; }
+
+  .seg {
+    display: flex; align-items: center; gap: 4px;
+    background: #f1f5f9; border-radius: 8px; padding: 4px 10px 4px 4px;
+  }
+  .seg-label { color: var(--muted); font-size: 13px; padding: 0 6px; }
+  .seg-btn {
+    padding: 5px 12px; border-radius: 6px; font-size: 13px;
+    color: var(--muted); background: transparent; border: 0; cursor: pointer;
+    font-family: inherit;
+  }
+  .seg-btn.on { background: var(--brand); color: #fff; font-weight: 700; }
+
+  .user { font-size: 13.5px; margin: 0; }
+  .user b { font-weight: 700; }
+  .user small { color: var(--muted); }
+  .logout { color: var(--muted); font-size: 13px; text-decoration: underline; }
+
+  .content { padding: 26px; display: grid; gap: 18px; }
+
+  .page-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  .page-title-group { display: flex; align-items: baseline; gap: 14px; }
+  .page-head h2 { margin: 0; font-size: 25px; font-weight: 700; letter-spacing: -0.03em; }
+  .page-note { margin: 0; color: var(--muted); font-size: 13px; }
+
+  .crumb { display: flex; align-items: center; gap: 10px; color: var(--muted); font-size: 13px; }
+  .crumb .home-ico { width: 15px; height: 15px; color: #475569; }
+  .crumb .sep { color: #cbd5e1; font-size: 11px; }
+  .crumb .now { color: var(--text); font-weight: 700; }
+
+  .card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+  }
+
+
+  /* ---------- Form sections ---------- */
+  .form { display: grid; gap: 18px; }
+
+  .section { padding: 20px 24px 24px; }
+  .section-head { display: flex; align-items: baseline; gap: 8px; margin: 0 0 18px; font-size: 16px; font-weight: 700; }
+  .section-head .hint { font-weight: 500; color: var(--muted); font-size: 13px; }
+  .required-mark { color: #dc2626; font-weight: 800; }
+
+  /* Text input */
+  .field-line { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+  .text-input {
+    flex: 0 1 535px; min-width: 240px;
+    font-family: inherit; font-size: 14.5px; font-weight: 500; color: var(--text);
+    padding: 12px 14px; border: 1px solid #cbd5e1; border-radius: 8px; background: var(--surface);
+  }
+  .text-input::placeholder { color: #94a3b8; font-weight: 400; }
+  .text-input:focus { outline: 2px solid var(--brand); outline-offset: -1px; border-color: var(--brand); }
+  .counter { color: var(--muted); font-size: 13.5px; font-variant-numeric: tabular-nums; }
+
+  /* Radio rows */
+  .radio-rows { display: grid; gap: 12px; }
+  /* 라벨 박스 폭을 두 행이 함께 맞추고, 안내 문구는 오른쪽에 배치 */
+  .radio-rows.with-hint { grid-template-columns: max-content minmax(0, 1fr); gap: 12px 20px; align-items: center; }
+  .radio-rows.with-hint .radio-row { grid-column: 1; width: auto; }
+  .radio-rows.with-hint .hint { grid-column: 2; color: var(--muted); font-size: 13.5px; }
+  .radio-row {
+    display: flex; align-items: stretch;
+    border: 1px solid var(--border); border-radius: 8px; overflow: hidden;
+    width: fit-content; max-width: 100%;
+  }
+  .row-label {
+    flex: none; width: 106px;
+    display: flex; align-items: center; justify-content: center;
+    background: #f1f5f9; color: #334155; font-size: 13.5px; font-weight: 700;
+    padding: 12px 10px; border-right: 1px solid var(--border);
+  }
+  #contractTypeField.is-epc-hidden { display: none !important; }
+  .row-opts { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding: 8px 10px; }
+  .radio {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 6px 14px; border-radius: 6px; cursor: pointer;
+    font-size: 13.5px; color: #475569; white-space: nowrap;
+  }
+  .radio input { appearance: none; margin: 0; width: 15px; height: 15px; flex: none;
+    border: 1.6px solid #cbd5e1; border-radius: 50%; background: var(--surface); cursor: pointer; }
+  .radio input:checked { border: 4.5px solid var(--brand); }
+  .radio input:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+  .radio:has(input:checked) { color: var(--brand); font-weight: 700; }
+
+  /* Chip groups */
+  .chips { display: grid; gap: 10px; }
+  .chips.five { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+  .chips.eight { grid-template-columns: repeat(8, minmax(0, 1fr)); }
+
+  .chip {
+    display: flex; align-items: center; justify-content: center; gap: 7px;
+    padding: 11px 8px; border: 1px solid #cbd5e1; border-radius: 8px;
+    background: var(--surface); color: #475569;
+    font-size: 13.5px; font-family: inherit; cursor: pointer; text-align: center;
+  }
+  .chip:hover { border-color: #94a3b8; }
+  /* 체크 아이콘은 선택된 칩에서만 노출 */
+  .chip .check { width: 16px; height: 16px; flex: none; display: none; }
+  .chip.on {
+    border-color: var(--brand); background: var(--brand-soft);
+    color: var(--brand); font-weight: 700;
+  }
+  .chip.on .check { display: block; }
+  .chip:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+
+  /* Submit */
+  .form-actions { display: flex; justify-content: center; padding: 4px 0 8px; }
+  .btn-submit {
+    min-width: 208px; padding: 15px 32px; border: 0; border-radius: 8px;
+    background: var(--navy); color: #fff;
+    font-family: inherit; font-size: 15.5px; font-weight: 700; letter-spacing: -0.01em;
+    cursor: pointer;
+  }
+  .btn-submit:hover { background: #0f2140; }
+  .btn-submit:focus-visible { outline: 3px solid #93c5fd; outline-offset: 2px; }
+
+  /* 프로젝트 생성 확인 모달 */
+  .modal-overlay {
+    position: fixed; inset: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: center;
+    padding: 24px;
+    background: rgba(15, 23, 42, 0.45);
+  }
+  .modal-overlay[hidden] { display: none; }
+  .modal {
+    width: 100%; max-width: 600px; max-height: 100%;
+    display: flex; flex-direction: column;
+    background: var(--surface); border-radius: 14px;
+    box-shadow: 0 24px 60px rgba(15, 23, 42, 0.25);
+    animation: modal-in 0.16s ease-out;
+  }
+  @keyframes modal-in {
+    from { opacity: 0; transform: translateY(8px) scale(0.99); }
+    to { opacity: 1; transform: none; }
+  }
+  @media (prefers-reduced-motion: reduce) { .modal { animation: none; } }
+
+  .modal-head {
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    padding: 22px 28px; border-bottom: 1px solid var(--border);
+  }
+  .modal-title { margin: 0; font-size: 22px; font-weight: 700; color: var(--navy); letter-spacing: -0.02em; }
+  .modal-close {
+    flex: none; width: 34px; height: 34px; display: grid; place-items: center;
+    background: none; border: 0; border-radius: 8px; color: var(--muted); cursor: pointer;
+  }
+  .modal-close:hover { background: var(--bg); color: var(--text); }
+  .modal-close:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+  .modal-close svg { width: 20px; height: 20px; }
+
+  .modal-body { padding: 22px 28px 24px; overflow: auto; }
+  .modal-desc { margin: 0 0 18px; color: #334155; line-height: 1.6; }
+  .modal-summary-title { margin: 0 0 14px; padding-bottom: 12px; border-bottom: 1px solid var(--border); font-size: 17px; font-weight: 700; color: var(--navy); }
+
+  /* 요약 박스 */
+  .sum-box { margin: 0; padding: 6px 20px; border: 1px solid var(--border); border-radius: 10px; }
+  .sum-group { padding: 16px 0; border-bottom: 1px dashed var(--border); }
+  .sum-group:last-child { border-bottom: 0; }
+  .sum-title {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 15px; font-weight: 700; color: var(--navy);
+  }
+  .sum-title::before {
+    content: ""; flex: none; width: 8px; height: 8px; background: var(--brand);
+  }
+  .sum-lines { margin: 8px 0 0 18px; display: flex; flex-direction: column; gap: 5px; }
+  .sum-line { font-size: 14.5px; color: #334155; line-height: 1.5; }
+  .sum-line b { font-weight: 500; color: #334155; }
+
+  .modal-notes { margin: 16px 0 0; padding: 0 4px; list-style: none; display: grid; gap: 6px; }
+  .modal-notes li { position: relative; padding-left: 14px; font-size: 13px; color: var(--muted); line-height: 1.55; }
+  .modal-notes li::before { content: "*"; position: absolute; left: 0; top: 1px; }
+
+  .modal-foot {
+    display: flex; align-items: center; justify-content: center; gap: 12px;
+    padding: 4px 28px 26px;
+  }
+  .modal-btn {
+    min-width: 150px; padding: 13px 20px; font-family: inherit; font-size: 15px; font-weight: 700;
+    border-radius: 8px; cursor: pointer;
+    background: var(--surface); color: #334155; border: 1px solid var(--border);
+  }
+  .modal-btn:hover { border-color: #94a3b8; }
+  .modal-btn.primary { background: var(--brand); color: var(--surface); border-color: var(--brand); }
+  .modal-btn.primary:hover { background: #164fc4; border-color: #164fc4; }
+  .modal-btn:focus-visible { outline: 3px solid #93c5fd; outline-offset: 2px; }
+
+  @media (max-width: 560px) {
+    .modal-foot { flex-direction: column; }
+    .modal-btn { width: 100%; }
+  }
+
+  @media (max-width: 1360px) {
+    .chips.eight { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  }
+  @media (max-width: 1100px) {
+    .chips.eight { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .chips.five { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  }
+  @media (max-width: 900px) {
+    .sidebar { display: none; }
+    .content { padding: 18px; }
+    .radio-row { flex-direction: column; width: 100%; }
+    .row-label { width: 100%; justify-content: flex-start; border-right: 0; border-bottom: 1px solid var(--border); }
+    .chips.eight { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .chips.five { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .btn-submit { width: 100%; }
+  }
+</style>
+  <link rel="stylesheet" href="/assets/pms-lnb.css" />
+  <link rel="stylesheet" href="/assets/pms-intake-wizard.css?v=20260917-3" />
+</head>
+<body>
+<div class="layout">
+
+  <!-- ============ Sidebar ============ -->
+  <aside class="sidebar">
+    <div class="sidebar-head">
+      <a class="logo" href="/pms-project-detail.html">
+        <img src="/images/kepco-es-logo.png" alt="켑코이에스 주식회사 KEPCO ENERGY SOLUTION CO., LTD" />
+      </a>
+      <button class="hamburger" type="button" aria-label="메뉴 접기">
+        <i></i><i></i><i></i>
+      </button>
+    </div>
+
+    <nav class="nav" aria-label="주 메뉴">
+      <ul>
+        <li>
+          <a class="nav-item active" href="#" aria-current="page">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 21V5a1 1 0 0 1 1-1h7a1 1 0 0 1 1 1v16"/><path d="M13 10h6a1 1 0 0 1 1 1v10"/><path d="M7 8h3M7 12h3M7 16h3M16 14h1M16 18h1"/></svg>
+            사업접수 <span class="chev up" aria-hidden="true"></span>
+          </a>
+          <ul class="subnav">
+            <li><a class="subnav-item active" href="#"><span class="dot" aria-hidden="true"></span>신규 프로젝트 등록</a></li>
+            <li><a class="subnav-item" href="/pms-promotion-status.html"><span class="dot" aria-hidden="true"></span>추진단계 프로젝트 현황</a></li>
+          </ul>
+        </li>
+        <li>
+          <a class="nav-item open" href="/pms-project-status.html">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h6a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Z"/><path d="M15 11v4"/></svg>
+            프로젝트 관리 <span class="chev up" aria-hidden="true"></span>
+          </a>
+          <ul class="subnav">
+            <li><a class="subnav-item" href="/pms-project-status.html"><span class="dot" aria-hidden="true"></span>프로젝트 현황</a></li>
+          </ul>
+        </li>
+        <li>
+          <a class="nav-item" href="/pms-contract-status.html">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h9l5 5v11H5z"/><path d="M9 13h6M9 17h4"/></svg>
+            계약관리 <span class="chev" aria-hidden="true"></span>
+          </a>
+        </li>
+        <li>
+          <a class="nav-item" href="/pms-fund-repayment.html">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8Z"/><path d="M7 12h4"/></svg>
+            자금관리 <span class="chev" aria-hidden="true"></span>
+          </a>
+        </li>
+        <li>
+          <a class="nav-item" href="#">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 20V10M12 20V4M19 20v-7"/></svg>
+            통계(분석) <span class="chev" aria-hidden="true"></span>
+          </a>
+        </li>
+        <li>
+          <a class="nav-item" href="#">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s7-6.3 7-11a7 7 0 1 0-14 0c0 4.7 7 11 7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg>
+            출장관리 <span class="chev" aria-hidden="true"></span>
+          </a>
+        </li>
+        <li>
+          <a class="nav-item" href="#">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M4.5 20a7.5 7.5 0 0 1 15 0"/></svg>
+            마이페이지 <span class="chev" aria-hidden="true"></span>
+          </a>
+        </li>
+        <li>
+          <a class="nav-item" href="#">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-2.9 1.2 2 2 0 1 1-4 0 1.7 1.7 0 0 0-2.9-1.2l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1A1.7 1.7 0 0 0 3 15a2 2 0 1 1 0-4 1.7 1.7 0 0 0 1.5-2.7l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1A1.7 1.7 0 0 0 10 4.3a2 2 0 1 1 4 0 1.7 1.7 0 0 0 2.7 1.2l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1A1.7 1.7 0 0 0 21 11a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 0Z"/></svg>
+            공통관리 <span class="chev" aria-hidden="true"></span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <div class="sidebar-foot">
+      <a class="side-btn" href="#">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 10h6M7 14h4"/></svg>
+        사업관리시스템(PMS)
+      </a>
+      <a class="side-btn" href="#">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="M6 3h9l4 4v14H6z"/><path d="M9 12h6M9 16h6"/></svg>
+        전자입찰시스템(SRM)
+      </a>
+      <a class="side-btn primary" href="#">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 17v.01"/><path d="M12 13.5a2.5 2.5 0 1 0-2.5-3"/></svg>
+        온라인 매뉴얼
+      </a>
+    </div>
+  </aside>
+
+  <!-- ============ Main ============ -->
+  <div class="main">
+    <header class="topbar">
+      <h1>사업관리시스템</h1>
+      <span class="badge-pms">PMS</span>
+
+      <div class="topbar-right">
+        <div class="seg" role="group" aria-label="권한 선택">
+          <span class="seg-label">권한</span>
+          <button class="seg-btn on" type="button" aria-pressed="true">그룹#1</button>
+          <button class="seg-btn" type="button" aria-pressed="false">그룹#2</button>
+          <button class="seg-btn" type="button" aria-pressed="false">그룹#3</button>
+          <button class="seg-btn" type="button" aria-pressed="false">그룹#4</button>
+        </div>
+        <p class="user"><b>이희성 부장</b> <small>[시스템관리자]</small></p>
+        <a class="logout" href="#">로그아웃</a>
+      </div>
+    </header>
+
+    <main class="content">
+      <div class="page-head">
+        <div class="page-title-group">
+          <h2>신규 프로젝트 등록</h2>
+          <p class="page-note">* 프로젝트 등록을 위한 기본 정보를 미입력 시, 프로젝트 생성이 불가능합니다.</p>
+        </div>
+        <nav class="crumb" aria-label="현재 위치">
+          <a href="#">
+            <svg class="home-ico" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 3 2.5 11h3v9h5v-5.5h3V20h5v-9h3L12 3Z"/></svg>
+            <span class="sr-only">홈으로</span>
+          </a>
+          <a href="#">HOME</a><span class="sep" aria-hidden="true">›</span>
+          <a href="#">사업접수</a><span class="sep" aria-hidden="true">›</span>
+          <span class="now">신규 프로젝트 등록</span>
+        </nav>
+      </div>
+
+      <form class="form" action="#" method="post" novalidate>
+
+        <!-- 1. 프로젝트명 -->
+        <section class="card">
+          <div class="section">
+            <h3 class="section-head"><label for="bizName">1. 프로젝트명</label><span class="required-mark" aria-label="필수 입력">*</span></h3>
+            <div class="field-line">
+              <input class="text-input" id="bizName" name="bizName" type="text"
+                     placeholder="공식적인 프로젝트명을 입력해 주세요" value="" required />
+            </div>
+          </div>
+        </section>
+
+        <!-- 2. 계약형태 및 심의대상여부 -->
+        <section class="card">
+          <div class="section">
+            <h3 class="section-head">2. 계약 형태 및 심의대상 여부 <span class="required-mark" aria-label="필수 선택">*</span></h3>
+            <div class="radio-rows with-hint">
+              <fieldset class="radio-row" style="margin:0; padding:0;">
+                <legend class="sr-only">계약형태 선택</legend>
+                <span class="row-label" aria-hidden="true">계약형태</span>
+                <div class="row-opts">
+                  <label class="radio"><input type="radio" name="contractForm" value="esco" checked />ESCO 계약</label>
+                  <label class="radio"><input type="radio" name="contractForm" value="epc" />EPC(용역) 계약</label>
+                  <label class="radio"><input type="radio" name="contractForm" value="etc" />기타 계약</label>
+                </div>
+              </fieldset>
+
+              <fieldset class="radio-row" style="margin:0; padding:0;">
+                <legend class="sr-only">심의대상 여부 선택</legend>
+                <span class="row-label" aria-hidden="true">심의대상</span>
+                <div class="row-opts">
+                  <label class="radio"><input type="radio" name="reviewTarget" value="target" checked />대상</label>
+                  <label class="radio"><input type="radio" name="reviewTarget" value="exempt" />면제</label>
+                </div>
+              </fieldset>
+              <span class="hint">* 면제 선택 시, 추진 중 심의 요청단계가 진행되지 않습니다.</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- 3. 계약유형 및 접수경로 -->
+        <section class="card">
+          <div class="section">
+            <h3 class="section-head">3. <span id="contractSectionTitle">계약 유형 및 접수경로</span> <span class="required-mark" aria-label="필수 선택">*</span></h3>
+            <div class="radio-rows">
+              <fieldset class="radio-row" id="contractTypeField" style="margin:0; padding:0;">
+                <legend class="sr-only">계약유형 선택</legend>
+                <span class="row-label" aria-hidden="true">계약유형</span>
+                <div class="row-opts">
+                  <label class="radio"><input type="radio" name="contractType" value="profit" checked />수익사업</label>
+                  <label class="radio"><input type="radio" name="contractType" value="policy" />정책사업</label>
+                </div>
+              </fieldset>
+
+              <fieldset class="radio-row" style="margin:0; padding:0;">
+                <legend class="sr-only">접수경로 선택</legend>
+                <span class="row-label" aria-hidden="true">접수경로</span>
+                <div class="row-opts">
+                  <label class="radio"><input type="radio" name="channel" value="home" checked />홈페이지</label>
+                  <label class="radio"><input type="radio" name="channel" value="assoc" />기술인협회</label>
+                  <label class="radio"><input type="radio" name="channel" value="proposal" />당사 제안</label>
+                  <label class="radio"><input type="radio" name="channel" value="user" />에너지사용자</label>
+                  <label class="radio"><input type="radio" name="channel" value="online" />온라인</label>
+                  <label class="radio"><input type="radio" name="channel" value="self" />본인 발굴</label>
+                  <label class="radio"><input type="radio" name="channel" value="epc" />EPC사</label>
+                  <label class="radio"><input type="radio" name="channel" value="kepco" />한전접수</label>
+                </div>
+              </fieldset>
+            </div>
+          </div>
+        </section>
+
+        <!-- 4. 사업구분 -->
+        <section class="card">
+          <div class="section">
+            <h3 class="section-head">4. 사업 구분
+              <span class="hint">(1개 이상 선택 / 중복선택이 가능합니다)</span>
+              <span class="required-mark" aria-label="필수 선택">*</span>
+            </h3>
+            <div class="chips five" id="bizTypeChips" role="group" aria-label="사업구분 (중복선택 가능)">
+              <button class="chip" type="button" aria-pressed="false">산업체</button>
+              <button class="chip" type="button" aria-pressed="false">공공</button>
+              <button class="chip" type="button" aria-pressed="false">건축물</button>
+              <button class="chip" type="button" aria-pressed="false">한전고효율</button>
+              <button class="chip" type="button" aria-pressed="false">신산업</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- 5. 대상설비 -->
+        <section class="card">
+          <div class="section">
+            <h3 class="section-head">5. 대상 설비
+              <span class="hint">(1개 이상 선택 / 중복선택이 가능합니다)</span>
+              <span class="required-mark" aria-label="필수 선택">*</span>
+            </h3>
+            <div class="chips eight" id="equipChips" role="group" aria-label="대상설비 (중복선택 가능)">
+              <button class="chip" type="button" aria-pressed="false"><svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m8.5 12.3 2.4 2.4 4.6-5"/></svg>CTTS</button>
+              <button class="chip" type="button" aria-pressed="false"><svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m8.5 12.3 2.4 2.4 4.6-5"/></svg>EHP</button>
+              <button class="chip" type="button" aria-pressed="false">ESS</button>
+              <button class="chip" type="button" aria-pressed="false">IGBT</button>
+              <button class="chip" type="button" aria-pressed="false"><svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m8.5 12.3 2.4 2.4 4.6-5"/></svg>LED</button>
+              <button class="chip" type="button" aria-pressed="false">공기압축기</button>
+              <button class="chip" type="button" aria-pressed="false">공조시스템</button>
+              <button class="chip" type="button" aria-pressed="false">바이오가스</button>
+
+              <button class="chip" type="button" aria-pressed="false">사출기</button>
+              <button class="chip" type="button" aria-pressed="false">송풍기</button>
+              <button class="chip" type="button" aria-pressed="false">에어드라이어</button>
+              <button class="chip" type="button" aria-pressed="false">열처리로</button>
+              <button class="chip" type="button" aria-pressed="false">인버터</button>
+              <button class="chip" type="button" aria-pressed="false">진공로</button>
+              <button class="chip" type="button" aria-pressed="false">폐열회수</button>
+              <button class="chip" type="button" aria-pressed="false">항온항습제</button>
+
+              <button class="chip" type="button" aria-pressed="false">회생제동장치</button>
+              <button class="chip" type="button" aria-pressed="false">히트펌프</button>
+              <button class="chip" type="button" aria-pressed="false"><svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m8.5 12.3 2.4 2.4 4.6-5"/></svg>펌프</button>
+              <button class="chip" type="button" aria-pressed="false">압축기</button>
+              <button class="chip" type="button" aria-pressed="false">염욕로</button>
+              <button class="chip" type="button" aria-pressed="false">태양광</button>
+              <button class="chip" type="button" aria-pressed="false">연료전지</button>
+              <button class="chip" type="button" aria-pressed="false">터보냉동기</button>
+
+              <button class="chip" type="button" aria-pressed="false">복합설비</button>
+              <button class="chip" type="button" aria-pressed="false">소수력발전</button>
+              <button class="chip" type="button" aria-pressed="false">ZEB</button>
+              <button class="chip" type="button" aria-pressed="false"><svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m8.5 12.3 2.4 2.4 4.6-5"/></svg>EMS</button>
+            </div>
+          </div>
+        </section>
+
+        <div class="form-actions">
+          <button class="btn-submit" type="submit">프로젝트 생성</button>
+        </div>
+      </form>
+
+    </main>
+  </div>
+</div>
+
+<!-- 프로젝트 생성 확인 모달 -->
+<div class="modal-overlay" id="confirmOverlay" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
+    <div class="modal-body">
+      <h2 class="modal-summary-title" id="confirmTitle">사업 등록 정보</h2>
+
+      <dl class="sum-box">
+        <div class="sum-group">
+          <dt class="sum-title">프로젝트명</dt>
+          <dd class="sum-lines"><span class="sum-line" id="sumName">-</span></dd>
+        </div>
+
+        <div class="sum-group">
+          <dt class="sum-title">계약 형태 및 심의대상 여부</dt>
+          <dd class="sum-lines">
+            <span class="sum-line">계약 형태 : <b id="sumForm">-</b></span>
+            <span class="sum-line">심의 대상 : <b id="sumReview">-</b></span>
+          </dd>
+        </div>
+
+        <div class="sum-group">
+          <dt class="sum-title" id="sumContractSectionTitle">계약 유형 및 접수경로</dt>
+          <dd class="sum-lines">
+            <span class="sum-line" id="sumContractTypeLine">계약 유형 : <b id="sumType">-</b></span>
+            <span class="sum-line">접수 경로 : <b id="sumChannel">-</b></span>
+          </dd>
+        </div>
+
+        <div class="sum-group">
+          <dt class="sum-title">사업 구분</dt>
+          <dd class="sum-lines"><span class="sum-line" id="sumBizType">-</span></dd>
+        </div>
+
+        <div class="sum-group">
+          <dt class="sum-title">대상설비</dt>
+          <dd class="sum-lines"><span class="sum-line" id="sumEquip">-</span></dd>
+        </div>
+      </dl>
+
+      <ul class="modal-notes">
+        <li>선택된 정보로 프로젝트를 생성합니다.</li>
+        <li>프로젝트 생성 이후, 해당 접수 정보는 수정이 어려우므로(관리자 요청 처리) 정확히 확인해 주세요.</li>
+      </ul>
+    </div>
+
+    <div class="modal-foot">
+      <button class="modal-btn primary" type="button" id="confirmOk">프로젝트 생성</button>
+      <button class="modal-btn" type="button" data-close>취소</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  var nameInput = document.getElementById("bizName");
+
+  // 사업 접수 STEP 모달(STEP1~3)에서 선택한 값을 해당 라디오에 반영합니다.
+  (function applyIntakeSteps() {
+    var params = new URLSearchParams(window.location.search);
+    var mapping = { form: "contractForm", type: "contractType", review: "reviewTarget" };
+    var reviewValue = { target: "target", exempt: "exempt" };
+
+    Object.keys(mapping).forEach(function (key) {
+      var value = params.get(key);
+      if (!value) return;
+      if (key === "review") value = reviewValue[value] || value;
+
+      var radio = document.querySelector(
+        'input[name="' + mapping[key] + '"][value="' + value + '"]'
+      );
+      if (radio) radio.checked = true;
+    });
+
+    var contractTypeField = document.getElementById("contractTypeField");
+    var contractSectionTitle = document.getElementById("contractSectionTitle");
+    var contractFormInputs = document.querySelectorAll('input[name="contractForm"]');
+
+    function syncContractTypeVisibility() {
+      var selectedForm = document.querySelector('input[name="contractForm"]:checked');
+      var isEpc = selectedForm && selectedForm.value === "epc";
+      contractTypeField.hidden = isEpc;
+      contractTypeField.classList.toggle("is-epc-hidden", isEpc);
+      contractTypeField.querySelectorAll("input").forEach(function (input) {
+        input.disabled = isEpc;
+      });
+      contractSectionTitle.textContent = isEpc ? "접수경로" : "계약 유형 및 접수경로";
+    }
+
+    contractFormInputs.forEach(function (input) {
+      input.addEventListener("change", syncContractTypeVisibility);
+    });
+    syncContractTypeVisibility();
+  })();
+
+  // 대상 설비 칩 전체에 체크 아이콘 삽입 (선택 시에만 CSS로 노출)
+  document.querySelectorAll("#equipChips .chip").forEach(function (chip) {
+    if (chip.querySelector(".check")) return;
+    var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svg.setAttribute("class", "check");
+    svg.setAttribute("viewBox", "0 0 24 24");
+    svg.setAttribute("fill", "none");
+    svg.setAttribute("stroke", "currentColor");
+    svg.setAttribute("stroke-width", "2");
+    svg.setAttribute("stroke-linecap", "round");
+    svg.setAttribute("stroke-linejoin", "round");
+    svg.setAttribute("aria-hidden", "true");
+    svg.innerHTML = '<circle cx="12" cy="12" r="9"></circle><path d="m8.5 12.3 2.4 2.4 4.6-5"></path>';
+    chip.insertBefore(svg, chip.firstChild);
+  });
+
+  // 중복선택 칩 토글
+  document.querySelectorAll(".chip").forEach(function (chip) {
+    chip.addEventListener("click", function () {
+      var on = chip.classList.toggle("on");
+      chip.setAttribute("aria-pressed", String(on));
+    });
+  });
+
+  // 프로젝트 생성 확인 모달
+  (function () {
+    var form = document.querySelector(".form");
+    var overlay = document.getElementById("confirmOverlay");
+    var okBtn = document.getElementById("confirmOk");
+    var lastFocused = null;
+
+    function radioText(name) {
+      var checked = form.querySelector('input[name="' + name + '"]:checked');
+      return checked ? checked.closest("label").textContent.trim() : "-";
+    }
+    function chipList(containerId) {
+      return Array.prototype.map.call(
+        document.querySelectorAll("#" + containerId + " .chip.on"),
+        function (c) { return c.textContent.trim(); }
+      );
+    }
+    function chipText(containerId) {
+      var picked = chipList(containerId);
+      return picked.length ? picked.join("  |  ") : "-";
+    }
+
+    // 접수 정보를 프로젝트 생성(추진 탭)으로 전달
+    function saveReceipt() {
+      var isEpc = form.querySelector('input[name="contractForm"]:checked').value === "epc";
+      var payload = {
+        name: nameInput.value.trim(),
+        contractForm: radioText("contractForm"),
+        reviewTarget: radioText("reviewTarget"),
+        contractType: isEpc ? "" : radioText("contractType"),
+        channel: radioText("channel"),
+        bizTypes: chipList("bizTypeChips"),
+        equipments: chipList("equipChips")
+      };
+      try {
+        sessionStorage.setItem("pms.newProject", JSON.stringify(payload));
+      } catch (err) {
+        console.log("[v0] 접수 데이터 저장 실패:", err.message);
+      }
+    }
+
+    function fillSummary() {
+      var isEpc = form.querySelector('input[name="contractForm"]:checked').value === "epc";
+      document.getElementById("sumName").textContent = nameInput.value.trim() || "-";
+      document.getElementById("sumForm").textContent = radioText("contractForm");
+      document.getElementById("sumReview").textContent = radioText("reviewTarget");
+      document.getElementById("sumType").textContent = radioText("contractType");
+      document.getElementById("sumContractTypeLine").hidden = isEpc;
+      document.getElementById("sumContractSectionTitle").textContent = isEpc ? "접수경로" : "계약 유형 및 접수경로";
+      document.getElementById("sumChannel").textContent = radioText("channel");
+      document.getElementById("sumBizType").textContent = chipText("bizTypeChips");
+      document.getElementById("sumEquip").textContent = chipText("equipChips");
+    }
+
+    function openModal() {
+      lastFocused = document.activeElement;
+      fillSummary();
+      overlay.hidden = false;
+      document.body.style.overflow = "hidden";
+      okBtn.focus();
+    }
+    function closeModal() {
+      overlay.hidden = true;
+      document.body.style.overflow = "";
+      if (lastFocused) lastFocused.focus();
+    }
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      if (!form.reportValidity()) return;
+      if (!chipList("bizTypeChips").length) {
+        alert("사업 구분을 1개 이상 선택해 주세요.");
+        document.querySelector("#bizTypeChips .chip").focus();
+        return;
+      }
+      if (!chipList("equipChips").length) {
+        alert("대상 설비를 1개 이상 선택해 주세요.");
+        document.querySelector("#equipChips .chip").focus();
+        return;
+      }
+      openModal();
+    });
+
+    // 취소 / X 버튼
+    overlay.querySelectorAll("[data-close]").forEach(function (btn) {
+      btn.addEventListener("click", closeModal);
+    });
+    // 딤 영역 클릭
+    overlay.addEventListener("click", function (e) {
+      if (e.target === overlay) closeModal();
+    });
+    // ESC 키
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && !overlay.hidden) closeModal();
+    });
+
+    // 확인 → 프로젝트 상세 > 추진 탭
+    okBtn.addEventListener("click", function () {
+      saveReceipt();
+      document.body.style.overflow = "";
+      window.location.href = "/pms-project-promotion.html";
+    });
+  })();
+
+  // 권한 그룹 세그먼트
+  document.querySelectorAll(".seg-btn").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      document.querySelectorAll(".seg-btn").forEach(function (b) {
+        b.classList.remove("on");
+        b.setAttribute("aria-pressed", "false");
+      });
+      btn.classList.add("on");
+      btn.setAttribute("aria-pressed", "true");
+    });
+  });
+</script>
+  <script src="/assets/pms-lnb.js"></script>
+  <script src="/assets/pms-intake-wizard.js?v=20260921-2"></script>
+</body>
+</html>

@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>데이터 수정 요청 상세 | 사업관리시스템(PMS)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet" />
+  <style>
+    :root{--bg:#f1f5f9;--surface:#fff;--border:#d8dee8;--text:#1e293b;--muted:#64748b;--brand:#1d6ff2;--navy:#183968}
+    *{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--text);font:14px/1.5 "Noto Sans KR",sans-serif}button,textarea{font:inherit}a{color:inherit;text-decoration:none}ul{list-style:none;margin:0;padding:0}
+    .layout{display:flex;min-height:100vh}.sidebar{width:248px;flex:0 0 248px;background:#fff;border-right:1px solid var(--border)}.sidebar-head{height:60px;padding:0 20px;display:flex;align-items:center;border-bottom:1px solid var(--border)}.logo img{height:30px}.nav{padding:16px 12px}.main{min-width:0;flex:1}.topbar{height:60px;padding:0 26px;display:flex;align-items:center;gap:12px;background:#fff;border-bottom:1px solid var(--border)}.topbar h1{margin:0;font-size:19px}.pms{padding:4px 9px;border-radius:6px;background:#eff6ff;color:var(--brand);font-size:12px;font-weight:700}.user{margin-left:auto;color:#475569}
+    .content{padding:26px;display:grid;gap:18px}.page-head{display:flex;align-items:center;justify-content:space-between;padding-bottom:10px;border-bottom:1px solid #94a3b8}.page-head h2{margin:0;font-size:25px}.crumb{color:var(--muted);font-size:13px}.card{overflow:hidden;background:#fff;border:1px solid var(--border);border-radius:7px}.table-scroll{overflow-x:auto}table{width:100%;min-width:1020px;border-collapse:collapse}th,td{height:50px;padding:10px;border-right:1px solid var(--border);text-align:center;white-space:nowrap}th:last-child,td:last-child{border-right:0}th{background:#dfe5ec;font-size:12.5px}td{border-top:1px solid var(--border);font-size:13px}.state{font-weight:700}.request-content{min-height:178px;padding:18px 14px;background:#fff;border:1px solid #94a3b8}.request-content p{margin:0 0 22px}.change-line{font-size:14px}
+    .comment-card h3{height:50px;margin:0;padding:13px 18px;border-bottom:1px solid var(--border);font-size:17px}.comment-form{display:grid;grid-template-columns:160px minmax(0,1fr)}.comment-label{display:flex;align-items:center;justify-content:center;background:#e7edf4;font-weight:700}.comment-input{padding:12px 16px 13px}.comment-input textarea{display:block;width:100%;height:120px;padding:12px;border:1px solid #cbd5e1;border-radius:5px;color:var(--text);resize:vertical}.comment-input textarea:focus-visible{outline:2px solid #93c5fd;outline-offset:1px}.comment-tools{display:flex;align-items:center;justify-content:flex-end;gap:14px;margin-top:8px}.count{color:#64748b}.btn{display:inline-flex;align-items:center;justify-content:center;height:38px;min-width:86px;padding:0 18px;border:1px solid #334155;border-radius:3px;background:#334155;color:#fff;font-weight:700;line-height:1;cursor:pointer}.btn-primary{border-color:var(--navy);background:var(--navy)}.btn:disabled{cursor:not-allowed;opacity:.55}
+    .process{display:grid;grid-template-columns:160px minmax(0,1fr);border:1px solid var(--border);background:var(--border);gap:1px}.process-key,.process-value{min-height:56px;padding:14px 16px;display:flex;align-items:center}.process-key{justify-content:center;background:#e7edf4;font-weight:700}.process-value{background:#fff;color:#475569}.actions{display:flex;justify-content:flex-end;gap:12px}.toast{position:fixed;left:50%;bottom:30px;z-index:10;transform:translateX(-50%);padding:11px 18px;border-radius:999px;background:#0f172a;color:#fff;box-shadow:0 8px 24px rgba(15,23,42,.22)}.toast[hidden]{display:none}
+    @media(max-width:900px){.sidebar{display:none}.content{padding:18px}.page-head{align-items:flex-start;gap:8px;flex-direction:column}.comment-form,.process{grid-template-columns:110px minmax(0,1fr)}}
+  </style>
+  <link rel="stylesheet" href="/assets/pms-lnb.css" />
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar"><div class="sidebar-head"><a class="logo" href="/"><img src="/images/kepco-es-logo.png" alt="켑코이에스 주식회사" /></a></div><nav class="nav" aria-label="주 메뉴"><ul></ul></nav></aside>
+    <div class="main">
+      <header class="topbar"><h1>사업관리시스템</h1><span class="pms">PMS</span><span class="user"><b>이희성 부장</b> [시스템관리자]</span></header>
+      <main class="content">
+        <div class="page-head"><h2>데이터 수정 요청</h2><div class="crumb">HOME　›　마이페이지　›　<b>데이터 수정 요청</b></div></div>
+        <section class="card table-scroll" aria-label="수정요청 정보"><table><thead><tr><th>순번</th><th>상태</th><th>프로젝트 번호</th><th>프로젝트명</th><th>진행상태</th><th>요청 영역</th><th>위치</th><th>접수일</th><th>처리일</th><th>처리자</th></tr></thead><tbody><tr><td>24</td><td class="state" id="requestState">요청</td><td>2026-05011</td><td>천안 ㈜선영 LED 에너지효율화사업</td><td>심의요청</td><td>사업명</td><td>프로젝트관리 &gt; 추진 &gt; 프로젝트 기본정보</td><td>2026.12.12</td><td id="processedDate">2026.12.12</td><td>홍길동</td></tr></tbody></table></section>
+        <section class="request-content" aria-label="수정 요청내용"><p>프로젝트 기본정보의 사업명에 오타가 기재되어 있어 수정요청합니다.</p><div class="change-line">에너지효율화 사업 ▶ 에너지효율화 사업</div></section>
+
+        <section class="card comment-card" aria-labelledby="commentTitle">
+          <h3 id="commentTitle">댓글 입력</h3>
+          <form id="commentForm" class="comment-form">
+            <label class="comment-label" for="comment">댓글 내용</label>
+            <div class="comment-input"><textarea id="comment" maxlength="500" placeholder="댓글을 입력하세요." required></textarea><div class="comment-tools"><span class="count"><span id="commentCount">0</span> / 500</span><button class="btn btn-primary" type="submit">댓글 등록</button></div></div>
+          </form>
+        </section>
+
+        <section class="process" aria-label="처리 결과"><div class="process-key">처리일자</div><div class="process-value" id="resultDate">2026.12.12</div><div class="process-key">처리내역</div><div class="process-value" id="resultMessage">오타 처리 완료되었습니다.</div></section>
+        <div class="actions"><button class="btn btn-primary" id="completeButton" type="button">처리완료</button><a class="btn" href="/pms-data-change-requests.html">목록</a></div>
+      </main>
+    </div>
+  </div>
+  <div class="toast" id="toast" role="status" hidden></div>
+  <script>
+    (function(){
+      var comment=document.getElementById('comment');
+      var count=document.getElementById('commentCount');
+      var toastTimer;
+      function showToast(message){var toast=document.getElementById('toast');toast.textContent=message;toast.hidden=false;clearTimeout(toastTimer);toastTimer=setTimeout(function(){toast.hidden=true},2200)}
+      comment.addEventListener('input',function(){count.textContent=comment.value.length});
+      document.getElementById('commentForm').addEventListener('submit',function(event){event.preventDefault();if(!comment.value.trim()){comment.focus();showToast('댓글 내용을 입력해 주세요.');return}showToast('댓글이 등록되었습니다.');comment.value='';count.textContent='0'});
+      document.getElementById('completeButton').addEventListener('click',function(){if(!window.confirm('수정 요청을 처리완료 상태로 변경하시겠습니까?'))return;document.getElementById('requestState').textContent='처리완료';document.getElementById('resultMessage').textContent='오타 처리 완료되었습니다.';this.disabled=true;this.textContent='처리완료됨';showToast('처리완료 상태로 변경되었습니다.')});
+    })();
+  </script>
+  <script src="/assets/pms-lnb.js"></script>
+</body>
+</html>

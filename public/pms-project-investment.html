@@ -1,0 +1,1204 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>프로젝트 상세 - 투자 | 사업관리시스템 (PMS)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #f1f5f9;
+    --surface: #ffffff;
+    --border: #e5e9f0;
+    --text: #1e293b;
+    --muted: #64748b;
+    --brand: #1d6ff2;
+    --brand-soft: #eff6ff;
+    --navy: #1e3a5f;
+    --green: #10b981;
+    --amber: #f59e0b;
+    --field: #f1f5f9;
+    --radius: 10px;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Noto Sans KR", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a { color: inherit; text-decoration: none; }
+  ul { list-style: none; margin: 0; padding: 0; }
+
+  .sr-only {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+  }
+
+  .layout { display: flex; min-height: 100vh; }
+
+  /* ---------- Sidebar ---------- */
+  .sidebar {
+    width: 248px; flex: 0 0 248px; background: var(--surface);
+    border-right: 1px solid var(--border); display: flex; flex-direction: column;
+  }
+  .sidebar-head {
+    height: 60px; display: flex; align-items: center; justify-content: space-between;
+    padding: 0 20px; border-bottom: 1px solid var(--border);
+  }
+  .logo { display: flex; align-items: center; min-width: 0; }
+  .logo img { display: block; height: 30px; width: auto; max-width: 100%; }
+  .hamburger {
+    background: none; border: 0; padding: 6px; cursor: pointer;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .hamburger i { display: block; width: 18px; height: 2px; background: #334155; border-radius: 2px; }
+
+  .nav { padding: 16px 12px; flex: 1; }
+  .nav-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 14px; border-radius: 8px;
+    color: #475569; font-size: 14.5px; font-weight: 500;
+  }
+  .nav-item .chev {
+    margin-left: auto; width: 8px; height: 8px; flex: none;
+    border-right: 1.6px solid #94a3b8; border-bottom: 1.6px solid #94a3b8;
+    transform: rotate(45deg) translateY(-2px);
+  }
+  .nav-item.active .chev { border-color: var(--brand); }
+  .nav-item .chev.up { transform: rotate(-135deg) translateY(-2px); }
+  .nav-item.open .chev { border-color: #64748b; }
+  .nav-item.active { background: var(--brand-soft); color: var(--brand); font-weight: 700; }
+  .nav-icon { width: 20px; height: 20px; flex: none; color: currentColor; }
+
+  .subnav { padding: 2px 0 6px 26px; }
+  .subnav-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 10px; font-size: 14px; color: #475569;
+  }
+  .subnav-item.active { color: var(--brand); font-weight: 700; }
+  .dot { width: 5px; height: 5px; border-radius: 50%; background: var(--brand); flex: none; }
+
+  .sidebar-foot { padding: 16px 16px 22px; display: grid; gap: 10px; }
+  .side-btn {
+    display: flex; align-items: center; gap: 10px;
+    padding: 12px 14px; border: 1px solid var(--border);
+    border-radius: 8px; font-size: 13.5px; color: #475569; background: var(--surface);
+  }
+  .side-btn.primary { border-color: #bfdbfe; background: var(--brand-soft); color: var(--brand); font-weight: 700; }
+
+  /* ---------- Main ---------- */
+  .main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+  .topbar {
+    height: 60px; background: var(--surface); border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 16px; padding: 0 26px;
+  }
+  .topbar h1 { margin: 0; font-size: 19px; font-weight: 700; letter-spacing: -0.02em; }
+  .badge-pms {
+    background: var(--brand-soft); color: var(--brand);
+    font-size: 12px; font-weight: 700; padding: 4px 9px; border-radius: 6px;
+  }
+  .topbar-right { margin-left: auto; display: flex; align-items: center; gap: 14px; }
+  .seg { display: flex; align-items: center; gap: 6px; }
+  .seg-label { color: var(--muted); font-size: 13px; margin-right: 2px; }
+  .seg-btn {
+    padding: 5px 12px; border-radius: 6px; font-size: 13px;
+    color: var(--muted); background: transparent; border: 0; cursor: pointer; font-family: inherit;
+  }
+  .seg-btn.on { background: #334155; color: #fff; font-weight: 700; }
+  .user { font-size: 13.5px; }
+  .user b { font-weight: 700; }
+  .user small { color: var(--muted); }
+  .logout { color: var(--muted); font-size: 13px; text-decoration: underline; }
+
+  .content { padding: 26px; display: grid; gap: 18px; }
+  .page-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  .page-head h2 { margin: 0; font-size: 25px; font-weight: 700; letter-spacing: -0.03em; }
+  .crumb { display: flex; align-items: center; gap: 10px; color: var(--muted); font-size: 13px; }
+  .crumb .sep { color: #cbd5e1; font-size: 11px; }
+  .crumb .now { color: var(--text); font-weight: 700; }
+
+  .card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+  }
+  .card-body { padding: 20px 24px 24px; }
+
+  /* Tabs */
+  .tabbar { display: flex; align-items: center; gap: 8px; padding: 0 20px; }
+  .tabs { display: flex; }
+  .tab {
+    display: block; padding: 18px 26px; font-size: 15px; color: var(--muted); font-weight: 500;
+    border-bottom: 3px solid transparent; background: none; border-top: 0; border-left: 0; border-right: 0;
+    cursor: pointer; font-family: inherit;
+  }
+  .tab.on { color: var(--brand); font-weight: 700; border-bottom-color: var(--brand); }
+  .tab-right { margin-left: auto; display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--muted); }
+  select {
+    font-family: inherit; font-size: 14px; font-weight: 700; color: var(--text);
+    padding: 8px 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface);
+  }
+
+  /* ---------- Buttons ---------- */
+  .btn {
+    height: 36px; padding: 0 16px; font-family: inherit; font-size: 13.5px; font-weight: 700;
+    border-radius: 8px; cursor: pointer; display: inline-flex; align-items: center;
+    justify-content: center; gap: 7px; border: 1px solid transparent;
+  }
+  .btn-excel { background: var(--green); color: #fff; border-color: var(--green); }
+  .btn-excel:hover { background: #0da271; }
+  .btn-dark { background: var(--navy); color: #fff; border-color: var(--navy); }
+  .btn-dark:hover { background: #16304f; }
+  .btn svg { width: 15px; height: 15px; }
+
+  /* ---------- Section head ---------- */
+  .sec-head { display: flex; align-items: center; gap: 12px; margin-bottom: 6px; }
+  .sec-title { margin: 0; font-size: 16px; font-weight: 700; letter-spacing: -0.02em; }
+  .sec-head .spacer { flex: 1; }
+  .basis { display: inline-flex; align-items: center; align-self: center; color: var(--muted); font-size: 12.5px; line-height: 1; margin: 0; }
+
+  /* ---------- Key / Value 정보 그리드 ---------- */
+  .kv {
+    display: grid; border: 1px solid var(--border); border-radius: 8px; overflow: hidden;
+    background: var(--border); gap: 1px;
+  }
+  .kv.pay-target { grid-template-columns: 168px minmax(0, 1fr) 200px minmax(0, 1fr); }
+  .kv.vendor { grid-template-columns: repeat(3, 168px minmax(0, 1fr)); }
+  .kv .k {
+    background: #e2e8f0; color: #334155; font-size: 13px; font-weight: 500;
+    padding: 13px 14px; display: flex; align-items: center;
+  }
+  .kv .v {
+    background: #f8fafc; font-size: 13.5px; font-weight: 500;
+    padding: 13px 14px; display: flex; align-items: center; min-width: 0;
+  }
+  .kv .v.num { justify-content: flex-end; font-variant-numeric: tabular-nums; }
+  .kv .span2 { grid-row: span 2; }
+  .vendor-name-link { padding: 0; border: 0; background: transparent; color: var(--brand); font: inherit; font-weight: 700; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+  .target-modal.detail-mode .field-control input[readonly], .target-modal.detail-mode .field-control select:disabled,
+  .target-modal.detail-mode .insurance-table input[readonly] { background: #f8fafc; color: #475569; cursor: default; }
+  .target-modal.detail-mode .req, .target-modal.detail-mode .field-hint { display: none; }
+  .target-modal button[hidden] { display: none; }
+
+  /* ---------- EPC사 추가 이력 ---------- */
+  .history-card[hidden] { display: none; }
+  .history-list { display: grid; gap: 10px; }
+  .history-item {
+    display: grid; grid-template-columns: repeat(3, 160px minmax(0, 1fr));
+    border: 1px solid var(--border); border-radius: 8px; overflow: hidden;
+    background: var(--border); gap: 1px;
+  }
+  .history-key, .history-value { min-height: 46px; padding: 11px 13px; display: flex; align-items: center; }
+  .history-key { background: #e2e8f0; color: #334155; font-size: 13px; font-weight: 700; }
+  .history-value { background: #f8fafc; color: #334155; font-size: 13.5px; }
+  .history-value.num { justify-content: flex-end; }
+
+  /* ---------- 거���처 서브탭 ---------- */
+  .vtabbar { display: flex; align-items: flex-end; gap: 10px; margin-bottom: -1px; }
+  .vtabs { display: flex; gap: 4px; overflow-x: auto; }
+  .vtab {
+    padding: 11px 22px; font-family: inherit; font-size: 13.5px; font-weight: 500; color: var(--muted);
+    background: #f1f5f9; border: 1px solid var(--border); border-bottom-color: transparent;
+    border-radius: 8px 8px 0 0; cursor: pointer; white-space: nowrap;
+  }
+  .vtab.on { background: var(--surface); color: var(--brand); font-weight: 700; box-shadow: inset 0 2px 0 var(--brand); }
+  .vtab.summary-tab {
+    position: sticky; left: 0; z-index: 2; min-width: 96px;
+    color: var(--navy); background: #e8eef6; font-weight: 700;
+  }
+  .vtab.summary-tab.on { background: var(--surface); color: var(--brand); }
+  .vtab.new-vendor {
+    color: #b42318; background: #fff1f0; border-color: #fecaca;
+  }
+  .vtab.new-vendor:hover { background: #fee2e2; }
+  .vtab.new-vendor.on {
+    color: #b42318; background: #fff; border-color: #fca5a5;
+    box-shadow: inset 0 3px 0 #dc2626;
+  }
+  .vtabbar .spacer { flex: 1; }
+  .vpanel { border: 1px solid var(--border); border-radius: 0 8px 8px 8px; padding: 20px; display: grid; gap: 22px; }
+  .summary-panel[hidden], .vendor-detail[hidden] { display: none; }
+  .summary-panel { display: grid; gap: 10px; }
+  .vendor-detail { display: grid; gap: 22px; }
+  .summary-table { min-width: 920px; }
+  .summary-table tbody tr.total th,
+  .summary-table tbody tr.total td { background: #f8fafc; font-weight: 700; }
+  .summary-table tbody th { padding: 12px 10px; text-align: left; border-bottom: 1px solid var(--border); font-weight: 500; }
+  /* 내부 표의 최소 너비가 레이아웃을 밀어내지 않도록 합니다. */
+  .vpanel > *, .kv, .main, .content, .card, .card-body { min-width: 0; }
+
+  /* ---------- Table ---------- */
+  .table-scroll { overflow-x: auto; border: 1px solid var(--border); border-radius: 8px; }
+  table { width: 100%; border-collapse: collapse; min-width: 1080px; }
+  caption { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  thead th {
+    background: #f8fafc; color: #334155; font-size: 12.5px; font-weight: 700;
+    padding: 12px 10px; border-bottom: 1px solid var(--border); white-space: nowrap;
+  }
+  thead th + th, tbody td + td { border-left: 1px solid #f1f5f9; }
+  tbody td {
+    padding: 13px 10px; text-align: center; font-size: 13px; color: #334155;
+    border-bottom: 1px solid #f1f5f9; white-space: nowrap;
+  }
+  tbody tr:hover td { background: #fafcff; }
+  tbody tr.total td { background: #f1f5f9; font-weight: 700; border-bottom: 0; }
+  tbody tr.total:hover td { background: #f1f5f9; }
+  .num { text-align: right; font-variant-numeric: tabular-nums; }
+  .pill {
+    display: inline-block; padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 700;
+  }
+  .pill-green { background: #dcfce7; color: #15803d; }
+  .pill-blue { background: #e6effb; color: #1d4ed8; }
+  .pill-gray { background: #eef2f7; color: #64748b; }
+
+  /* ---------- 지급대상 추가 모달 ---------- */
+  body.modal-open { overflow: hidden; }
+  .target-modal[hidden] { display: none; }
+  .target-modal {
+    position: fixed; inset: 0; z-index: 1000; display: grid; place-items: center;
+    padding: 24px; background: rgba(15, 23, 42, 0.52);
+  }
+  .target-dialog {
+    width: min(1120px, 100%); max-height: calc(100vh - 48px); overflow: auto;
+    background: #fff; border-radius: 12px; box-shadow: 0 24px 70px rgba(15, 23, 42, 0.28);
+  }
+  .target-dialog-head {
+    position: sticky; top: 0; z-index: 2; display: flex; align-items: center;
+    padding: 18px 22px; background: #fff; border-bottom: 1px solid var(--border);
+  }
+  .target-dialog-head h2 { margin: 0; font-size: 19px; }
+  .modal-close {
+    margin-left: auto; width: 34px; height: 34px; border: 0; border-radius: 7px;
+    background: #f1f5f9; color: #475569; font-size: 22px; cursor: pointer;
+  }
+  .target-form { padding: 20px 22px 24px; }
+  .form-section-title { margin: 0 0 10px; font-size: 15px; }
+  .target-grid {
+    display: grid; grid-template-columns: 150px minmax(0, 1fr) 150px minmax(0, 1fr);
+    border: 1px solid #cbd5e1; border-radius: 8px; overflow: hidden;
+  }
+  .target-grid .field-label, .target-grid .field-control {
+    min-height: 48px; padding: 8px 10px; border-right: 1px solid #cbd5e1;
+    border-bottom: 1px solid #cbd5e1;
+  }
+  .target-grid > :nth-child(4n) { border-right: 0; }
+  .target-grid > :nth-last-child(-n + 4) { border-bottom: 0; }
+  .target-grid .field-control-wide { grid-column: span 3; border-right: 0; }
+  .field-label { display: flex; align-items: center; background: #f1f5f9; font-size: 13px; font-weight: 700; }
+  .field-label .req { margin-left: 3px; color: #ef4444; }
+  .field-control { display: flex; align-items: center; gap: 7px; background: #fff; }
+  .field-control input, .field-control select {
+    width: 100%; height: 32px; min-width: 0; padding: 5px 9px; border: 1px solid #cbd5e1;
+    border-radius: 5px; background: #fff; font: inherit; font-size: 13px;
+  }
+  .field-control input[type="date"] { color: #64748b; }
+  .field-control .lookup { flex: none; height: 32px; padding: 0 12px; border: 0; border-radius: 5px; background: #475569; color: #fff; font: inherit; font-size: 12px; font-weight: 700; cursor: pointer; }
+  .split-pay { display: grid; grid-template-columns: 95px repeat(3, minmax(0, 1fr)); width: 100%; gap: 6px; }
+  .field-hint { flex: none; color: #64748b; font-size: 11.5px; white-space: nowrap; }
+  .insurance-wrap { margin-top: 16px; border: 1px solid #cbd5e1; border-radius: 8px; overflow-x: auto; }
+  .insurance-table { min-width: 950px; }
+  .insurance-table th, .insurance-table td { border: 1px solid #cbd5e1; }
+  .insurance-table th { background: #e2e8f0; }
+  .insurance-table td { padding: 7px 8px; }
+  .insurance-table input { width: 100%; height: 30px; border: 1px solid #cbd5e1; border-radius: 4px; padding: 4px 7px; font: inherit; font-size: 12px; }
+  .insurance-table .lookup { height: 30px; min-width: 60px; border: 0; border-radius: 4px; background: #475569; color: #fff; font: inherit; font-size: 12px; cursor: pointer; }
+  .modal-actions { display: flex; justify-content: center; gap: 8px; padding-top: 20px; }
+  .btn-cancel { background: #fff; color: #334155; border-color: #94a3b8; }
+
+  @media (max-width: 760px) {
+    .target-modal { padding: 10px; }
+    .target-dialog { max-height: calc(100vh - 20px); }
+    .target-grid { grid-template-columns: 130px minmax(0, 1fr); }
+    .target-grid > * { border-right: 0; }
+    .target-grid > :nth-last-child(-n + 4) { border-bottom: 1px solid #cbd5e1; }
+    .target-grid > :last-child { border-bottom: 0; }
+    .field-hint { display: none; }
+  }
+
+  @media (max-width: 1280px) {
+    .kv.pay-target { grid-template-columns: 150px minmax(0, 1fr); }
+    .kv.vendor { grid-template-columns: 150px minmax(0, 1fr); }
+    .history-item { grid-template-columns: 150px minmax(0, 1fr); }
+    .kv .span2 { grid-row: auto; }
+  }
+  @media (max-width: 900px) {
+    .sidebar { display: none; }
+    .content { padding: 18px; }
+    .tabs { overflow-x: auto; }
+  }
+</style>
+  <link rel="stylesheet" href="/assets/pms-lnb.css" />
+  <link rel="stylesheet" href="/assets/pms-intake-wizard.css?v=20260917-3" />
+</head>
+<body>
+<div class="layout">
+
+  <!-- ============ Sidebar ============ -->
+  <aside class="sidebar">
+    <div class="sidebar-head">
+      <a class="logo" href="/pms-project-detail.html">
+        <img src="/images/kepco-es-logo.png" alt="켑코이에스 주식회사 KEPCO ENERGY SOLUTION CO., LTD" />
+      </a>
+      <button class="hamburger" type="button" aria-label="메뉴 접기">
+        <i></i><i></i><i></i>
+      </button>
+    </div>
+
+    <nav class="nav" aria-label="주 메뉴">
+      <ul>
+        <li>
+          <a class="nav-item open" href="/pms-new-project.html">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 21V5a1 1 0 0 1 1-1h7a1 1 0 0 1 1 1v16"/><path d="M13 10h6a1 1 0 0 1 1 1v10"/><path d="M7 8h3M7 12h3M7 16h3M16 14h1M16 18h1"/></svg>
+            사업접수 <span class="chev up" aria-hidden="true"></span>
+          </a>
+          <ul class="subnav">
+            <li><a class="subnav-item" href="/pms-new-project.html"><span class="dot" aria-hidden="true"></span>신규 프로젝트 등록</a></li>
+            <li><a class="subnav-item" href="/pms-promotion-status.html"><span class="dot" aria-hidden="true"></span>추진단계 프로젝트 현황</a></li>
+          </ul>
+        </li>
+        <li>
+          <a class="nav-item active" href="#" aria-current="page">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h6a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Z"/><path d="M15 11v4"/></svg>
+            프로젝트 관리 <span class="chev up" aria-hidden="true"></span>
+          </a>
+          <ul class="subnav">
+            <li><a class="subnav-item active" href="/pms-project-status.html"><span class="dot" aria-hidden="true"></span>프로젝트 현황</a></li>
+          </ul>
+        </li>
+        <li>
+          <a class="nav-item" href="/pms-contract-status.html">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h9l5 5v11H5z"/><path d="M9 13h6M9 17h4"/></svg>
+            계약관리 <span class="chev" aria-hidden="true"></span>
+          </a>
+        </li>
+        <li>
+          <a class="nav-item" href="/pms-fund-repayment.html">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8Z"/><path d="M7 12h4"/></svg>
+            자금관리 <span class="chev" aria-hidden="true"></span>
+          </a>
+        </li>
+        <li>
+          <a class="nav-item" href="#">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 20V10M12 20V4M19 20v-7"/></svg>
+            통계(분석) <span class="chev" aria-hidden="true"></span>
+          </a>
+        </li>
+        <li>
+          <a class="nav-item" href="#">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s7-6.3 7-11a7 7 0 1 0-14 0c0 4.7 7 11 7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg>
+            출장관리 <span class="chev" aria-hidden="true"></span>
+          </a>
+        </li>
+        <li>
+          <a class="nav-item" href="#">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M4.5 20a7.5 7.5 0 0 1 15 0"/></svg>
+            마이페이지 <span class="chev" aria-hidden="true"></span>
+          </a>
+        </li>
+        <li>
+          <a class="nav-item" href="#">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-2.9 1.2 2 2 0 1 1-4 0 1.7 1.7 0 0 0-2.9-1.2l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1A1.7 1.7 0 0 0 3 15a2 2 0 1 1 0-4 1.7 1.7 0 0 0 1.5-2.7l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1A1.7 1.7 0 0 0 10 4.3a2 2 0 1 1 4 0 1.7 1.7 0 0 0 2.7 1.2l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1A1.7 1.7 0 0 0 21 11a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 0Z"/></svg>
+            공통관리 <span class="chev" aria-hidden="true"></span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <div class="sidebar-foot">
+      <a class="side-btn" href="#">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 10h6M7 14h4"/></svg>
+        사업관리시스템(PMS)
+      </a>
+      <a class="side-btn" href="#">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="M6 3h9l4 4v14H6z"/><path d="M9 12h6M9 16h6"/></svg>
+        전자입찰시스템(SRM)
+      </a>
+      <a class="side-btn primary" href="#">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 17v.01"/><path d="M12 13.5a2.5 2.5 0 1 0-2.5-3"/></svg>
+        온라인 매뉴얼
+      </a>
+    </div>
+  </aside>
+
+  <!-- ============ Main ============ -->
+  <div class="main">
+    <header class="topbar">
+      <h1>사업관리시스템</h1>
+      <span class="badge-pms">PMS</span>
+
+      <div class="topbar-right">
+        <div class="seg" role="group" aria-label="권한 선택">
+          <span class="seg-label">권한</span>
+          <button class="seg-btn on" type="button">그룹#1</button>
+          <button class="seg-btn" type="button">그룹#3</button>
+          <button class="seg-btn" type="button">그룹#4</button>
+        </div>
+        <p class="user"><b>이희성 부장</b> <small>[시스템관리자]</small></p>
+        <a class="logout" href="#">로그아웃</a>
+      </div>
+    </header>
+
+    <main class="content">
+      <div class="page-head">
+        <h2>프로젝트 상세</h2>
+        <nav class="crumb" aria-label="현재 위치">
+          <a href="#">HOME</a><span class="sep" aria-hidden="true">›</span>
+          <a href="#">프로젝트 관리</a><span class="sep" aria-hidden="true">›</span>
+          <a href="/pms-project-status.html">프로젝트 현황</a><span class="sep" aria-hidden="true">›</span>
+          <span class="now">투자</span>
+        </nav>
+      </div>
+
+      <!-- Tabs -->
+      <section class="card">
+        <div class="tabbar">
+          <div class="tabs" role="tablist" aria-label="프로젝트 상세 탭">
+            <a class="tab" href="/pms-project-detail.html" role="tab" aria-selected="false">HOME</a>
+            <a class="tab" href="/pms-project-promotion.html" role="tab" aria-selected="false">추진</a>
+            <a class="tab" href="/pms-project-contract.html" role="tab" aria-selected="false">계약</a>
+            <button class="tab on" type="button" role="tab" aria-selected="true">투자</button>
+            <a class="tab" href="/pms-project-investment-epc.html" role="tab" aria-selected="false">투자(EPC)</a>
+            <a class="tab" href="/pms-project-repayment.html" role="tab" aria-selected="false">상환</a>
+            <a class="tab" href="/pms-project-order.html" role="tab" aria-selected="false">발주</a>
+          </div>
+          <div class="tab-right" data-project-round><span>차수</span><strong class="project-round-current">1차</strong></div>
+        </div>
+      </section>
+
+      <!-- ============ 프로젝트 투자 지급대상 정보 ============ -->
+      <section class="card" aria-labelledby="payTargetTitle">
+        <div class="card-body">
+          <div class="sec-head">
+            <h3 class="sec-title" id="payTargetTitle">프로젝트 투자 지급대상 정보</h3>
+            <span class="basis">기준일 : 2026.10.23</span>
+            <span class="spacer"></span>
+            <button class="btn btn-excel" type="button" data-act="excel">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M5 21h14"/></svg>
+              다운로드(Excel)
+            </button>
+          </div>
+          <div class="kv pay-target">
+            <div class="k">프로젝트 번호</div>
+            <div class="v">2026_06_12</div>
+            <div class="k">총 사업금액(VAT별도/원)</div>
+            <div class="v num">220,000,000</div>
+
+            <div class="k">계약 형태</div>
+            <div class="v" id="investmentBusinessType">ESCO 계약</div>
+            <div class="k">투자금액(VAT별도/원)</div>
+            <div class="v num">180,000,000</div>
+
+            <div class="k">사업명</div>
+            <div class="v" id="investmentProjectName">천안 (주)선영 LED 에너지효율화사업</div>
+            <div class="k">누적 지급금액(VAT별도/원)</div>
+            <div class="v num">92,000,000</div>
+
+            <div class="k">총 지급액(원)</div>
+            <div class="v num">100,000,000</div>
+            <div class="k">총 지급률(%)</div>
+            <div class="v">58</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ 지급대상 등록 후 EPC사 추가 이력 ============ -->
+      <section class="card history-card" id="vendorHistorySection" aria-labelledby="vendorHistoryTitle" hidden>
+        <div class="card-body">
+          <div class="sec-head">
+            <h3 class="sec-title" id="vendorHistoryTitle">EPC사 추가 이력</h3>
+          </div>
+          <div class="history-list" id="vendorHistoryList"></div>
+        </div>
+      </section>
+
+      <!-- ============ EPC사별 지급정보 ============ -->
+      <section class="card" aria-labelledby="vendorTitle">
+        <div class="card-body">
+          <div class="sec-head">
+            <h3 class="sec-title" id="vendorTitle">EPC사별 지급정보</h3>
+          </div>
+
+          <div class="vtabbar">
+            <div class="vtabs" role="tablist" aria-label="EPC사 선택">
+              <button class="vtab summary-tab on" type="button" role="tab" aria-selected="true" data-summary>종합</button>
+              <button class="vtab" type="button" role="tab" aria-selected="false" data-vendor="0">㈜포스무역</button>
+              <button class="vtab" type="button" role="tab" aria-selected="false" data-vendor="1">㈜가람석재</button>
+              <button class="vtab" type="button" role="tab" aria-selected="false" data-vendor="2">홍마트</button>
+            </div>
+            <span class="spacer"></span>
+            <button class="btn btn-dark" type="button" data-act="add-vendor" aria-haspopup="dialog">EPC사 추가 +</button>
+          </div>
+
+          <div class="vpanel">
+            <section class="summary-panel" id="summaryPanel" aria-labelledby="summaryTitle">
+              <div class="sec-head">
+                <h4 class="sec-title" id="summaryTitle">EPC사별 지급 현황</h4>
+              </div>
+              <div class="table-scroll">
+                <table class="summary-table" aria-labelledby="summaryTitle">
+                  <caption>전체 EPC사 지급 현황 종합</caption>
+                  <thead><tr>
+                    <th scope="col">구분</th><th scope="col">공급가액(원)</th><th scope="col">부가세(원)</th>
+                    <th scope="col">합계액(VAT포함/원)</th><th scope="col">누적 지급액(VAT포함/원)</th>
+                    <th scope="col">누적 지급액(계약금액/원)</th><th scope="col">잔금(계약금액/원)</th><th scope="col">지급비율(%)</th>
+                  </tr></thead>
+                  <tbody id="summaryBody"></tbody>
+                </table>
+              </div>
+            </section>
+
+            <div class="vendor-detail" id="vendorDetail" hidden>
+            <!-- EPC사 기본 지급정보 -->
+            <div class="kv vendor" id="vendorInfo"></div>
+
+            <!-- 지급(예정) 계획 -->
+            <div>
+              <div class="sec-head">
+                <h4 class="sec-title" id="planTitle">지급(예정) 계획</h4>
+              </div>
+              <div class="table-scroll">
+                <table aria-labelledby="planTitle">
+                  <caption>EPC사 지급(예정) 계획</caption>
+                  <thead>
+                    <tr>
+                      <th scope="col">지급회차</th>
+                      <th scope="col">지급구분</th>
+                      <th scope="col">비율(%)</th>
+                      <th scope="col">계약금액(VAT별도/원)</th>
+                      <th scope="col">공급가액(원)</th>
+                      <th scope="col">부가세(원)</th>
+                      <th scope="col">합계액(VAT포함/원)</th>
+                      <th scope="col">잔금(VAT포함/원)</th>
+                    </tr>
+                  </thead>
+                  <tbody id="planBody"></tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- 지급 현황 -->
+            <div>
+              <div class="sec-head">
+                <h4 class="sec-title" id="payTitle">지급 현황</h4>
+              </div>
+              <div class="table-scroll">
+                <table aria-labelledby="payTitle">
+                  <caption>EPC사 지급 현황</caption>
+                  <thead>
+                    <tr>
+                      <th scope="col">순번</th>
+                      <th scope="col">지급회차</th>
+                      <th scope="col">세금계산서 발행일</th>
+                      <th scope="col">공사비 조건</th>
+                      <th scope="col">계약금액(VAT별도)</th>
+                      <th scope="col">지급 비율(%)</th>
+                      <th scope="col">공급가액</th>
+                      <th scope="col">부가세</th>
+                      <th scope="col">합계액(VAT포함)</th>
+                      <th scope="col">잔금(VAT포함)</th>
+                    </tr>
+                  </thead>
+                  <tbody id="payBody"></tbody>
+                </table>
+              </div>
+
+            </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+</div>
+
+<div class="target-modal" id="targetModal" hidden>
+  <section class="target-dialog" role="dialog" aria-modal="true" aria-labelledby="targetModalTitle">
+    <header class="target-dialog-head">
+      <h2 id="targetModalTitle">투자비 지급대상 추가</h2>
+      <button class="modal-close" type="button" data-modal-close aria-label="모달 닫기">×</button>
+    </header>
+    <form class="target-form" id="targetForm" novalidate>
+      <h3 class="form-section-title">지급대상 기본정보</h3>
+      <div class="target-grid">
+        <label class="field-label" for="targetProjectNo">프로젝트 번호<span class="req">*</span></label>
+        <div class="field-control"><input id="targetProjectNo" name="projectNo" value="3213_321321" /></div>
+        <label class="field-label" for="targetKind">구분<span class="req">*</span></label>
+        <div class="field-control"><select id="targetKind" name="kind"><option value="">선택</option><option>일반 공사비</option><option>자재비</option><option>용역비</option></select></div>
+
+        <label class="field-label" for="targetProjectName">프로젝트명</label>
+        <div class="field-control"><input id="targetProjectName" value="천안 (주)선영 LED 에너지효율화사업" readonly /></div>
+        <label class="field-label" for="contractDate">계약 체결일<span class="req">*</span></label>
+        <div class="field-control"><input id="contractDate" name="contractDate" type="date" value="2026-07-30" /></div>
+
+        <label class="field-label" for="targetVendor">계약 상대자<span class="req">*</span></label>
+        <div class="field-control"><input id="targetVendor" name="vendor" value="㈜셀프 X" /><button class="lookup" type="button">EPC사 조회</button></div>
+        <label class="field-label" for="payMethod">공사금액 지급(%)<span class="req">*</span></label>
+        <div class="field-control"><div class="split-pay"><select id="payMethod" name="payMethod"><option>분할</option><option>일시</option></select><input aria-label="선금 비율" value="33" /><input aria-label="기성금 비율" value="33" /><input aria-label="준공금 비율" value="34" /></div></div>
+
+        <label class="field-label" for="contractAmount">계약금액(VAT별도/원)<span class="req">*</span></label>
+        <div class="field-control"><input id="contractAmount" name="contractAmount" inputmode="numeric" value="24,000,000" /></div>
+        <label class="field-label" for="supplyAmount">공급가액(원)<span class="req">*</span></label>
+        <div class="field-control"><input id="supplyAmount" name="supplyAmount" inputmode="numeric" value="24,000,000" /></div>
+
+        <label class="field-label" for="vatAmount">부가세(원)<span class="req">*</span></label>
+        <div class="field-control"><input id="vatAmount" name="vatAmount" inputmode="numeric" value="2,400,000" /></div>
+        <label class="field-label" for="totalAmount">합계액(VAT포함/원)<span class="req">*</span></label>
+        <div class="field-control"><input id="totalAmount" name="totalAmount" inputmode="numeric" value="26,400,000" /></div>
+
+        <label class="field-label" for="workStart">공사 시작일<span class="req">*</span></label>
+        <div class="field-control"><input id="workStart" name="workStart" type="date" value="2026-07-30" /></div>
+        <label class="field-label" for="workEnd">공사 종료일<span class="req">*</span></label>
+        <div class="field-control"><input id="workEnd" name="workEnd" type="date" value="2026-07-30" /></div>
+
+        <span class="field-label">계약서<span class="req">*</span></span>
+        <div class="field-control field-control-wide"><button class="lookup" type="button">찾기</button><span class="field-hint">계약서 파일을 첨부해 주세요.</span></div>
+      </div>
+
+      <h3 class="form-section-title" style="margin-top:18px;">보험증권 <span class="req">*</span></h3>
+      <div class="insurance-wrap">
+        <table class="insurance-table">
+          <caption>보험증권 입력</caption>
+          <thead><tr><th>보증 구분</th><th>발행일자</th><th>보증기간 시작</th><th>보증기간 종료</th><th>보증률(%)</th><th>보험증권</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">계약 이행</th><td><input type="date" value="2026-07-30" /></td><td><input type="date" value="2026-07-30" /></td><td><input type="date" value="2026-07-30" /></td><td><input inputmode="decimal" value="15" /></td><td><button class="lookup" type="button">찾기</button></td></tr>
+            <tr><th scope="row">지급 이행</th><td><input type="date" value="2026-07-30" /></td><td><input type="date" value="2026-07-30" /></td><td><input type="date" value="2026-07-30" /></td><td><input inputmode="decimal" value="15" /></td><td><button class="lookup" type="button">찾기</button></td></tr>
+            <tr><th scope="row">선금 보증</th><td><input type="date" value="2026-07-30" /></td><td><input type="date" value="2026-07-30" /></td><td><input type="date" value="2026-07-30" /></td><td><input inputmode="decimal" value="15" /></td><td><button class="lookup" type="button">찾기</button></td></tr>
+            <tr><th scope="row">하자 보증</th><td><input type="date" value="2026-07-30" /></td><td><input type="date" value="2026-07-30" /></td><td><input type="date" value="2026-07-30" /></td><td><input inputmode="decimal" value="15" /></td><td><button class="lookup" type="button">찾기</button></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="target-grid" style="margin-top:10px; grid-template-columns:150px minmax(0,1fr);">
+        <label class="field-label" for="warrantyMonths">하자보수 기간(개월)<span class="req">*</span></label>
+        <div class="field-control" style="border-right:0;"><input id="warrantyMonths" name="warrantyMonths" inputmode="numeric" value="24" /></div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-dark" type="submit">지급대상 등록 +</button>
+        <button class="btn btn-cancel" type="button" data-modal-close>취소</button>
+      </div>
+    </form>
+  </section>
+</div>
+
+<script>
+  /* ===== EPC사별 지급정보 데이터 (1차 구성 : 샘플 데이터) ===== */
+  var vendors = [
+    {
+      name: "포스무역",
+      kind: "일반 공사비",
+      payType: "분할",
+      ratio: "33.3 / 33.3 / 33.4",
+      start: "2026.10.10",
+      end: "2026.12.09",
+      contract: "220,000,000",
+      supply: "220,000,000",
+      vat: "22,000,000",
+      total: "242,000,000",
+      paid: "180,000,000",
+      rate: "60.6",
+      plans: [
+        ["1", "선금", "33.3", "1,850,000,000", "610,500,000", "61,050,000", "671,550,000", "1,239,500,000"],
+        ["2", "기성금", "33.3", "1,850,000,000", "610,500,000", "61,050,000", "671,550,000", "629,000,000"],
+        ["3", "준공금", "33.4", "1,850,000,000", "610,500,000", "61,050,000", "671,550,000", "0"],
+      ],
+      pays: [
+        ["1", "1회차", "2026.10.15", "일반공사비", "610,500,000", "33.3", "610,500,000", "61,050,000", "671,550,000", "1,239,500,000"],
+        ["2", "2회차", "2026.11.15", "일반공사비", "610,500,000", "11.1", "210,500,000", "21,050,000", "271,550,000", "639,500,000"],
+        ["3", "3회차", "2026.12.13", "", "-", "-", "100,000", "10,000", "110,000", "-"],
+      ],
+      sum: { rate: "60.6", supply: "821,000,000", vat: "82,110,000", total: "943,100,000" },
+    },
+    {
+      name: "가람석재",
+      kind: "일반 공사비",
+      payType: "일시",
+      ratio: "100.0",
+      start: "2026.10.20",
+      end: "2026.12.20",
+      contract: "60,000,000",
+      supply: "60,000,000",
+      vat: "6,000,000",
+      total: "66,000,000",
+      paid: "20,000,000",
+      rate: "33.3",
+      plans: [
+        ["1", "선금", "50.0", "60,000,000", "30,000,000", "3,000,000", "33,000,000", "33,000,000"],
+        ["2", "준공금", "50.0", "60,000,000", "30,000,000", "3,000,000", "33,000,000", "0"],
+      ],
+      pays: [
+        ["1", "1회차", "2026.10.25", "일반공사비", "30,000,000", "33.3", "20,000,000", "2,000,000", "22,000,000", "44,000,000"],
+      ],
+      sum: { rate: "33.3", supply: "20,000,000", vat: "2,000,000", total: "22,000,000" },
+    },
+    {
+      name: "홍마트",
+      kind: "자재비",
+      payType: "일시",
+      ratio: "100.0",
+      start: "2026.11.01",
+      end: "2026.11.30",
+      contract: "18,000,000",
+      supply: "18,000,000",
+      vat: "1,800,000",
+      total: "19,800,000",
+      paid: "0",
+      rate: "0",
+      plans: [
+        ["1", "준공금", "100.0", "18,000,000", "18,000,000", "1,800,000", "19,800,000", "19,800,000"],
+      ],
+      pays: [],
+      sum: { rate: "0", supply: "0", vat: "0", total: "0" },
+    },
+  ];
+
+  /* EPC사 기본 지급정보 : key / value 그리드 */
+  function renderInfo(v, index) {
+    var box = document.getElementById("vendorInfo");
+    box.innerHTML =
+      '<div class="k">거래처명</div><div class="v"><button class="vendor-name-link" type="button" data-vendor-detail="' + index + '">' + v.name + "</button></div>" +
+      '<div class="k">구분</div><div class="v">' + v.kind + "</div>" +
+      // 공사금액 지급 방식은 두 줄 높이로 표기합니다.
+      '<div class="k span2">공사금액 지급</div><div class="v">' + v.payType + "</div>" +
+
+      '<div class="k">공사시작일</div><div class="v">' + v.start + "</div>" +
+      '<div class="k">공사종료일</div><div class="v">' + v.end + "</div>" +
+      '<div class="v">' + v.ratio + "</div>" +
+
+      '<div class="k">계약금액(VAT별도/원)</div><div class="v num">' + v.contract + "</div>" +
+      '<div class="k">공급가액(원)</div><div class="v num">' + v.supply + "</div>" +
+      '<div class="k">부가세(원)</div><div class="v num">' + v.vat + "</div>" +
+
+      '<div class="k">합계액(VAT포함/원)</div><div class="v num">' + v.total + "</div>" +
+      '<div class="k">누적 지급액(원)</div><div class="v num">' + v.paid + "</div>" +
+      '<div class="k">지급비율(%)</div><div class="v">' + v.rate + "</div>";
+  }
+
+  /* 지급(예정) 계획 테이블 */
+  function renderPlans(v) {
+    var body = document.getElementById("planBody");
+    body.innerHTML = "";
+
+    v.plans.forEach(function (row) {
+      var tr = document.createElement("tr");
+      row.forEach(function (cell, i) {
+        var td = document.createElement("td");
+        // 금액 · 잔금 컬럼은 우측 정렬합니다.
+        if (i >= 3 && i <= 7) td.className = "num";
+        td.textContent = cell;
+        tr.appendChild(td);
+      });
+      body.appendChild(tr);
+    });
+
+    // 계획 하단 총액 : 비율과 금액 항목을 각 회차 계획에서 합산합니다.
+    if (v.plans.length) {
+      var sums = v.plans.reduce(function (result, row) {
+        result.rate += amount(row[2]);
+        result.contract += amount(row[3]);
+        result.supply += amount(row[4]);
+        result.vat += amount(row[5]);
+        result.total += amount(row[6]);
+        return result;
+      }, { rate: 0, contract: 0, supply: 0, vat: 0, total: 0 });
+
+      var totalRow = document.createElement("tr");
+      totalRow.className = "total";
+      ["총액", "", sums.rate, sums.contract, sums.supply, sums.vat, sums.total, ""].forEach(function (cell, i) {
+        var td = document.createElement("td");
+        if (i >= 2 && i <= 6) td.className = "num";
+        td.textContent = typeof cell === "number" ? formatted(cell) : cell;
+        totalRow.appendChild(td);
+      });
+      body.appendChild(totalRow);
+    }
+  }
+
+  /* 지급 현황 테이블 (+ 총액 행) */
+  function renderPays(v) {
+    var body = document.getElementById("payBody");
+    body.innerHTML = "";
+
+    if (!v.pays.length) {
+      var empty = document.createElement("tr");
+      var td = document.createElement("td");
+      td.colSpan = 10;
+      td.textContent = "지급 내역이 없습니다.";
+      td.style.color = "#94a3b8";
+      empty.appendChild(td);
+      body.appendChild(empty);
+      return;
+    }
+
+    v.pays.forEach(function (row) {
+      var tr = document.createElement("tr");
+      row.forEach(function (cell, i) {
+        var td = document.createElement("td");
+        if (i >= 4 && i <= 9) td.className = "num";
+        td.textContent = cell;
+        tr.appendChild(td);
+      });
+      body.appendChild(tr);
+    });
+
+    // 총액 행 : 지급 비율 / 공급가액 / 부가세 / 합계액을 집계 표기
+    var total = document.createElement("tr");
+    total.className = "total";
+    ["총액", "", "", "", "", v.sum.rate, v.sum.supply, v.sum.vat || "0", v.sum.total, ""].forEach(function (cell, i) {
+      var td = document.createElement("td");
+      if (i >= 4 && i <= 9) td.className = "num";
+      td.textContent = cell;
+      total.appendChild(td);
+    });
+    body.appendChild(total);
+  }
+
+  function amount(value) {
+    return Number(String(value || "0").replace(/[^0-9.-]/g, "")) || 0;
+  }
+
+  function formatted(value) {
+    return Math.round(value).toLocaleString("ko-KR");
+  }
+
+  /* 모든 EPC사의 지급 정보를 한눈에 확인하는 종합표 */
+  function renderSummary() {
+    var body = document.getElementById("summaryBody");
+    var totals = { supply: 0, vat: 0, total: 0, paidVat: 0, paidContract: 0, balance: 0 };
+    body.innerHTML = "";
+
+    vendors.forEach(function (v) {
+      var supply = amount(v.supply);
+      var vat = amount(v.vat);
+      var totalAmount = amount(v.total);
+      var paidVat = amount(v.sum && v.sum.total);
+      var paidContract = amount(v.sum && v.sum.supply);
+      var balance = Math.max(supply - paidContract, 0);
+      totals.supply += supply; totals.vat += vat; totals.total += totalAmount;
+      totals.paidVat += paidVat; totals.paidContract += paidContract; totals.balance += balance;
+      appendSummaryRow(body, v.name, [supply, vat, totalAmount, paidVat, paidContract, balance], supply ? paidContract / supply * 100 : 0, false);
+    });
+
+    appendSummaryRow(body, "총합", [totals.supply, totals.vat, totals.total, totals.paidVat, totals.paidContract, totals.balance], totals.supply ? totals.paidContract / totals.supply * 100 : 0, true);
+  }
+
+  function appendSummaryRow(body, label, values, rate, isTotal) {
+    var row = document.createElement("tr");
+    if (isTotal) row.className = "total";
+    var head = document.createElement("th");
+    head.scope = "row";
+    head.textContent = label;
+    row.appendChild(head);
+    values.forEach(function (value) {
+      var cell = document.createElement("td");
+      cell.className = "num";
+      cell.textContent = formatted(value);
+      row.appendChild(cell);
+    });
+    var rateCell = document.createElement("td");
+    rateCell.className = "num";
+    rateCell.textContent = (Math.round(rate * 10) / 10).toLocaleString("ko-KR", { maximumFractionDigits: 1 });
+    row.appendChild(rateCell);
+    body.appendChild(row);
+  }
+
+  function setActiveTab(activeTab) {
+    document.querySelectorAll(".vtab").forEach(function (tab) {
+      var on = tab === activeTab;
+      tab.classList.toggle("on", on);
+      tab.setAttribute("aria-selected", on ? "true" : "false");
+    });
+  }
+
+  function selectSummary() {
+    setActiveTab(document.querySelector("[data-summary]"));
+    document.getElementById("summaryPanel").hidden = false;
+    document.getElementById("vendorDetail").hidden = true;
+    renderSummary();
+  }
+
+  function selectVendor(index, activeTab) {
+    var v = vendors[index];
+    if (!v) return;
+
+    setActiveTab(activeTab || document.querySelector('[data-vendor="' + index + '"]'));
+    document.getElementById("summaryPanel").hidden = true;
+    document.getElementById("vendorDetail").hidden = false;
+
+    renderInfo(v, index);
+    renderPlans(v);
+    renderPays(v);
+  }
+
+  /* EPC사 탭 전환 */
+  document.querySelector("[data-summary]").addEventListener("click", selectSummary);
+  document.querySelectorAll("[data-vendor]").forEach(function (tab) {
+    tab.addEventListener("click", function () {
+      selectVendor(Number(tab.getAttribute("data-vendor")), tab);
+    });
+  });
+
+  /* HOME 투자금 정보의 + 링크에서 전달된 업체를 기본 선택합니다. */
+  (function selectInitialVendor() {
+    var rawIndex = new URLSearchParams(window.location.search).get("vendor");
+    if (rawIndex === null || rawIndex === "") {
+      selectSummary();
+      return;
+    }
+    var index = Number(rawIndex);
+    var tab = document.querySelector('[data-vendor="' + index + '"]');
+    if (!Number.isInteger(index) || !vendors[index] || !tab) {
+      selectSummary();
+      return;
+    }
+    selectVendor(index, tab);
+  })();
+
+  /* 지급대상 추가 모달 */
+  (function () {
+    var modal = document.getElementById("targetModal");
+    var form = document.getElementById("targetForm");
+    var trigger = document.querySelector('[data-act="add-vendor"]');
+    var historySection = document.getElementById("vendorHistorySection");
+    var historyList = document.getElementById("vendorHistoryList");
+    var modalTitle = document.getElementById("targetModalTitle");
+    var submitButton = form.querySelector('button[type="submit"]');
+    var footerCloseButton = form.querySelector(".modal-actions [data-modal-close]");
+    var lastFocus = null;
+
+    form.querySelectorAll("input, select, textarea").forEach(function (control) {
+      control.dataset.initialReadonly = String(control.readOnly);
+      control.dataset.initialDisabled = String(control.disabled);
+    });
+
+    function dottedDate(value) {
+      return value ? value.replace(/-/g, ".") : "-";
+    }
+
+    function numberValue(value) {
+      return Number(String(value || "0").replace(/[^0-9.-]/g, "")) || 0;
+    }
+
+    function money(value) {
+      return Math.round(value).toLocaleString("ko-KR");
+    }
+
+    function createPaymentData(vendor, ratios, contractDate) {
+      var labels = ["선금", "기성금", "준공금"];
+      var supplyTotal = numberValue(vendor.supply);
+      var vatTotal = numberValue(vendor.vat);
+      var totalAmount = numberValue(vendor.total);
+      var contractAmount = numberValue(vendor.contract);
+      var accumulated = 0;
+      var portions = ratios.map(function (ratio, index) {
+        var rate = numberValue(ratio);
+        var isLast = index === ratios.length - 1;
+        var supply = isLast ? supplyTotal - accumulated : Math.round(supplyTotal * rate / 100);
+        accumulated += supply;
+        var vat = isLast
+          ? vatTotal - ratios.slice(0, index).reduce(function (sum, item) { return sum + Math.round(vatTotal * numberValue(item) / 100); }, 0)
+          : Math.round(vatTotal * rate / 100);
+        return { rate: rate, supply: supply, vat: vat, total: supply + vat };
+      });
+
+      var paidThrough = Math.min(2, portions.length);
+      var paidSupply = portions.slice(0, paidThrough).reduce(function (sum, part) { return sum + part.supply; }, 0);
+      var paidTotal = portions.slice(0, paidThrough).reduce(function (sum, part) { return sum + part.total; }, 0);
+      var paidRate = portions.slice(0, paidThrough).reduce(function (sum, part) { return sum + part.rate; }, 0);
+      var runningTotal = 0;
+
+      vendor.plans = portions.map(function (part, index) {
+        runningTotal += part.total;
+        return [
+          String(index + 1), labels[index] || (index + 1) + "회차", String(part.rate), money(contractAmount),
+          money(part.supply), money(part.vat), money(part.total), money(Math.max(totalAmount - runningTotal, 0))
+        ];
+      });
+
+      runningTotal = 0;
+      vendor.pays = portions.slice(0, paidThrough).map(function (part, index) {
+        runningTotal += part.total;
+        return [
+          String(index + 1), (index + 1) + "회차", index === 0 ? contractDate : vendor.start,
+          vendor.kind, money(part.supply), String(part.rate), money(part.supply), money(part.vat),
+          money(part.total), money(Math.max(totalAmount - runningTotal, 0))
+        ];
+      });
+      vendor.paid = money(paidSupply);
+      vendor.rate = String(paidRate);
+      vendor.sum = {
+        rate: String(paidRate),
+        supply: money(paidSupply),
+        vat: money(paidTotal - paidSupply),
+        total: money(paidTotal)
+      };
+    }
+
+    function addHistory(data) {
+      var item = document.createElement("div");
+      item.className = "history-item";
+      [
+        ["EPC사명", data.name, false],
+        ["구분", data.kind, false],
+        ["EPC사 추가일", "2026.12.12", false],
+        ["공사시작일", data.start, false],
+        ["공사종료일", data.end, false],
+        ["계약금액(VAT별도/원)", data.contract, true],
+        ["공급가액(원)", data.supply, true],
+        ["부가세(원)", data.vat, true],
+        ["합계액(VAT포함/원)", data.total, true]
+      ].forEach(function (entry) {
+        var key = document.createElement("div");
+        var value = document.createElement("div");
+        key.className = "history-key";
+        value.className = "history-value" + (entry[2] ? " num" : "");
+        key.textContent = entry[0];
+        value.textContent = entry[1] || "-";
+        item.appendChild(key);
+        item.appendChild(value);
+      });
+      historyList.appendChild(item);
+      historySection.hidden = false;
+    }
+
+    function setDetailMode(detail) {
+      modal.classList.toggle("detail-mode", detail);
+      modalTitle.textContent = detail ? "투자비 지급대상 상세" : "투자비 지급대상 추가";
+      submitButton.hidden = detail;
+      footerCloseButton.textContent = detail ? "닫기" : "취소";
+
+      form.querySelectorAll("input, textarea").forEach(function (control) {
+        control.readOnly = detail || control.dataset.initialReadonly === "true";
+      });
+      form.querySelectorAll("select").forEach(function (control) {
+        control.disabled = detail || control.dataset.initialDisabled === "true";
+      });
+      form.querySelectorAll("button.lookup").forEach(function (button) { button.hidden = detail; });
+    }
+
+    function fillVendorDetail(vendor) {
+      document.getElementById("targetProjectNo").value = "2026_06_12";
+      document.getElementById("targetKind").value = vendor.kind;
+      document.getElementById("targetVendor").value = vendor.name;
+      document.getElementById("payMethod").value = vendor.payType;
+      var ratios = String(vendor.ratio || "").split("/");
+      document.querySelectorAll(".split-pay input").forEach(function (input, index) {
+        input.value = (ratios[index] || "").trim();
+      });
+      document.getElementById("contractAmount").value = vendor.contract;
+      document.getElementById("supplyAmount").value = vendor.supply;
+      document.getElementById("vatAmount").value = vendor.vat;
+      document.getElementById("totalAmount").value = vendor.total;
+      document.getElementById("workStart").value = String(vendor.start || "").replace(/\./g, "-");
+      document.getElementById("workEnd").value = String(vendor.end || "").replace(/\./g, "-");
+    }
+
+    function openModal() {
+      lastFocus = document.activeElement;
+      form.reset();
+      setDetailMode(false);
+      modal.hidden = false;
+      document.body.classList.add("modal-open");
+      window.setTimeout(function () { document.getElementById("targetProjectNo").focus(); }, 0);
+    }
+
+    function openDetailModal(index) {
+      var vendor = vendors[index];
+      if (!vendor) return;
+      lastFocus = document.activeElement;
+      fillVendorDetail(vendor);
+      setDetailMode(true);
+      modal.hidden = false;
+      document.body.classList.add("modal-open");
+      window.setTimeout(function () { footerCloseButton.focus(); }, 0);
+    }
+    function closeModal() {
+      modal.hidden = true;
+      document.body.classList.remove("modal-open");
+      if (lastFocus) lastFocus.focus();
+    }
+
+    trigger.addEventListener("click", openModal);
+    document.getElementById("vendorInfo").addEventListener("click", function (event) {
+      var button = event.target.closest("[data-vendor-detail]");
+      if (button) openDetailModal(Number(button.getAttribute("data-vendor-detail")));
+    });
+    modal.querySelectorAll("[data-modal-close]").forEach(function (button) { button.addEventListener("click", closeModal); });
+    modal.addEventListener("click", function (event) { if (event.target === modal) closeModal(); });
+    document.addEventListener("keydown", function (event) { if (event.key === "Escape" && !modal.hidden) closeModal(); });
+
+    form.addEventListener("submit", function (event) {
+      event.preventDefault();
+      var vendorName = document.getElementById("targetVendor").value.trim();
+      var ratios = Array.from(document.querySelectorAll(".split-pay input")).map(function (input) { return input.value || "0"; });
+      var vendor = {
+        name: vendorName,
+        kind: document.getElementById("targetKind").value,
+        payType: document.getElementById("payMethod").value,
+        ratio: ratios.join(" / "),
+        start: dottedDate(document.getElementById("workStart").value),
+        end: dottedDate(document.getElementById("workEnd").value),
+        contract: document.getElementById("contractAmount").value,
+        supply: document.getElementById("supplyAmount").value,
+        vat: document.getElementById("vatAmount").value,
+        total: document.getElementById("totalAmount").value,
+        paid: "0",
+        rate: "0",
+        plans: [],
+        pays: [],
+        sum: { rate: "0", supply: "0", vat: "0", total: "0" }
+      };
+      createPaymentData(vendor, ratios, dottedDate(document.getElementById("contractDate").value));
+      var vendorIndex = vendors.push(vendor) - 1;
+      var tab = document.createElement("button");
+      tab.className = "vtab new-vendor";
+      tab.type = "button";
+      tab.setAttribute("role", "tab");
+      tab.setAttribute("aria-selected", "false");
+      tab.setAttribute("data-vendor", String(vendorIndex));
+      tab.textContent = vendorName;
+       tab.addEventListener("click", function () { selectVendor(vendorIndex, tab); });
+      document.querySelector(".vtabs").appendChild(tab);
+      addHistory(vendor);
+       renderSummary();
+       selectVendor(vendorIndex, tab);
+      closeModal();
+      form.reset();
+    });
+  })();
+
+  /* 사업접수에서 전달된 사업명과 계약 형태를 투자 지급대상 정보에 반영합니다. */
+  (function () {
+    var raw = null;
+    try { raw = sessionStorage.getItem("pms.newProject"); } catch (err) { return; }
+    if (!raw) return;
+
+    var data = null;
+    try { data = JSON.parse(raw); } catch (err) { return; }
+    if (!data) return;
+
+    var projectName = document.getElementById("investmentProjectName");
+    if (projectName && data.name) projectName.textContent = data.name;
+
+    var businessType = document.getElementById("investmentBusinessType");
+    var contractFormLabels = {
+      esco: "ESCO 계약",
+      epc: "EPC(용역) 계약",
+      etc: "기타 계약"
+    };
+    if (businessType && data.contractForm) {
+      businessType.textContent = contractFormLabels[data.contractForm] || data.contractForm;
+    }
+  })();
+</script>
+  <script src="/assets/pms-lnb.js"></script>
+  <script src="/assets/pms-intake-wizard.js?v=20260921-2"></script>
+</body>
+</html>

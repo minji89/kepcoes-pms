@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>내 프로젝트 현황 | 사업관리시스템(PMS)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet" />
+<style>
+:root{--bg:#f1f5f9;--surface:#fff;--border:#d8dee8;--text:#1e293b;--muted:#64748b;--brand:#1d6ff2;--navy:#1e3a5f;--green:#0f7a36}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--text);font:14px/1.5 "Noto Sans KR",sans-serif}a{color:inherit;text-decoration:none}ul{list-style:none;margin:0;padding:0}.layout{display:flex;min-height:100vh}
+.sidebar{width:248px;flex:0 0 248px;background:#fff;border-right:1px solid var(--border);display:flex;flex-direction:column}.sidebar-head{height:60px;padding:0 20px;display:flex;align-items:center;border-bottom:1px solid var(--border)}.logo img{height:30px}.nav{padding:16px 12px;flex:1}.nav-item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:8px;color:#475569;font-size:14.5px;font-weight:500}.nav-icon{width:20px;height:20px}.chev{margin-left:auto;width:8px;height:8px;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:rotate(45deg)}
+.main{min-width:0;flex:1}.topbar{height:60px;padding:0 26px;display:flex;align-items:center;gap:12px;background:#fff;border-bottom:1px solid var(--border)}.topbar h1{font-size:19px}.pms{padding:4px 9px;border-radius:6px;background:#eff6ff;color:var(--brand);font-size:12px;font-weight:700}.user{margin-left:auto;color:#475569}.content{padding:26px;display:grid;gap:18px}.page-head{display:flex;align-items:center;justify-content:space-between}.page-head h2{margin:0;font-size:25px}.crumb{color:var(--muted);font-size:13px}.card{background:#fff;border:1px solid var(--border);border-radius:10px}.card-body{padding:20px 24px}.section-head{display:flex;align-items:center;gap:12px;margin-bottom:12px}.section-head h3{margin:0;font-size:16px}.section-head .spacer{flex:1}.basis{color:var(--muted);font-size:12.5px}
+.search-card{padding:16px 20px}.period-tabs{display:flex;gap:6px}.period-btn{min-width:70px;height:36px;border:1px solid #cbd5e1;border-radius:6px;background:#fff;color:#334155;font:inherit;cursor:pointer}.period-btn.on{background:#334155;color:#fff;border-color:#334155}
+.summary{width:100%;border-collapse:collapse}.summary th,.summary td{padding:12px 10px;border:1px solid var(--border);text-align:center}.summary th{background:#eef2f7;font-size:13px}.summary td{font-variant-numeric:tabular-nums}.summary .num{text-align:right}
+.toolbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.toolbar label{font-weight:700}.toolbar select,.toolbar input,.toolbar button{height:36px;padding:0 10px;border:1px solid #cbd5e1;border-radius:6px;background:#fff;font:inherit}.toolbar input{width:118px}.toolbar .quick.on{background:#334155;color:#fff}.toolbar .search{margin-left:auto;min-width:72px;background:#334155;color:#fff;border-color:#334155}.excel{height:36px;padding:0 14px;border:0;border-radius:6px;background:var(--green);color:#fff;font-weight:700;cursor:pointer}.list-tools{display:flex;align-items:center;gap:8px;margin-bottom:10px}.result-count{font-weight:700}.result-count b{color:#dc2626}.list-tools .spacer{flex:1}.page-size{height:36px;padding:0 10px;border:1px solid #cbd5e1;border-radius:6px;background:#fff;color:#475569}
+.table-scroll{overflow-x:auto;border:1px solid var(--border)}.projects{width:100%;min-width:1180px;border-collapse:collapse}.projects th,.projects td{padding:12px 10px;border:1px solid var(--border);text-align:center;white-space:nowrap}.projects th{background:#e2e8f0;font-size:12.5px}.projects td{font-size:13px}.project-link{text-decoration:underline;font-weight:600}.pagination{display:flex;justify-content:center;gap:6px;margin-top:14px}.pagination button{width:34px;height:32px;border:1px solid #cbd5e1;background:#fff}.pagination .on{background:#334155;color:#fff}.empty{padding:34px!important;color:var(--muted)}
+@media(max-width:900px){.sidebar{display:none}.content{padding:18px}.page-head{align-items:flex-start;gap:8px;flex-direction:column}.toolbar .search{margin-left:0}}
+</style>
+<link rel="stylesheet" href="/assets/pms-lnb.css" />
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-head"><a class="logo" href="/"><img src="/images/kepco-es-logo.png" alt="켑코이에스 주식회사" /></a></div>
+    <nav class="nav" aria-label="주 메뉴"><ul></ul></nav>
+  </aside>
+  <div class="main">
+    <header class="topbar"><h1>사업관리시스템</h1><span class="pms">PMS</span><span class="user"><b>이희성 부장</b> [시스템관리자]</span></header>
+    <main class="content">
+      <div class="page-head"><h2>내 프로젝트 현황</h2><div class="crumb">HOME　›　마이페이지　›　<b>내 프로젝트 현황</b></div></div>
+
+      <div class="section-head"><h3 id="summaryTitle">내 프로젝트</h3></div>
+      <section class="card search-card" aria-label="내 프로젝트 조회 조건"><div class="toolbar"><label for="dateType">조회기간</label><select id="dateType"><option>생성일</option><option>계약일</option></select><input id="dateFrom" value="2025.06.30" aria-label="시작일" /><span>~</span><input id="dateTo" value="2026.07.30" aria-label="종료일" /><div class="period-tabs" role="group" aria-label="조회 기간"><button class="period-btn on" data-period="1">1개월</button><button class="period-btn" data-period="12">3개월</button><button class="period-btn" data-period="36">1년</button></div><button class="search" type="button" data-search>검색</button></div></section>
+
+      <section class="card" aria-labelledby="summaryTitle"><div class="card-body">
+        <table class="summary"><thead><tr><th rowspan="2">프로젝트 개수</th><th colspan="6">진행 상태</th><th rowspan="2">총 사업금액(원)</th><th rowspan="2">총 투자금액(원)</th><th rowspan="2">총 상환금액(원)</th></tr><tr><th>추진</th><th>사업 심의</th><th>계약 품의</th><th>시행</th><th>상환</th><th>종료</th></tr></thead><tbody><tr id="summaryRow"></tr></tbody></table>
+      </div></section>
+
+      <section class="card" aria-labelledby="listTitle"><div class="card-body">
+        <div class="list-tools"><span class="result-count">조회 결과 : <b>24건</b></span><span class="spacer"></span><select class="page-size" aria-label="노출 개수"><option>10개</option><option>20개</option><option>50개</option></select><button class="excel" type="button" data-excel>다운로드(Excel)</button></div>
+        <div class="table-scroll"><table class="projects"><thead><tr><th>계약년도</th><th>프로젝트 생성일</th><th>프로젝트 번호</th><th>프로젝트명</th><th>진행상태</th><th>계약 형태</th><th>계약 유형</th><th>사업 구분</th><th>대상 설비</th><th>접수 경로</th><th>에너지사용자</th><th>사용자 소재지</th></tr></thead><tbody id="projectBody"></tbody></table></div>
+        <div class="pagination"><button>‹</button><button class="on">1</button><button>2</button><button>3</button><button>›</button></div>
+      </div></section>
+    </main>
+  </div>
+</div>
+<script>
+(function(){
+  var summaries={1:[13,1,4,2,6,2,0,1234123120,690321230,670321340],12:[28,3,8,6,7,3,1,3534123120,1690321230,1470321340],36:[47,5,13,10,12,5,2,6234123120,3290321230,2870321340]};
+  var projects=[
+    ["2026","2026.12.22","2026-05011","포천 물류센터 LED 에너지효율화사업","추진","EPC 계약","수익 사업","산업체","LED","EPC사","신한모방㈜","경기 포천"],
+    ["2026","2026.12.22","2026-05011","포천 물류센터 LED 에너지효율화사업","사업 심의","EPC 계약","수익 사업","산업체","LED","EPC사","신한모방㈜","경기 포천"],
+    ["2026","2026.12.22","2026-05011","포천 물류센터 LED 에너지효율화사업","계약 품의","EPC 계약","수익 사업","산업체","LED","EPC사","신한모방㈜","경기 포천"],
+    ["2026","2026.12.22","2026-05011","포천 물류센터 LED 에너지효율화사업","사업 심의","EPC 계약","수익 사업","산업체","LED","EPC사","신한모방㈜","경기 포천"],
+    ["2026","2026.12.22","2026-05011","포천 물류센터 LED 에너지효율화사업","계약 품의","EPC 계약","수익 사업","산업체","LED","EPC사","신한모방㈜","경기 포천"],
+    ["2026","2026.12.22","2026-05011","포천 물류센터 LED 에너지효율화사업","사업 심의","EPC 계약","수익 사업","산업체","LED","EPC사","신한모방㈜","경기 포천"],
+    ["2026","2026.12.22","2026-05011","포천 물류센터 LED 에너지효율화사업","계약 품의","EPC 계약","수익 사업","산업체","LED","EPC사","신한모방㈜","경기 포천"]
+  ];
+  function won(v){return Number(v).toLocaleString("ko-KR")}
+  function renderSummary(period){var v=summaries[period];document.getElementById("summaryRow").innerHTML=v.map(function(x,i){return '<td'+(i>6?' class="num"':'')+'>'+(i>6?won(x):x)+'</td>'}).join("")}
+  function renderProjects(rows){var body=document.getElementById("projectBody");body.innerHTML="";if(!rows.length){body.innerHTML='<tr><td class="empty" colspan="12">조회된 프로젝트가 없습니다.</td></tr>';return}rows.forEach(function(row){var tr=document.createElement("tr");tr.innerHTML=row.map(function(v,i){return '<td>'+(i===3?'<a class="project-link" href="/pms-project-detail.html">'+v+'</a>':v)+'</td>'}).join("");body.appendChild(tr)})}
+  document.querySelectorAll("[data-period]").forEach(function(btn){btn.addEventListener("click",function(){document.querySelectorAll("[data-period]").forEach(function(b){b.classList.remove("on")});btn.classList.add("on");renderSummary(btn.getAttribute("data-period"))})});
+  document.querySelectorAll(".quick").forEach(function(btn){btn.addEventListener("click",function(){document.querySelectorAll(".quick").forEach(function(b){b.classList.remove("on")});btn.classList.add("on")})});
+  document.querySelector("[data-search]").addEventListener("click",function(){renderProjects(projects)});
+  document.querySelector("[data-excel]").addEventListener("click",function(){alert("내 프로젝트 현황 Excel 다운로드를 준비합니다.")});
+  renderSummary(1);renderProjects(projects);
+})();
+</script>
+<script src="/assets/pms-lnb.js"></script>
+</body>
+</html>

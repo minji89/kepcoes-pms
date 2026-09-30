@@ -1,0 +1,1890 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>프로젝트 상세 - 계약 | 사업관리시스템 (PMS)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #f1f5f9;
+    --surface: #ffffff;
+    --border: #e5e9f0;
+    --text: #1e293b;
+    --muted: #64748b;
+    --brand: #1d6ff2;
+    --brand-soft: #eff6ff;
+    --navy: #1e3a5f;
+    --green: #10b981;
+    --field: #f1f5f9;
+    --radius: 10px;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Noto Sans KR", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a { color: inherit; text-decoration: none; }
+  ul { list-style: none; margin: 0; padding: 0; }
+
+  .sr-only {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+  }
+
+  .layout { display: flex; min-height: 100vh; }
+
+  /* ---------- Sidebar ---------- */
+  .sidebar {
+    width: 248px; flex: 0 0 248px; background: var(--surface);
+    border-right: 1px solid var(--border); display: flex; flex-direction: column;
+  }
+  .sidebar-head {
+    height: 60px; display: flex; align-items: center; justify-content: space-between;
+    padding: 0 20px; border-bottom: 1px solid var(--border);
+  }
+  .logo { display: flex; align-items: center; min-width: 0; }
+  .logo img { display: block; height: 30px; width: auto; max-width: 100%; }
+  .hamburger {
+    background: none; border: 0; padding: 6px; cursor: pointer;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .hamburger i { display: block; width: 18px; height: 2px; background: #334155; border-radius: 2px; }
+
+  .nav { padding: 16px 12px; flex: 1; }
+  .nav-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 14px; border-radius: 8px;
+    color: #475569; font-size: 14.5px; font-weight: 500;
+  }
+  .nav-item .chev {
+    margin-left: auto; width: 8px; height: 8px; flex: none;
+    border-right: 1.6px solid #94a3b8; border-bottom: 1.6px solid #94a3b8;
+    transform: rotate(45deg) translateY(-2px);
+  }
+  .nav-item.active .chev { border-color: var(--brand); }
+  .nav-item .chev.up { transform: rotate(-135deg) translateY(-2px); }
+  .nav-item.active { background: var(--brand-soft); color: var(--brand); font-weight: 700; }
+  .nav-icon { width: 20px; height: 20px; flex: none; color: currentColor; }
+
+  .subnav { padding: 2px 0 6px 26px; }
+  .subnav-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 10px; font-size: 14px; color: #475569;
+  }
+  .subnav-item.active { color: var(--brand); font-weight: 700; }
+  .dot { width: 5px; height: 5px; border-radius: 50%; background: var(--brand); flex: none; }
+
+  .sidebar-foot { padding: 16px 16px 22px; display: grid; gap: 10px; }
+  .side-btn {
+    display: flex; align-items: center; gap: 10px;
+    padding: 12px 14px; border: 1px solid var(--border);
+    border-radius: 8px; font-size: 13.5px; color: #475569; background: var(--surface);
+  }
+  .side-btn.primary { border-color: #bfdbfe; background: var(--brand-soft); color: var(--brand); font-weight: 700; }
+
+  /* ---------- Main ---------- */
+  .main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+  .topbar {
+    height: 60px; background: var(--surface); border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 16px; padding: 0 26px;
+  }
+  .topbar h1 { margin: 0; font-size: 19px; font-weight: 700; letter-spacing: -0.02em; }
+  .badge-pms {
+    background: var(--brand-soft); color: var(--brand);
+    font-size: 12px; font-weight: 700; padding: 4px 9px; border-radius: 6px;
+  }
+  .topbar-right { margin-left: auto; display: flex; align-items: center; gap: 14px; }
+  .seg { display: flex; align-items: center; gap: 6px; }
+  .seg-label { color: var(--muted); font-size: 13px; margin-right: 2px; }
+  .seg-btn {
+    padding: 5px 12px; border-radius: 6px; font-size: 13px;
+    color: var(--muted); background: transparent; border: 0; cursor: pointer; font-family: inherit;
+  }
+  .seg-btn.on { background: #334155; color: #fff; font-weight: 700; }
+  .user { font-size: 13.5px; }
+  .user b { font-weight: 700; }
+  .user small { color: var(--muted); }
+  .logout { color: var(--muted); font-size: 13px; text-decoration: underline; }
+
+  .content { padding: 26px; display: grid; gap: 18px; }
+  .page-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  .page-head h2 { margin: 0; font-size: 25px; font-weight: 700; letter-spacing: -0.03em; }
+  .crumb { display: flex; align-items: center; gap: 10px; color: var(--muted); font-size: 13px; }
+  .crumb .sep { color: #cbd5e1; font-size: 11px; }
+  .crumb .now { color: var(--text); font-weight: 700; }
+
+  .card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+  }
+  .card-body { padding: 20px 24px 24px; }
+  .main, .content, .card, .card-body { min-width: 0; }
+
+  /* Tabs */
+  .tabbar { display: flex; align-items: center; gap: 8px; padding: 0 20px; }
+  .tabs { display: flex; }
+  .tab {
+    display: block; padding: 18px 26px; font-size: 15px; color: var(--muted); font-weight: 500;
+    border-bottom: 3px solid transparent; background: none; border-top: 0; border-left: 0; border-right: 0;
+    cursor: pointer; font-family: inherit;
+  }
+  .tab.on { color: var(--brand); font-weight: 700; border-bottom-color: var(--brand); }
+  .tab-right { margin-left: auto; display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--muted); }
+
+  /* ---------- Buttons ---------- */
+  .btn {
+    height: 36px; padding: 0 16px; font-family: inherit; font-size: 13.5px; font-weight: 700;
+    border-radius: 8px; cursor: pointer; display: inline-flex; align-items: center;
+    justify-content: center; gap: 7px; border: 1px solid transparent; background: var(--surface);
+    color: var(--text);
+  }
+  .btn-dark { background: var(--navy); color: #fff; border-color: var(--navy); }
+  .btn-dark:hover { background: #16304f; }
+  .btn-line { border-color: #cbd5e1; color: #334155; }
+  .btn-line:hover { border-color: var(--brand); color: var(--brand); }
+  .btn-sm { height: 30px; padding: 0 14px; font-size: 12.5px; }
+  .btn svg { width: 15px; height: 15px; }
+  /* 품의 상신 완료 : [계약 품의] 는 진행 상태 표시로 바뀌고 재상신을 막습니다. */
+  .btn:disabled { cursor: default; }
+  .btn.is-locked, .btn.is-locked:hover {
+    background: #94a3b8; border-color: #94a3b8; color: #f8fafc; opacity: 0.82;
+  }
+  .sec-head .btn[hidden] { display: none !important; }
+  .btn.is-progress {
+    background: var(--surface); border-color: #cbd5e1; color: #64748b; font-weight: 500;
+  }
+
+  /* ---------- Section head ---------- */
+  .sec-head { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
+  .sec-title { margin: 0; font-size: 16px; font-weight: 700; letter-spacing: -0.02em; }
+  .sec-head .spacer { flex: 1; }
+
+  /* ---------- 읽기 전용 정보 (수정 불가) ---------- */
+  .kv {
+    display: grid; grid-template-columns: 176px minmax(0, 1fr);
+    border: 1px solid var(--border); border-radius: 8px; overflow: hidden;
+    background: var(--border); gap: 1px;
+  }
+  .kv .k {
+    background: #e2e8f0; color: #334155; font-size: 13px; font-weight: 500;
+    padding: 9px 14px; display: flex; align-items: center; gap: 4px;
+  }
+  /* 체결 후 표 : 항목명 열을 넓혀 협력업체명을 함께 표기합니다. */
+  .kv.wide { grid-template-columns: 300px minmax(0, 1fr); }
+  .kv[hidden], .card[hidden] { display: none; }
+  .kv .k-sub { margin-left: auto; padding-left: 12px; color: #475569; }
+  .kv .v {
+    background: #f8fafc; font-size: 13.5px; font-weight: 500;
+    padding: 9px 14px; display: flex; align-items: center; min-width: 0; gap: 8px;
+  }
+
+  /* ---------- 계약 품의 : 에너지 사용자 정보 ---------- */
+  .energy-user-info { margin-top: 22px; }
+  .energy-user-info[hidden] { display: none; }
+  .energy-user-title { margin: 0 0 10px; font-size: 15px; font-weight: 700; }
+  .energy-user-grid {
+    display: grid;
+    grid-template-columns: 88px 180px minmax(180px, 1fr) 180px minmax(180px, 1fr);
+    border: 1px solid var(--border); border-radius: 8px; overflow: hidden;
+    background: var(--border); gap: 1px;
+  }
+  .energy-user-name {
+    grid-row: span 8; display: flex; align-items: center; justify-content: center;
+    padding: 12px; background: #e2e8f0; color: #334155; font-size: 13.5px; font-weight: 700;
+  }
+  .energy-user-label {
+    display: flex; align-items: center; gap: 4px; min-height: 42px; padding: 8px 12px;
+    background: #e2e8f0; color: #334155; font-size: 13px; white-space: nowrap;
+  }
+  .energy-user-field {
+    display: flex; align-items: center; gap: 8px; min-width: 0; min-height: 42px;
+    padding: 6px 8px; background: #fff; font-size: 13px;
+  }
+  .energy-user-field input, .energy-user-field select {
+    width: min(100%, 180px); height: 30px; padding: 0 9px;
+    border: 1px solid #b9c2ce; border-radius: 4px; background: #fff; color: var(--text); font: inherit;
+  }
+  .energy-user-field input[readonly] { background: #f1f3f5; }
+  .energy-user-field .manager { width: 130px; }
+  .energy-user-field .btn { height: 30px; border-radius: 4px; }
+  .manager-lookup-overlay {
+    position: fixed; inset: 0; z-index: 90; display: grid; place-items: center;
+    padding: 20px; background: rgba(15, 23, 42, 0.48);
+  }
+  .manager-lookup-overlay[hidden] { display: none; }
+  .manager-lookup-dialog { width: min(640px, 100%); overflow: hidden; border-radius: 10px; background: #fff; box-shadow: 0 24px 70px rgba(15, 23, 42, 0.28); }
+  .manager-lookup-head { display: flex; align-items: center; min-height: 56px; padding: 0 20px; border-bottom: 1px solid var(--border); }
+  .manager-lookup-head h2 { margin: 0; font-size: 18px; }
+  .manager-lookup-close { margin-left: auto; width: 34px; height: 34px; border: 0; border-radius: 6px; background: transparent; color: #64748b; font-size: 24px; cursor: pointer; }
+  .manager-lookup-body { padding: 20px 22px 22px; }
+  .manager-lookup-search { display: grid; grid-template-columns: 150px minmax(0, 1fr) auto auto; gap: 8px; margin-bottom: 16px; }
+  .manager-lookup-search select, .manager-lookup-search input { width: 100%; max-width: none; height: 36px; padding: 0 10px; border: 1px solid #cbd5e1; border-radius: 5px; background: #fff; font: inherit; }
+  .manager-lookup-count { margin: 0 0 9px; color: #475569; font-size: 13px; }
+  .manager-lookup-table-wrap { overflow: auto; border: 1px solid var(--border); border-radius: 7px; }
+  .manager-lookup-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .manager-lookup-table th, .manager-lookup-table td { height: 42px; padding: 8px 10px; border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); text-align: center; }
+  .manager-lookup-table th:last-child, .manager-lookup-table td:last-child { border-right: 0; }
+  .manager-lookup-table tbody tr:last-child td { border-bottom: 0; }
+  .manager-lookup-table th { background: #eef2f7; color: #334155; }
+  .manager-pick { border: 0; background: transparent; color: var(--brand); font: inherit; font-weight: 700; text-decoration: underline; cursor: pointer; }
+  .manager-lookup-empty { color: #94a3b8; }
+  .manager-lookup-foot { display: flex; justify-content: center; margin-top: 18px; }
+
+  .promotion-summary-note { margin: 0 0 18px; color: var(--muted); font-size: 13px; }
+  .badge-ro { padding: 3px 9px; border: 1px solid var(--border); border-radius: 999px; background: #eef2f7; color: #64748b; font-size: 12px; font-weight: 600; }
+
+  .readonly-terms { display: grid; gap: 22px; }
+  .readonly-terms .grid .v { min-height: 43px; background: var(--surface); }
+  .readonly-value { min-width: 0; color: var(--text); font-size: 13.5px; line-height: 1.5; white-space: pre-wrap; word-break: break-word; }
+  .readonly-value.empty { color: #94a3b8; }
+  .readonly-terms .file-list { pointer-events: none; }
+  /* ---------- 입력 그리드 (EPC사별 계약 조건) ---------- */
+  .grid {
+    display: grid; border: 1px solid var(--border); border-radius: 8px; overflow: hidden;
+    background: var(--border); gap: 1px;
+  }
+  /* EPC사 | 항목 | 값 | 항목 | 값 */
+  .grid.terms { grid-template-columns: 120px 172px minmax(0, 0.62fr) 152px minmax(0, 1.38fr); }
+  /* EPC사 | 보험증권 | 보증 ���분 | 항목 | 값 | 항목 | 값 */
+  .grid.bonds { grid-template-columns: 120px 116px 108px 88px minmax(300px, 1fr) 92px minmax(0, 0.55fr); }
+
+  .grid .vendor {
+    background: #e2e8f0; color: #334155; font-size: 13.5px; font-weight: 700;
+    padding: 9px 12px; display: flex; align-items: center; justify-content: center; text-align: center;
+  }
+  .grid .k {
+    background: #e2e8f0; color: #334155; font-size: 13px; font-weight: 500;
+    padding: 7px 14px; display: flex; align-items: center; gap: 4px;
+    /* 항목명은 줄바꿈 없이 한 줄로 표시합니다. (추진 단계 .fkey 규격) */
+    white-space: nowrap; letter-spacing: -0.03em;
+  }
+  .grid .k.center { justify-content: center; text-align: center; }
+  .grid .v {
+    background: var(--surface); padding: 6px 14px;
+    display: flex; align-items: center; gap: 10px; flex-wrap: nowrap; min-width: 0;
+  }
+  .grid .v.blank { background: #f8fafc; }
+  .req { color: #dc2626; font-weight: 700; }
+  /* 안내문은 한 줄 유지 : 셀이 좁으면 말줄임 처리해 행 높이를 고정합니다. */
+  .hint {
+    font-size: 12.5px; color: var(--muted); min-width: 0;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+
+  /* ---------- Form controls ---------- */
+  input[type="text"], select {
+    height: 30px; font-family: inherit; font-size: 13.5px; color: var(--text);
+    padding: 0 10px; border: 1px solid #cbd5e1; border-radius: 6px; background: var(--surface);
+    min-width: 0;
+  }
+  input[type="text"] { width: 100%; max-width: 200px; }
+  input[type="text"].num { text-align: right; font-variant-numeric: tabular-nums; }
+  input[type="text"]:focus-visible, select:focus-visible {
+    outline: 2px solid var(--brand); outline-offset: 1px; border-color: var(--brand);
+  }
+  input::placeholder { color: #94a3b8; }
+  select { padding-right: 8px; font-weight: 500; max-width: 160px; }
+
+  /* 날짜 입력 : 텍스트 + 달력 버튼 */
+  .date { display: inline-flex; align-items: center; gap: 6px; }
+  .date input { width: 108px; max-width: 108px; background: var(--field); }
+  .cal {
+    width: 28px; height: 28px; flex: none; display: grid; place-items: center;
+    border: 1px solid #cbd5e1; border-radius: 6px; background: var(--surface); cursor: pointer;
+    color: #475569;
+  }
+  .cal:hover { border-color: var(--brand); color: var(--brand); }
+  .cal svg { width: 15px; height: 15px; }
+  /* 기간(시작 ~ 종료)은 셀 안에서 한 줄로 유지합니다. */
+  .range { display: flex; align-items: center; gap: 8px; flex-wrap: nowrap; width: 100%; min-width: 0; }
+  .range .date { flex: 1 1 0; min-width: 0; }
+  .range .date input { width: 100%; max-width: none; }
+  .range .tilde { flex: none; }
+  .range .tilde { color: var(--muted); }
+  .payment-fields { display: flex; align-items: center; gap: 8px; width: 100%; min-width: 0; }
+  .payment-field { display: flex; align-items: center; gap: 5px; min-width: 0; }
+  .payment-field label { flex: none; color: #64748b; font-size: 12px; white-space: nowrap; }
+  .payment-field input { width: 72px; max-width: 72px; }
+  .tail { display: flex; align-items: center; gap: 8px; flex-wrap: nowrap; min-width: 0; }
+
+  /* ---------- 첨부파일 (칩 + 삭제) ---------- */
+  .file-native { display: none; }
+  .file-list { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .file-list .file-empty { font-size: 12.5px; color: #94a3b8; }
+  /* 입력 그리드 안에서는 미첨부 안내를 숨겨 [찾기] 버튼만 노출합니다. */
+  .grid .file-list:has(.file-empty) { display: none; }
+  .file-chip {
+    display: inline-flex; align-items: center; gap: 6px; max-width: 240px;
+    padding: 3px 3px 3px 10px; background: var(--field);
+    border: 1px solid var(--border); border-radius: 6px;
+  }
+  .file-chip .name {
+    font-size: 12.5px; color: var(--text);
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .file-del {
+    flex: none; width: 20px; height: 20px; display: grid; place-items: center;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 4px;
+    font-size: 11px; font-weight: 700; line-height: 1; color: #64748b; cursor: pointer;
+  }
+  .file-del:hover { background: #fee2e2; border-color: #fca5a5; color: #b91c1c; }
+
+  /* ---------- Toast / Alert ---------- */
+  .toast {
+    position: fixed; left: 50%; bottom: 34px; transform: translateX(-50%);
+    background: #0f172a; color: #fff; font-size: 13.5px; font-weight: 500;
+    padding: 12px 20px; border-radius: 8px; z-index: 60;
+  }
+  .toast[hidden] { display: none; }
+  .alert-overlay {
+    position: fixed; inset: 0; background: rgba(15, 23, 42, 0.45);
+    display: grid; place-items: center; padding: 20px; z-index: 70;
+  }
+  .alert-overlay[hidden] { display: none; }
+  .alert-box {
+    width: 100%; max-width: 420px; background: var(--surface);
+    border-radius: 10px; padding: 22px 24px; text-align: left;
+  }
+  .alert-title {
+    margin: 0 0 14px; padding-bottom: 12px; font-size: 15px; font-weight: 700;
+    border-bottom: 1px solid var(--border);
+  }
+  .alert-title[hidden] { display: none; }
+  .alert-date-field {
+    display: grid; grid-template-columns: 145px minmax(0, 1fr); margin: 0 12px 18px;
+    border: 1px solid var(--border); background: #fff;
+  }
+  .alert-date-field[hidden] { display: none; }
+  .alert-date-field label {
+    display: flex; align-items: center; padding: 0 12px; min-height: 38px;
+    border-right: 1px solid var(--border); background: #f8fafc; font-size: 13px;
+  }
+  .alert-date-field input {
+    width: 100%; min-width: 0; height: 38px; padding: 0 10px;
+    border: 0; background: #fff; color: var(--text); font: inherit;
+  }
+  .alert-msg { margin: 0 0 22px; font-size: 14.5px; line-height: 1.6; }
+  .alert-foot { display: flex; justify-content: center; gap: 10px; }
+
+  /* ---------- 버튼 옆에 붙는 Alert (딤드 + 연결선) ---------- */
+  /* 호출한 버튼 아래에 팝오버를 띄우고, ㄱ자 연결선으로 버튼과 이어 줍니다. */
+  .alert-overlay.anchored { display: block; padding: 0; }
+  .alert-overlay.anchored .alert-box {
+    position: absolute; max-width: 552px;
+    border: 1px solid var(--border); box-shadow: 0 14px 34px rgba(15, 23, 42, 0.22);
+  }
+  .alert-overlay.anchored .alert-foot { justify-content: flex-start; padding-left: 186px; }
+  /* 연결선 : 버튼 하단 -> 가로 이동 -> 팝오버 상단 화살표 */
+  .alert-link { position: fixed; inset: 0; pointer-events: none; }
+  .alert-link[hidden] { display: none; }
+  .alert-link .seg { position: absolute; display: block; background: #1f6f8b; }
+  .alert-link .arrow {
+    position: absolute; width: 0; height: 0;
+    border-left: 7px solid transparent; border-right: 7px solid transparent;
+    border-top: 9px solid #1f6f8b;
+  }
+
+  @media (max-width: 1280px) {
+    .grid.terms { grid-template-columns: 110px 150px minmax(0, 1fr); }
+    .grid.bonds { grid-template-columns: 110px 110px 110px 110px minmax(0, 1fr); }
+  }
+  @media (max-width: 900px) {
+    .sidebar { display: none; }
+    .content { padding: 18px; }
+    .tabs { overflow-x: auto; }
+    .kv { grid-template-columns: 130px minmax(0, 1fr); }
+    .grid.terms, .grid.bonds { grid-template-columns: 120px minmax(0, 1fr); }
+    .energy-user-grid { grid-template-columns: 126px minmax(0, 1fr); }
+    .energy-user-name { grid-column: 1 / -1; grid-row: auto; min-height: 42px; }
+    .manager-lookup-search { grid-template-columns: 1fr 1fr; }
+    .alert-date-field { grid-template-columns: 125px minmax(0, 1fr); margin-inline: 0; }
+  }
+  body.change-open { overflow: hidden; }
+  .change-modal[hidden] { display: none; }
+  .change-modal { position: fixed; inset: 0; z-index: 1200; display: grid; place-items: center; padding: 12px; background: rgba(15,23,42,.55); }
+  .change-dialog { width: min(1400px,100%); max-height: calc(100vh - 24px); overflow: auto; border-radius: 10px; background: #fff; box-shadow: 0 24px 70px rgba(15,23,42,.32); }
+  .change-head { display: flex; align-items: center; min-height: 56px; padding: 0 20px; border-bottom: 1px solid var(--border); background: #f8fafc; }
+  .change-head h2 { margin: 0; font-size: 18px; }
+  .change-close { display: none; }
+  .change-body { padding: 24px; }
+  .change-intro h3 { margin: 0 0 4px; font-size: 17px; }
+  .change-intro h3 { display: none; }
+  .change-intro p { margin: 0; color: #64748b; }
+  .change-layout { display: grid; grid-template-columns: 170px minmax(0,1fr); gap: 18px; margin-top: 18px; }
+  .change-content-column { min-width: 0; }
+  .change-scroll-area { height: 400px; overflow-y: auto; padding-right: 8px; scrollbar-gutter: stable; }
+  .change-tabs { display: grid; grid-template-rows: repeat(4,54px); align-content: start; height: auto; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+  .change-tab { min-height: 54px; padding: 0 16px; border: 0; border-bottom: 1px solid var(--border); background: #fff; text-align: left; font-weight: 700; cursor: pointer; }
+  .change-tab:last-child { border-bottom: 0; }.change-tab.on { background: #eff6ff; color: var(--brand); }
+  .change-pane { border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }.change-pane[hidden] { display: none; }
+  .change-basic-columns { display: grid; grid-template-columns: 1fr 1.08fr; gap: 18px; padding: 1px; }
+  .change-basic-section { overflow: hidden; border: 1px solid var(--border); border-radius: 7px; }
+  .change-basic-section + .change-basic-section { border-left: 1px solid var(--border); }
+  .change-subtitle { margin: 0; padding: 12px 14px; border-bottom: 1px solid var(--border); background: #f8fafc; font-size: 14px; }
+  .change-pane-title { margin: 0; padding: 13px 15px; border-bottom: 1px solid var(--border); background: #f8fafc; font-size: 15px; }
+  .change-grid { display: grid; grid-template-columns: 190px minmax(0,1fr); }
+  .change-effect-grid { grid-template-columns: 190px minmax(0,1fr) 96px; }
+  .change-effect-grid .change-label { grid-column: 1; }
+  .change-effect-grid .change-field { grid-column: 2; }
+  .change-required { margin-left: 4px; color: #dc2626; }
+  .change-full-section { margin: 18px 1px 1px; overflow: hidden; border: 1px solid var(--border); border-radius: 7px; }
+  .change-full-section .change-basic-columns { padding: 0; gap: 0; }
+  .change-full-section .change-basic-section { border: 0; border-radius: 0; }
+  .change-full-section .change-basic-section + .change-basic-section { border-left: 1px solid var(--border); }
+  .change-field select,.change-field textarea { width: min(300px,100%); padding: 7px 10px; border: 1px solid #cbd5e1; border-radius: 5px; background: #fff; color: #334155; font: inherit; }
+  .change-field textarea { min-height: 66px; resize: vertical; white-space: normal; }
+  .change-contract-grid { display: grid; grid-template-columns: 140px 180px minmax(180px,1fr) 180px minmax(180px,1fr); }
+  .change-contract-grid > * { min-height: 48px; padding: 8px 10px; border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  .change-contract-grid .change-vendor { grid-row: span 6; display: grid; place-items: center; background: #f8fafc; font-weight: 700; }
+  .change-contract-grid .change-label { border-left: 0; }
+  .change-contract-grid .change-field { border-left: 0; }
+  .change-contract-grid .change-field input,.change-contract-grid .change-field select { width: 100%; }
+  .change-contract-grid .change-blank { grid-column: span 2; background: #f8fafc; }
+  .change-contract-files { border-bottom: 1px solid var(--border); background: #fff; }
+  .change-contract-file-row { display: grid; grid-template-columns: 170px minmax(0,1fr); min-height: 50px; border-bottom: 1px solid var(--border); }
+  .change-contract-file-row[hidden] { display: none; }
+  .change-contract-file-row:last-child { border-bottom: 0; }
+  .change-contract-file-label { display: flex; align-items: center; padding: 9px 12px; background: #eef2f6; color: #334155; font-size: 13px; font-weight: 700; }
+  .change-contract-file-control { display: flex; align-items: center; gap: 8px; min-width: 0; padding: 8px 10px; }
+  .change-contract-file-control .btn { min-width: 64px; height: 32px; padding: 0 13px; border-radius: 4px; font-size: 12.5px; }
+  .change-contract-file-control .file-list { min-width: 0; flex: 1; flex-wrap: nowrap; }
+  .change-contract-file-control .file-chip { max-width: min(100%,420px); border-radius: 4px; }
+  .change-label,.change-field { min-height: 46px; padding: 9px 12px; border-bottom: 1px solid var(--border); }
+  .change-label { display: flex; align-items: center; white-space: nowrap; background: #f8fafc; font-size: 13px; font-weight: 700; }.change-field { display: flex; align-items: center; gap: 8px; min-width: 0; white-space: nowrap; border-left: 1px solid var(--border); }
+  .change-grid>:nth-last-child(-n+2) { border-bottom: 0; }.change-field input { width: min(300px,100%); height: 34px; padding: 0 10px; border: 1px solid #cbd5e1; border-radius: 5px; }.change-field input[readonly] { background: #f8fafc; color: #64748b; }
+  .change-note { margin: 14px 0 0; padding-top: 12px; border-top: 1px dashed #cbd5e1; color: #64748b; font-size: 13px; }
+  .change-inner-foot { display: grid; gap: 10px; min-height: 96px; padding-top: 14px; border-top: 1px dashed #94a3b8; background: #fff; }
+  .change-reason-row { display: grid; grid-template-columns: 76px minmax(0,1fr) auto; gap: 10px; align-items: stretch; }
+  .change-reason-row label { display: flex; align-items: center; font-weight: 700; color: #1e293b; }
+  .change-reason-row input { min-width: 0; height: 44px; padding: 0 13px; border: 1px solid #94a3b8; border-radius: 5px; color: #334155; font: inherit; }
+  .change-reason-row input::placeholder { color: #94a3b8; }
+  .change-reason-row .btn { min-width: 146px; margin: 0; white-space: normal; line-height: 1.35; }
+  .change-inner-foot .change-note { margin: 0; padding: 0; border: 0; color: #475569; }
+  .change-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 18px; }
+  .termination-dialog { width: min(820px, 100%); border-radius: 10px; background: #fff; box-shadow: 0 24px 70px rgba(15,23,42,.32); }
+  .termination-body { padding: 24px; }
+  .termination-body p { margin: 0 0 16px; color: #475569; line-height: 1.65; white-space: nowrap; }
+  .termination-reason { display: grid; grid-template-columns: 92px minmax(0, 1fr); gap: 12px; align-items: start; }
+  .termination-reason label { padding-top: 10px; font-weight: 700; white-space: nowrap; }
+  .termination-reason textarea { width: 100%; min-height: 92px; padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 6px; color: var(--text); font: inherit; resize: vertical; }
+  .termination-reason textarea:focus-visible { outline: 2px solid var(--brand); outline-offset: 1px; border-color: var(--brand); }
+  .termination-actions { display: flex; justify-content: center; gap: 8px; margin-top: 20px; }
+  .contract-state-reason {
+    display: grid; grid-template-columns: 140px minmax(0, 1fr); gap: 12px;
+    margin-bottom: 14px; padding: 13px 16px; border: 1px solid; border-radius: 7px;
+    color: #475569;
+  }
+  .contract-state-reason strong { white-space: nowrap; }
+  .contract-state-reason.termination { border-color: #fecaca; background: #fff1f2; }
+  .contract-state-reason.termination strong { color: #b91c1c; }
+  .contract-state-reason.release { border-color: #c7d2fe; background: #eef2ff; }
+  .contract-state-reason.release strong { color: #4338ca; }
+  @media(max-width:900px){.change-basic-columns{grid-template-columns:1fr}.change-basic-section+.change-basic-section,.change-full-section .change-basic-section+.change-basic-section{border-left:0;border-top:1px solid var(--border)}.change-contract-grid{grid-template-columns:120px 160px minmax(180px,1fr) 160px minmax(180px,1fr);min-width:900px}}@media(max-width:700px){.change-layout{grid-template-columns:1fr}.change-tabs{grid-template-columns:repeat(2,1fr);grid-template-rows:repeat(2,48px);height:auto}.change-tab{min-height:48px;border-right:1px solid var(--border)}.change-grid{grid-template-columns:140px minmax(0,1fr)}.change-effect-grid{grid-template-columns:140px minmax(0,1fr)}.change-scroll-area{height:400px}.change-reason-row{grid-template-columns:1fr}.change-reason-row .btn{min-height:44px}.change-contract-file-row{grid-template-columns:140px minmax(0,1fr)}.change-contract-file-control{align-items:flex-start;flex-direction:column}.change-contract-file-control .file-list{width:100%}}
+</style>
+  <link rel="stylesheet" href="/assets/pms-lnb.css" />
+  <link rel="stylesheet" href="/assets/pms-intake-wizard.css?v=20260917-3" />
+</head>
+<body>
+<div class="layout">
+
+  <!-- ============ Sidebar ============ -->
+  <aside class="sidebar">
+    <div class="sidebar-head">
+      <a class="logo" href="/pms-project-detail.html">
+        <img src="/images/kepco-es-logo.png" alt="켑코이에스 주식회사 KEPCO ENERGY SOLUTION CO., LTD" />
+      </a>
+      <button class="hamburger" type="button" aria-label="메뉴 접기">
+        <i></i><i></i><i></i>
+      </button>
+    </div>
+
+    <nav class="nav" aria-label="주 메뉴">
+      <ul>
+        <li>
+          <a class="nav-item open" href="/pms-new-project.html">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 21V5a1 1 0 0 1 1-1h7a1 1 0 0 1 1 1v16"/><path d="M13 10h6a1 1 0 0 1 1 1v10"/><path d="M7 8h3M7 12h3M7 16h3M16 14h1M16 18h1"/></svg>
+            사업접수 <span class="chev up" aria-hidden="true"></span>
+          </a>
+          <ul class="subnav">
+            <li><a class="subnav-item" href="/pms-new-project.html"><span class="dot" aria-hidden="true"></span>신규 프로젝트 등록</a></li>
+            <li><a class="subnav-item" href="/pms-promotion-status.html"><span class="dot" aria-hidden="true"></span>추진단계 프로젝트 현황</a></li>
+          </ul>
+        </li>
+        <li>
+          <a class="nav-item active" href="#" aria-current="page">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h6a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Z"/><path d="M15 11v4"/></svg>
+            프로젝트 관리 <span class="chev up" aria-hidden="true"></span>
+          </a>
+          <ul class="subnav">
+            <li><a class="subnav-item active" href="/pms-project-status.html"><span class="dot" aria-hidden="true"></span>프로젝트 현황</a></li>
+          </ul>
+        </li>
+        <li>
+          <a class="nav-item" href="/pms-contract-status.html">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h9l5 5v11H5z"/><path d="M9 13h6M9 17h4"/></svg>
+            계약관리 <span class="chev" aria-hidden="true"></span>
+          </a>
+        </li>
+        <li>
+          <a class="nav-item" href="/pms-fund-repayment.html">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8Z"/><path d="M7 12h4"/></svg>
+            자금관리 <span class="chev" aria-hidden="true"></span>
+          </a>
+        </li>
+        <li>
+          <a class="nav-item" href="#">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 20V10M12 20V4M19 20v-7"/></svg>
+            통계(분석) <span class="chev" aria-hidden="true"></span>
+          </a>
+        </li>
+        <li>
+          <a class="nav-item" href="#">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s7-6.3 7-11a7 7 0 1 0-14 0c0 4.7 7 11 7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg>
+            출장관리 <span class="chev" aria-hidden="true"></span>
+          </a>
+        </li>
+        <li>
+          <a class="nav-item" href="#">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M4.5 20a7.5 7.5 0 0 1 15 0"/></svg>
+            마이페이지 <span class="chev" aria-hidden="true"></span>
+          </a>
+        </li>
+        <li>
+          <a class="nav-item" href="#">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-2.9 1.2 2 2 0 1 1-4 0 1.7 1.7 0 0 0-2.9-1.2l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1A1.7 1.7 0 0 0 3 15a2 2 0 1 1 0-4 1.7 1.7 0 0 0 1.5-2.7l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1A1.7 1.7 0 0 0 10 4.3a2 2 0 1 1 4 0 1.7 1.7 0 0 0 2.7 1.2l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1A1.7 1.7 0 0 0 21 11a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 0Z"/></svg>
+            공통관리 <span class="chev" aria-hidden="true"></span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <div class="sidebar-foot">
+      <a class="side-btn" href="#">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 10h6M7 14h4"/></svg>
+        사업관리시스템(PMS)
+      </a>
+      <a class="side-btn" href="#">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="M6 3h9l4 4v14H6z"/><path d="M9 12h6M9 16h6"/></svg>
+        전자입찰시스템(SRM)
+      </a>
+      <a class="side-btn primary" href="#">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 17v.01"/><path d="M12 13.5a2.5 2.5 0 1 0-2.5-3"/></svg>
+        온라인 매뉴얼
+      </a>
+    </div>
+  </aside>
+
+  <!-- ============ Main ============ -->
+  <div class="main">
+    <header class="topbar">
+      <h1>사업관리시스템</h1>
+      <span class="badge-pms">PMS</span>
+
+      <div class="topbar-right">
+        <div class="seg" role="group" aria-label="권한 선택">
+          <span class="seg-label">권한</span>
+          <button class="seg-btn on" type="button">그룹#1</button>
+          <button class="seg-btn" type="button">그룹#3</button>
+          <button class="seg-btn" type="button">그룹#4</button>
+        </div>
+        <p class="user"><b>이희성 부장</b> <small>[시스템관리자]</small></p>
+        <a class="logout" href="#">로그아웃</a>
+      </div>
+    </header>
+
+    <main class="content">
+      <div class="page-head">
+        <h2>프로젝트 상세</h2>
+        <nav class="crumb" aria-label="현재 위치">
+          <a href="#">HOME</a><span class="sep" aria-hidden="true">›</span>
+          <a href="#">프로젝트 관리</a><span class="sep" aria-hidden="true">›</span>
+          <a href="/pms-project-status.html">프로젝트 현황</a><span class="sep" aria-hidden="true">›</span>
+          <span class="now">계약</span>
+        </nav>
+      </div>
+
+      <!-- Tabs -->
+      <section class="card">
+        <div class="tabbar">
+          <div class="tabs" role="tablist" aria-label="프로젝트 상세 탭">
+            <a class="tab" href="/pms-project-detail.html" role="tab" aria-selected="false">HOME</a>
+            <a class="tab" href="/pms-project-promotion.html" role="tab" aria-selected="false">추진</a>
+            <a class="tab on" href="/pms-project-contract.html" role="tab" aria-selected="true" aria-current="page">계약</a>
+            <a class="tab" href="/pms-project-investment.html" role="tab" aria-selected="false">투자</a>
+            <a class="tab" href="/pms-project-investment-epc.html" role="tab" aria-selected="false">투자(EPC)</a>
+            <a class="tab" href="/pms-project-repayment.html" role="tab" aria-selected="false">상환</a>
+            <a class="tab" href="/pms-project-order.html" role="tab" aria-selected="false">발주</a>
+          </div>
+          <div class="tab-right" data-project-round><span>차수</span><strong class="project-round-current">1차</strong></div>
+        </div>
+      </section>
+
+      <!-- ============ 프로젝트 계약정보 ============ -->
+      <section class="card" aria-labelledby="contractTitle">
+        <div class="card-body">
+          <div class="sec-head">
+            <h3 class="sec-title" id="contractTitle">프로젝트 계약정보</h3>
+            <span class="spacer"></span>
+            <button class="btn btn-dark" type="button" data-act="draft">계약 품의</button>
+            <button class="btn btn-dark" type="button" data-act="change-contract" hidden>계약 변경</button>
+            <button class="btn btn-dark" type="button" data-act="cancel-contract" hidden>계약 해지</button>
+            <button class="btn btn-dark" type="button" data-act="release-contract" hidden>계약 해제</button>
+            <button class="btn btn-line" type="button" data-act="conclude">계약 체결</button>
+          </div>
+
+          <!-- 해지 완료 후 버튼 위치는 유지하고 정보만 계약정보 내부에 추가합니다. -->
+          <section id="terminationInfoCard" aria-labelledby="terminationInfoTitle" hidden style="margin-bottom:18px;">
+            <div class="contract-state-reason termination">
+              <strong>계약 해지 사유</strong>
+              <span id="terminationReasonValue">-</span>
+            </div>
+            <div class="sec-head">
+              <h3 class="sec-title" id="terminationInfoTitle">프로젝트 계약 해지 정보</h3>
+            </div>
+            <div class="kv wide">
+              <div class="k">계약 해지 일자</div>
+              <div class="v" id="terminationDate">-</div>
+              <div class="k">계약 해지 담당자</div>
+              <div class="v" id="terminationManager">-</div>
+            </div>
+          </section>
+
+          <!-- 해제 완료 정보도 버튼 헤더 아래에서 노출해 버튼 위치를 유지합니다. -->
+          <section id="releaseInfoCard" aria-labelledby="releaseInfoTitle" hidden style="margin-bottom:18px;">
+            <div class="contract-state-reason release">
+              <strong>계약 해제 사유</strong>
+              <span id="releaseReasonValue">-</span>
+            </div>
+            <div class="sec-head">
+              <h3 class="sec-title" id="releaseInfoTitle">프로젝트 계약 해제 정보</h3>
+            </div>
+            <div class="kv wide">
+              <div class="k">계약 해제 일자</div>
+              <div class="v" id="releaseDate">-</div>
+              <div class="k">계약 해제 담당자</div>
+              <div class="v" id="releaseManager">-</div>
+            </div>
+          </section>
+
+          <!-- 추진 단계에서 확정된 정보 (수정 불가) -->
+          <div class="kv" id="kvDraft">
+            <div class="k">프로젝트 번호</div>
+            <div class="v">2026_06_12</div>
+
+            <div class="k">사업명</div>
+            <div class="v" id="projectName">천안 (주)선영 LED 에너지효율화사업</div>
+
+            <div class="k">계약 형태</div>
+            <div class="v" id="contractFormValue">ESCO 계약</div>
+
+            <div class="k">계약 유형</div>
+            <div class="v">수익 사업</div>
+
+            <div class="k">사업 구분</div>
+            <div class="v">산업체 ｜ 건축물</div>
+
+            <div class="k">대상 설비</div>
+            <div class="v">LED ｜ 압출기 ｜ 펌프</div>
+
+            <div class="k">프로젝트 계약서</div>
+            <div class="v">
+              <div class="file-list" data-list="project-doc"></div>
+            </div>
+
+            <div class="k" id="repaymentScheduleLabel">상환 스케줄 <span class="req">*</span></div>
+            <div class="v" id="repaymentScheduleRow">
+              <input class="file-native" type="file" id="repayment-schedule" accept=".pdf,.xls,.xlsx,.csv" />
+              <button class="btn btn-dark btn-sm" type="button" data-pick="repayment-schedule">찾기</button>
+              <span class="sr-only">상환 스케줄 첨부</span>
+              <div class="file-list" data-list="repayment-schedule"></div>
+            </div>
+
+            <div class="k" id="salesPlanLabel" hidden>매출 계획표 <span class="req">*</span></div>
+            <div class="v" id="salesPlanRow" hidden>
+              <input class="file-native" type="file" id="sales-plan" accept=".pdf,.xls,.xlsx,.csv" />
+              <button class="btn btn-dark btn-sm" type="button" data-pick="sales-plan">찾기</button>
+              <span class="sr-only">매출 계획표 첨부</span>
+              <div class="file-list" data-list="sales-plan"></div>
+            </div>
+          </div>
+
+          <section class="energy-user-info" id="energyUserInfo" aria-labelledby="energyUserTitle">
+            <h3 class="energy-user-title" id="energyUserTitle">에너지 사용자 정보</h3>
+            <div class="energy-user-grid">
+              <div class="energy-user-name">선영</div>
+
+              <label class="energy-user-label" for="repaymentCondition">상환조건 <span class="req">*</span></label>
+              <div class="energy-user-field"><select id="repaymentCondition" required><option value="">선택</option><option>원리금 균등상환</option><option>원금 균등상환</option><option>만기 일시상환</option></select></div>
+              <label class="energy-user-label" for="repaymentPeriod">상환기간 <span class="req">*</span></label>
+              <div class="energy-user-field"><input id="repaymentPeriod" type="number" min="1" required><span>개월</span></div>
+
+              <label class="energy-user-label" for="userTotalAmount">총 사업금액(VAT별도/원) <span class="req">*</span></label>
+              <div class="energy-user-field"><input id="userTotalAmount" type="text" inputmode="numeric" required></div>
+              <label class="energy-user-label" for="userInvestmentAmount">투자금액(VAT별도/원) <span class="req">*</span></label>
+              <div class="energy-user-field"><input id="userInvestmentAmount" type="text" inputmode="numeric" required></div>
+
+              <label class="energy-user-label" for="userProfit">이윤 <span class="req">*</span></label>
+              <div class="energy-user-field"><input id="userProfit" type="text" inputmode="numeric" required></div>
+              <label class="energy-user-label" for="returnRate">수익률</label>
+              <div class="energy-user-field"><input id="returnRate" type="text" readonly></div>
+
+              <label class="energy-user-label" for="userIrr">IRR</label>
+              <div class="energy-user-field"><input id="userIrr" type="text" readonly></div>
+              <label class="energy-user-label" for="userXirr">XIRR</label>
+              <div class="energy-user-field"><input id="userXirr" type="text" readonly></div>
+
+              <label class="energy-user-label" for="ownershipTransfer">소유권 이전 시점 <span class="req">*</span></label>
+              <div class="energy-user-field"><select id="ownershipTransfer" required><option value="">선택</option><option>계약 체결 시</option><option>상환 완료 시</option><option>준공 완료 시</option></select></div>
+              <label class="energy-user-label" for="lateInterestRate">지연 이자율</label>
+              <div class="energy-user-field"><input id="lateInterestRate" type="number" min="0" step="0.01"></div>
+
+              <label class="energy-user-label" for="epcDiscountRate">적용 할인율(EPC)</label>
+              <div class="energy-user-field"><input id="epcDiscountRate" type="number" min="0" step="0.01"></div>
+              <div class="energy-user-label" aria-hidden="true"></div>
+              <div class="energy-user-field" aria-hidden="true"></div>
+
+              <label class="energy-user-label" for="firstTaxInvoiceDate">최초 세금계산서 발행일 <span class="req">*</span></label>
+              <div class="energy-user-field"><input id="firstTaxInvoiceDate" type="date" value="2026-07-30" required></div>
+              <label class="energy-user-label" for="repaymentStartDate">상환 개시일 <span class="req">*</span></label>
+              <div class="energy-user-field"><input id="repaymentStartDate" type="date" value="2026-07-30" required></div>
+
+              <label class="energy-user-label" for="repaymentEndDate">상환 완료일 <span class="req">*</span></label>
+              <div class="energy-user-field"><input id="repaymentEndDate" type="date" value="2026-07-30" required></div>
+              <label class="energy-user-label" for="repaymentManager">상환 담당자</label>
+              <div class="energy-user-field"><input class="manager" id="repaymentManager" type="text" value="김미영" readonly><button class="btn btn-dark btn-sm" id="repaymentManagerLookup" type="button">조회</button></div>
+            </div>
+          </section>
+
+          <!-- 계약 체결 후 정보 (체결 시 위 표를 대체합니다) -->
+          <div class="kv wide" id="kvConcluded" hidden>
+            <div class="k">프로젝트 번호</div>
+            <div class="v">2026_06_12</div>
+
+            <div class="k">사업명</div>
+            <div class="v" id="projectNameDone">천안 (주)선영 LED 에너지효율화사업</div>
+
+            <div class="k">계약 번호</div>
+            <div class="v" id="contractNumberValue">20010-2003-03-11-S</div>
+
+            <div class="k">계약일</div>
+            <div class="v" id="actualContractDateValue">-</div>
+
+            <div class="k">총 사업금액(VAT별도/원) <span class="req">*</span></div>
+            <div class="v">220,000,000</div>
+
+            <div class="k">투자금액(VAT별도/원) <span class="req">*</span></div>
+            <div class="v">180,000,000</div>
+
+            <div class="k">IRR(%) <span class="req">*</span></div>
+            <div class="v">16</div>
+
+            <div class="k">착공일자 <span class="req">*</span></div>
+            <div class="v">2026.12.20</div>
+
+            <div class="k">준공(예상) 일자 <span class="req">*</span></div>
+            <div class="v">2027.01.20</div>
+
+            <div class="k">상환개시일 <span class="req">*</span></div>
+            <div class="v">2027.02.19</div>
+
+            <div class="k">상환완료일 <span class="req">*</span></div>
+            <div class="v">2029.01.19</div>
+
+            <div class="k">계약서 <span class="req">*</span></div>
+            <div class="v">(주)선영 LED 에너지효율화사업 계약서(최종).pdf</div>
+
+            <div class="k" id="concludedScheduleLabel">상환 스케줄표 <span class="req">*</span></div>
+            <div class="v" id="concludedScheduleValue">-</div>
+
+            <div class="k" id="concludedSalesPlanLabel" hidden>매출 계획표 <span class="req">*</span></div>
+            <div class="v" id="concludedSalesPlanValue" hidden>-</div>
+
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ============ EPC사별 계약 조건 / 보험증권 ============ -->
+      <section class="card" id="vendorTermsCard" aria-labelledby="vendorTermsTitle">
+        <div class="card-body">
+          <div class="sec-head">
+            <h3 class="sec-title" id="vendorTermsTitle">EPC사별 계약 조건</h3>
+          </div>
+
+          <!-- EPC사 블록(계약 조건 + 보험증권)을 EPC사 수만큼 생성합니다. -->
+          <div id="vendorBlocks" style="display:grid; gap:22px;"></div>
+        </div>
+      </section>
+
+      <!-- 계약 품의/체결 단계 : 입력한 EPC사별 계약 조건을 수정 불가 형태로 유지합니다. -->
+      <section class="card" id="vendorTermsReadonlyCard" aria-labelledby="vendorTermsReadonlyTitle" hidden>
+        <div class="card-body">
+          <div class="sec-head">
+            <h3 class="sec-title" id="vendorTermsReadonlyTitle">EPC사별 계약 조건 정보</h3>
+            <span class="badge-ro">수정 불가</span>
+          </div>
+          <p class="promotion-summary-note">계약 품의 단계에서 등록한 EPC사별 계약 조건과 보험증권 정보입니다.</p>
+          <div class="readonly-terms" id="vendorTermsReadonly"></div>
+        </div>
+      </section>
+    </main>
+  </div>
+</div>
+
+<div class="change-modal" id="changeModal" role="dialog" aria-modal="true" aria-labelledby="changeTitle" hidden><div class="change-dialog"><header class="change-head"><h2 id="changeTitle">프로젝트 계약 변경</h2><button class="change-close" type="button" data-change-close aria-label="닫기">×</button></header><form class="change-body" id="changeForm"><div class="change-intro"><h3>프로젝트 계약 변경</h3><p>프로젝트 내 변경되어야 하는 정보 영역을 선택해 주세요. 선택된 영역에 따라 수정 항목이 표시됩니다.</p></div><div class="change-layout"><div class="change-tabs" role="tablist" aria-label="변경 정보 선택"><button class="change-tab on" type="button" data-change-tab="basic">기본 정보</button><button class="change-tab" type="button" data-change-tab="detail">세부 정보</button><button class="change-tab" type="button" data-change-tab="epc">EPC사 정보</button><button class="change-tab" type="button" data-change-tab="contract">계약 정보</button></div><div><section class="change-pane" data-change-pane="basic"><h4 class="change-pane-title">기본 정보</h4><div class="change-grid"><span class="change-label">프로젝트 번호</span><div class="change-field"><input value="2026_06_12" readonly></div><label class="change-label" for="changeName">사업명</label><div class="change-field"><input id="changeName" value="천안 (주)선영 LED 에너지효율화사업"></div><span class="change-label">계약 형태</span><div class="change-field">ESCO 계약</div><span class="change-label">계약 유형</span><div class="change-field">수익 사업</div><span class="change-label">사업 구분</span><div class="change-field">산업체 ｜ 건축물</div><span class="change-label">대상 설비</span><div class="change-field">LED ｜ 압축기 ｜ 펌프</div></div></section><section class="change-pane" data-change-pane="detail" hidden><h4 class="change-pane-title">세부 정보(프로젝트 효과)</h4><div class="change-grid"><label class="change-label" for="savingKwh">절감량(kWh/년)</label><div class="change-field"><input id="savingKwh" type="number" value="461444"></div><label class="change-label" for="savingToe">절감량(toe/년)</label><div class="change-field"><input id="savingToe" type="number" step="0.001" value="105.569"></div><label class="change-label" for="co2">온실가스 감축량(tCO2/년)</label><div class="change-field"><input id="co2" type="number" step="0.001" value="218.837"></div><label class="change-label" for="eers">EERS 절감량(toe/년)</label><div class="change-field"><input id="eers" type="number" step="0.1" value="32.2"></div></div></section><section class="change-pane" data-change-pane="epc" hidden><h4 class="change-pane-title">EPC사 정보</h4><div class="change-grid"><span class="change-label">EPC사명</span><div class="change-field">㈜포스무역</div><label class="change-label" for="epcAmount">계약금액</label><div class="change-field"><input id="epcAmount" type="number" value="220000000"><span>원</span></div><label class="change-label" for="epcStart">공사시작일</label><div class="change-field"><input id="epcStart" type="date" value="2026-12-20"></div><label class="change-label" for="epcEnd">공사종료일</label><div class="change-field"><input id="epcEnd" type="date" value="2027-01-20"></div></div></section><section class="change-pane" data-change-pane="contract" hidden><h4 class="change-pane-title">계약 정보</h4><div class="change-grid"><label class="change-label" for="totalAmount">총 사업금액</label><div class="change-field"><input id="totalAmount" type="number" value="220000000"><span>원</span></div><label class="change-label" for="investAmount">투자금액</label><div class="change-field"><input id="investAmount" type="number" value="180000000"><span>원</span></div><label class="change-label" for="changeIrr">IRR(%)</label><div class="change-field"><input id="changeIrr" type="number" step="0.01" value="16"></div><label class="change-label" for="repayEnd">상환완료일</label><div class="change-field"><input id="repayEnd" type="date" value="2029-01-19"></div></div></section></div></div><p class="change-note">* 정보영역 이동 시 수정 내용의 저장처리를 먼저 진행해 주세요. 저장되지 않은 정보는 반영되지 않습니다.</p><div class="change-actions"><button class="btn btn-dark" id="saveChange" type="button">저장</button><button class="btn btn-dark" type="submit">계약 변경</button><button class="btn btn-line" type="button" data-change-close>취소</button></div></form></div></div>
+
+<div class="change-modal" id="terminationModal" role="dialog" aria-modal="true" aria-labelledby="terminationTitle" hidden>
+  <div class="termination-dialog">
+    <header class="change-head"><h2 id="terminationTitle">계약 해지</h2></header>
+    <form class="termination-body" id="terminationForm">
+      <p>계약 해지를 진행하시겠습니까?</p>
+      <p>계약 해지 시 최소한의 변경만 허용되며 프로젝트는 종료되어 모든 데이터가 수정 불가 상태로 전환됩니다.</p>
+      <div class="termination-reason">
+        <label for="terminationReason">해지 사유 <span class="req">*</span></label>
+        <textarea id="terminationReason" required placeholder="계약 해지의 사유를 상세하게 입력해 주세요"></textarea>
+      </div>
+      <div class="termination-actions">
+        <button class="btn btn-dark" type="submit">계약 해지</button>
+        <button class="btn btn-line" type="button" data-termination-close>취소</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="change-modal" id="releaseModal" role="dialog" aria-modal="true" aria-labelledby="releaseTitle" hidden>
+  <div class="termination-dialog">
+    <header class="change-head"><h2 id="releaseTitle">계약 해제</h2></header>
+    <form class="termination-body" id="releaseForm">
+      <p>계약 해제를 진행하시겠습니까?</p>
+      <p>계약 해제 시 취소는 불가능하며 프로젝트는 추진 단계에서 종료 처리됩니다.</p>
+      <div class="termination-reason">
+        <label for="releaseReason">해제 사유 <span class="req">*</span></label>
+        <textarea id="releaseReason" required placeholder="계약 해제의 사유를 상세하게 입력해 주세요"></textarea>
+      </div>
+      <div class="termination-actions">
+        <button class="btn btn-dark" type="submit">계약 해제</button>
+        <button class="btn btn-line" type="button" data-release-close>취소</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="manager-lookup-overlay" id="repaymentManagerModal" role="dialog" aria-modal="true" aria-labelledby="repaymentManagerModalTitle" hidden>
+  <div class="manager-lookup-dialog">
+    <header class="manager-lookup-head"><h2 id="repaymentManagerModalTitle">담당자 조회</h2><button class="manager-lookup-close" type="button" data-manager-close aria-label="담당자 조회 닫기">×</button></header>
+    <div class="manager-lookup-body">
+      <div class="manager-lookup-search">
+        <select id="repaymentManagerDept" aria-label="부서"><option value="">부서 전체</option><option>경영본부</option><option>경영지원본부</option><option>기술컨설팅팀</option></select>
+        <input id="repaymentManagerKeyword" type="search" placeholder="담당자명을 입력하세요" aria-label="담당자명 검색">
+        <button class="btn btn-dark" id="repaymentManagerSearch" type="button">검색</button>
+        <button class="btn btn-line" id="repaymentManagerReset" type="button">초기화</button>
+      </div>
+      <p class="manager-lookup-count">조회 결과: <b id="repaymentManagerCount">6</b>건</p>
+      <div class="manager-lookup-table-wrap"><table class="manager-lookup-table"><caption class="sr-only">담당자 조회 결과</caption><thead><tr><th>순번</th><th>부서</th><th>사원번호</th><th>사원명</th></tr></thead><tbody id="repaymentManagerRows"></tbody></table></div>
+      <div class="manager-lookup-foot"><button class="btn btn-line" type="button" data-manager-close>닫기</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- 안내 Toast -->
+<p class="toast" id="toast" role="status" aria-live="polite" hidden></p>
+
+<!-- 안내 / 확인 Alert -->
+<div class="alert-overlay" id="alertOverlay" hidden>
+  <!-- 호출 버튼과 팝오버를 잇는 연결선 (버튼 옆 Alert 에서만 표시) -->
+  <div class="alert-link" id="alertLink" hidden aria-hidden="true">
+    <span class="seg" id="linkV1"></span>
+    <span class="seg" id="linkH"></span>
+    <span class="seg" id="linkV2"></span>
+    <span class="arrow" id="linkArrow"></span>
+  </div>
+  <div class="alert-box" id="alertBox" role="alertdialog" aria-modal="true" aria-labelledby="alertMsg">
+    <h2 class="alert-title" id="alertTitle" hidden></h2>
+    <div class="alert-date-field" id="alertDateField" hidden>
+      <label for="actualContractDate">실제 계약 확정일 <span class="req">*</span></label>
+      <input id="actualContractDate" type="date" required />
+    </div>
+    <p class="alert-msg" id="alertMsg"></p>
+    <div class="alert-foot">
+      <button class="btn btn-dark" type="button" id="alertOk">확인</button>
+      <button class="btn btn-line" type="button" id="alertCancel" hidden>취소</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  /* ===== 협력업체 목록 (계약 대상 : ㈜포스무역) ===== */
+  var vendors = [{ id: "pos", name: "㈜포스무역" }];
+
+  /* 보험증권 보증 구분 */
+  var bondTypes = [
+    { id: "perf", label: "계약 이행" },
+    { id: "pay", label: "지급 이행" },
+    { id: "adv", label: "선금 보증" },
+    { id: "def", label: "하자 보증" },
+  ];
+
+  var DATE_PLACEHOLDER = "2026.07.30";
+
+  /* ---------- 공통 마크업 조각 ---------- */
+  function calIcon() {
+    return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">' +
+      '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/></svg>';
+  }
+
+  /* 날짜 입력 (텍스트 + 달력 버튼) */
+  function dateField(id, label) {
+    return '<span class="date">' +
+      '<label class="sr-only" for="' + id + '">' + label + '</label>' +
+      '<input type="text" id="' + id + '" placeholder="' + DATE_PLACEHOLDER + '" inputmode="numeric" />' +
+      '<button class="cal" type="button" data-cal="' + id + '" aria-label="' + label + ' 달력 열기">' + calIcon() + "</button>" +
+      "</span>";
+  }
+
+  /* 금액 · 비율 등 숫자 입력 */
+  function numField(id, label, placeholder) {
+    return '<label class="sr-only" for="' + id + '">' + label + "</label>" +
+      '<input type="text" class="num" id="' + id + '" inputmode="numeric" placeholder="' + (placeholder || "") + '" />';
+  }
+
+  /* 첨부 : [찾기] 버튼 + 파일 칩 목록 */
+  function fileField(key, label) {
+    return '<input class="file-native" type="file" id="' + key + '" />' +
+      '<button class="btn btn-dark btn-sm" type="button" data-pick="' + key + '">찾기</button>' +
+      '<span class="sr-only">' + label + "</span>" +
+      '<div class="file-list" data-list="' + key + '"></div>';
+  }
+
+  /* ---------- EPC사 계약 조건 블록 ---------- */
+  function termsGrid(v) {
+    var p = v.id;
+    return '<div class="grid terms">' +
+      // EPC사명 : 6개 행 병합
+      '<div class="vendor" style="grid-row: span 6;">' + v.name + "</div>" +
+
+      '<div class="k">계약 체결일 <span class="req">*</span></div>' +
+      '<div class="v">' + dateField(p + "-signed", "계약 체결일") + "</div>" +
+      '<div class="k">공사시작일 <span class="req">*</span></div>' +
+      '<div class="v">' + dateField(p + "-start", "공사시작일") + "</div>" +
+
+      '<div class="k">구분 <span class="req">*</span></div>' +
+      '<div class="v">' +
+        '<label class="sr-only" for="' + p + '-kind">구분</label>' +
+        '<select id="' + p + '-kind"><option value="">선택</option><option>일반 공사비</option><option>자재비</option><option>설계비</option></select>' +
+      "</div>" +
+      '<div class="k">공사종료일 <span class="req">*</span></div>' +
+      '<div class="v">' + dateField(p + "-end", "공사종료일") + "</div>" +
+
+      '<div class="k">계약금액(VAT별도/원) <span class="req">*</span></div>' +
+      '<div class="v">' + numField(p + "-amount", "계약금액") + "</div>" +
+      // 추진 > 세부 정보의 공사금액지급비율 구성과 동일하게 표시합니다.
+      '<div class="k" style="grid-row: span 2;">공사금액지급비율(%) <span class="req">*</span></div>' +
+      '<div class="v">' +
+        '<label class="sr-only" for="' + p + '-paytype">공사금액 지급 방식</label>' +
+        '<select id="' + p + '-paytype" data-paytype="' + p + '">' +
+          '<option value="split" selected>분할지급</option>' +
+          '<option value="advance">일괄지급(선금)</option>' +
+          '<option value="progress">일괄지급(기성금)</option>' +
+          '<option value="completion">일괄지급(준공금)</option>' +
+        '</select>' +
+        '<span class="hint">지급 비율은 100%가 되어야 합니다.</span>' +
+      "</div>" +
+
+      '<div class="k">공급가액(원) <span class="req">*</span></div>' +
+      '<div class="v">' + numField(p + "-supply", "공급가액") + "</div>" +
+      '<div class="v">' +
+        '<div class="payment-fields" data-pay-fields="' + p + '"></div>' +
+      "</div>" +
+
+      '<div class="k">부가세(원) <span class="req">*</span></div>' +
+      '<div class="v">' + numField(p + "-vat", "부가세") + "</div>" +
+      '<div class="k">계약서 <span class="req">*</span></div>' +
+      '<div class="v">' + fileField(p + "-doc", v.name + " 계약서") + "</div>" +
+
+      '<div class="k">합계액(VAT포함/원) <span class="req">*</span></div>' +
+      '<div class="v">' + numField(p + "-total", "합계액") + "</div>" +
+      '<div class="v blank" style="grid-column: span 2;"></div>' +
+      "</div>";
+  }
+
+  /* ---------- EPC사 보험증권 블록 ---------- */
+  function bondsGrid(v) {
+    var p = v.id;
+    var html = '<div class="grid bonds">' +
+      // EPC사명 : 보증 8행 + 하자보수 기간 1행 병합
+      '<div class="vendor" style="grid-row: span 9;">' + v.name + "</div>" +
+      // 보험증권 관련 입력은 모두 선택 사항이며 별도 유효성 검사를 적용하지 않습니다.
+      '<div class="k center" style="grid-row: span 8;">보험증권</div>';
+
+    bondTypes.forEach(function (b) {
+      var key = p + "-" + b.id;
+      html +=
+        // 보증 구분 : 발행일자 + 기간 2행 병합
+        '<div class="k center" style="grid-row: span 2;">' + b.label + "</div>" +
+
+        '<div class="k">발행일자</div>' +
+        '<div class="v">' + dateField(key + "-issued", b.label + " 발행일자") + "</div>" +
+        '<div class="k">보증률(%)</div>' +
+        '<div class="v">' + numField(key + "-rate", b.label + " 보증률") + "</div>" +
+
+        '<div class="k">기간</div>' +
+        '<div class="v"><span class="range">' +
+          dateField(key + "-from", b.label + " 기간 시작일") +
+          '<span class="tilde" aria-hidden="true">~</span>' +
+          dateField(key + "-to", b.label + " 기간 종료일") +
+        "</span></div>" +
+        '<div class="k">보험증권</div>' +
+        '<div class="v">' + fileField(key + "-doc", b.label + " 보험증권") + "</div>";
+    });
+
+    // 하자보수 기간(개월)
+    html +=
+      '<div class="k" style="grid-column: span 2;">하자보수 기간(개월)</div>' +
+      '<div class="v" style="grid-column: span 4;">' + numField(p + "-warranty", "하자보수 기간(개월)") + "</div>" +
+      "</div>";
+
+    return html;
+  }
+
+  /* EPC사 블록 렌더링 */
+  (function renderVendors() {
+    var wrap = document.getElementById("vendorBlocks");
+    wrap.innerHTML = vendors
+      .map(function (v) {
+        return '<div style="display:grid; gap:12px;">' + termsGrid(v) + bondsGrid(v) + "</div>";
+      })
+      .join("");
+
+    document.querySelectorAll("[data-paytype]").forEach(function (select) {
+      // 계약 조건을 처음 열면 추진 > 세부 정보와 동일하게 분할지급을 기본 노출합니다.
+      select.value = "split";
+      renderPaymentFields(select);
+      select.addEventListener("change", function () { renderPaymentFields(select); });
+    });
+  })();
+
+  // 계약 차수 데이터에 지급방식 값이 없더라도 드롭박스가 빈칸으로 보이지 않게 보정합니다.
+  window.addEventListener("pms:project-round-change", function () {
+    document.querySelectorAll("[data-paytype]").forEach(function (select) {
+      if (!select.value) {
+        select.value = "split";
+        renderPaymentFields(select);
+      }
+    });
+  });
+
+  function paymentInput(id, label) {
+    return '<span class="payment-field">' +
+      '<label for="' + id + '">' + label + '</label>' +
+      '<input type="text" class="num" id="' + id + '" inputmode="decimal" />' +
+    '</span>';
+  }
+
+  function renderPaymentFields(select) {
+    var vendorId = select.getAttribute("data-paytype");
+    var target = document.querySelector('[data-pay-fields="' + vendorId + '"]');
+    if (!target) return;
+
+    if (select.value === "split") {
+      target.innerHTML =
+        paymentInput(vendorId + "-ratio-advance", "선금") +
+        paymentInput(vendorId + "-ratio-progress", "기성금") +
+        paymentInput(vendorId + "-ratio-completion", "준공금");
+      return;
+    }
+
+    // 일괄지급은 선택한 지급 항목의 비율이 100%이므로 별도 비율 입력란을 표시하지 않습니다.
+    target.innerHTML = "";
+  }
+
+  /* 추진(ESCO)에서 등록한 공사금액 지급비율을 계약 입력란에 연계합니다. */
+  function restorePromotionPaymentRatio() {
+    var raw = null;
+    try { raw = sessionStorage.getItem("pms.promotionPaymentRatio"); } catch (err) { return; }
+    if (!raw) return;
+
+    var saved = null;
+    try { saved = JSON.parse(raw); } catch (err) { return; }
+
+    var select = document.querySelector("[data-paytype]");
+    if (!select || !saved) return;
+
+    var method = ["split", "advance", "progress", "completion"].indexOf(saved.method) > -1 ? saved.method : "split";
+    select.value = method;
+    renderPaymentFields(select);
+
+    if (method !== "split") return;
+    var vendorId = select.getAttribute("data-paytype");
+    var values = {
+      advance: saved.advance,
+      progress: saved.progress,
+      completion: saved.completion
+    };
+    Object.keys(values).forEach(function (key) {
+      var input = document.getElementById(vendorId + "-ratio-" + key);
+      if (input) input.value = values[key] || "";
+    });
+  }
+
+  if (document.readyState === "complete") {
+    restorePromotionPaymentRatio();
+  } else {
+    window.addEventListener("load", restorePromotionPaymentRatio, { once: true });
+  }
+
+  /* ===== Toast ===== */
+  var toastEl = document.getElementById("toast");
+  var toastTimer = null;
+  function showToast(message) {
+    toastEl.textContent = message;
+    toastEl.hidden = false;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { toastEl.hidden = true; }, 2200);
+  }
+
+  (function setupRepaymentManagerLookup() {
+    var modal = document.getElementById("repaymentManagerModal");
+    var managerInput = document.getElementById("repaymentManager");
+    var deptInput = document.getElementById("repaymentManagerDept");
+    var keywordInput = document.getElementById("repaymentManagerKeyword");
+    var rowsEl = document.getElementById("repaymentManagerRows");
+    var countEl = document.getElementById("repaymentManagerCount");
+    var managers = [
+      { department: "경영본부", employee: "2211001", name: "강대근" },
+      { department: "기술컨설팅팀", employee: "1910004", name: "강병용" },
+      { department: "경영지원본부", employee: "1611001", name: "김도현" },
+      { department: "경영지원본부", employee: "1910005", name: "김동환" },
+      { department: "경영지원본부", employee: "2120001", name: "김만년" },
+      { department: "경영지원본부", employee: "2219994", name: "김병호" }
+    ];
+
+    try { managerInput.value = sessionStorage.getItem("pms.projectManager") || managerInput.value; } catch (err) {}
+
+    function renderManagers() {
+      var department = deptInput.value;
+      var keyword = keywordInput.value.trim().toLowerCase();
+      var filtered = managers.filter(function (manager) {
+        return (!department || manager.department === department) && (!keyword || manager.name.toLowerCase().indexOf(keyword) !== -1);
+      });
+      countEl.textContent = filtered.length;
+      rowsEl.innerHTML = filtered.length ? filtered.map(function (manager, index) {
+        return '<tr><td>' + (index + 1) + '</td><td>' + manager.department + '</td><td>' + manager.employee + '</td><td><button class="manager-pick" type="button" data-manager-name="' + manager.name + '">' + manager.name + '</button></td></tr>';
+      }).join("") : '<tr><td class="manager-lookup-empty" colspan="4">조회 결과가 없습니다.</td></tr>';
+    }
+
+    function setManagerModal(open) {
+      modal.hidden = !open;
+      document.body.style.overflow = open ? "hidden" : "";
+      if (open) { renderManagers(); keywordInput.focus(); }
+      else document.getElementById("repaymentManagerLookup").focus();
+    }
+
+    document.getElementById("repaymentManagerLookup").addEventListener("click", function () { setManagerModal(true); });
+    document.getElementById("repaymentManagerSearch").addEventListener("click", renderManagers);
+    document.getElementById("repaymentManagerReset").addEventListener("click", function () { deptInput.value = ""; keywordInput.value = ""; renderManagers(); });
+    keywordInput.addEventListener("keydown", function (event) { if (event.key === "Enter") { event.preventDefault(); renderManagers(); } });
+    rowsEl.addEventListener("click", function (event) {
+      var button = event.target.closest("[data-manager-name]");
+      if (!button) return;
+      managerInput.value = button.getAttribute("data-manager-name");
+      try { sessionStorage.setItem("pms.projectManager", managerInput.value); } catch (err) {}
+      setManagerModal(false);
+      showToast(managerInput.value + " 담당자를 선택했습니다.");
+    });
+    modal.querySelectorAll("[data-manager-close]").forEach(function (button) { button.addEventListener("click", function () { setManagerModal(false); }); });
+    modal.addEventListener("click", function (event) { if (event.target === modal) setManagerModal(false); });
+  })();
+
+  /* ===== Alert / Confirm ===== */
+  var overlay = document.getElementById("alertOverlay");
+  var titleEl = document.getElementById("alertTitle");
+  var msgEl = document.getElementById("alertMsg");
+  var okBtn = document.getElementById("alertOk");
+  var cancelBtn = document.getElementById("alertCancel");
+  var focusTarget = null;
+  var onConfirm = null;
+
+  var boxEl = document.getElementById("alertBox");
+  var linkEl = document.getElementById("alertLink");
+  var alertDateField = document.getElementById("alertDateField");
+  var actualContractDate = document.getElementById("actualContractDate");
+
+  /* 호출 버튼 아래에 팝오버를 배치하고 ㄱ자 연결선을 그립니다. */
+  function placeAnchored(anchor) {
+    var a = anchor.getBoundingClientRect();
+    boxEl.style.visibility = "hidden";
+    boxEl.style.left = "0px";
+    boxEl.style.top = "0px";
+
+    var w = boxEl.offsetWidth;
+    var h = boxEl.offsetHeight;
+    var drop = 96; // 버튼 하단 ~ 팝오버 상단 간격
+    var left = Math.min(Math.max(a.right - w, 16), window.innerWidth - w - 16);
+    var top = a.bottom + drop;
+    if (top + h > window.innerHeight - 16) top = Math.max(a.bottom + 24, window.innerHeight - h - 16);
+
+    boxEl.style.left = left + "px";
+    boxEl.style.top = top + "px";
+    boxEl.style.visibility = "visible";
+
+    // 연결선 : 버튼 하단에서 내려온 뒤 가로로 이동, 다시 내려와 팝오버 상단을 가리킵니다.
+    var startX = Math.round(a.left + a.width / 2);
+    var endX = Math.round(left + Math.min(w * 0.42, 240));
+    var midY = Math.round(a.bottom + drop / 2);
+    var x1 = Math.min(startX, endX);
+    var barW = Math.max(Math.abs(endX - startX), 1);
+
+    document.getElementById("linkV1").style.cssText =
+      "left:" + (startX - 1) + "px; top:" + Math.round(a.bottom) + "px; width:2px; height:" + (midY - Math.round(a.bottom)) + "px;";
+    document.getElementById("linkH").style.cssText =
+      "left:" + x1 + "px; top:" + (midY - 1) + "px; width:" + barW + "px; height:2px;";
+    document.getElementById("linkV2").style.cssText =
+      "left:" + (endX - 1) + "px; top:" + midY + "px; width:2px; height:" + Math.max(top - midY - 8, 0) + "px;";
+    document.getElementById("linkArrow").style.cssText =
+      "left:" + (endX - 7) + "px; top:" + Math.max(top - 9, 0) + "px;";
+    linkEl.hidden = false;
+  }
+
+  function closeAlert() {
+    overlay.hidden = true;
+    overlay.classList.remove("anchored");
+    linkEl.hidden = true;
+    boxEl.style.cssText = "";
+    cancelBtn.hidden = true;
+    titleEl.hidden = true;
+    okBtn.textContent = "확인";
+    alertDateField.hidden = true;
+    onConfirm = null;
+    // 안내 확인 후 지정된 입력 항목으로 이동합니다.
+    if (focusTarget) {
+      focusTarget.scrollIntoView({ behavior: "smooth", block: "center" });
+      focusTarget.focus({ preventScroll: true });
+      focusTarget = null;
+    }
+  }
+
+  function openAlert(message, target, handler, options) {
+    var opt = options || {};
+    msgEl.textContent = "";
+    String(message).split("\n").forEach(function (line, i) {
+      if (i) msgEl.appendChild(document.createElement("br"));
+      msgEl.appendChild(document.createTextNode(line));
+    });
+
+    if (opt.title) { titleEl.textContent = opt.title; titleEl.hidden = false; }
+    if (opt.okText) okBtn.textContent = opt.okText;
+    alertDateField.hidden = !opt.requireContractDate;
+    if (opt.requireContractDate) actualContractDate.value = opt.contractDate || "";
+
+    focusTarget = target || null;
+    onConfirm = handler || null;
+    cancelBtn.hidden = !handler;
+    overlay.hidden = false;
+
+    // 호출 버튼이 지정되면 그 아래에 팝오버로 띄웁니다.
+    if (opt.anchor) {
+      overlay.classList.add("anchored");
+      placeAnchored(opt.anchor);
+    }
+    okBtn.focus();
+  }
+
+  okBtn.addEventListener("click", function () {
+    if (!alertDateField.hidden && !actualContractDate.reportValidity()) return;
+    var handler = onConfirm;
+    closeAlert();
+    if (handler) handler();
+  });
+  cancelBtn.addEventListener("click", function () { focusTarget = null; closeAlert(); });
+  overlay.addEventListener("click", function (e) { if (e.target === overlay) { focusTarget = null; closeAlert(); } });
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && !overlay.hidden) { focusTarget = null; closeAlert(); }
+  });
+
+  /* ===== 첨부파일 : [찾기] 로 등록, 칩의 [X] 로 삭제 ===== */
+  var fileStore = {
+    "project-doc": ["㈜선영 사업추진 계획안.pdf"],
+    "repayment-schedule": [],
+    "sales-plan": [],
+    "change-project-contract": ["천안 (주)선영 LED 에너지효율화사업 계약서.pdf"],
+    "change-repayment-schedule": ["천안 (주)선영 LED 에너지효율화사업 상환스케줄.pdf"],
+    "change-sales-plan": ["천안 (주)선영 LED 에너지효율화사업 매출계획표.xlsx"]
+  };
+
+  function renderFiles(key) {
+    var names = fileStore[key] || [];
+
+    document.querySelectorAll('[data-list="' + key + '"]').forEach(function (list) {
+      list.textContent = "";
+
+      if (!names.length) {
+        var empty = document.createElement("span");
+        empty.className = "file-empty";
+        empty.textContent = "선택된 파일 없음";
+        list.appendChild(empty);
+        return;
+      }
+
+      names.forEach(function (name, i) {
+        var chip = document.createElement("span");
+        chip.className = "file-chip";
+
+        var label = document.createElement("span");
+        label.className = "name";
+        label.textContent = name;
+        label.title = name;
+        chip.appendChild(label);
+
+        var del = document.createElement("button");
+        del.className = "file-del";
+        del.type = "button";
+        del.textContent = "X";
+        del.setAttribute("aria-label", name + " 삭제");
+        del.addEventListener("click", function () {
+          fileStore[key].splice(i, 1);
+          var input = document.getElementById(key);
+          if (input && !fileStore[key].length) input.value = "";
+          renderFiles(key);
+          showToast("첨부파일이 삭제되었습니다.");
+        });
+        chip.appendChild(del);
+
+        list.appendChild(chip);
+      });
+    });
+  }
+
+  document.querySelectorAll("[data-pick]").forEach(function (btn) {
+    var key = btn.getAttribute("data-pick");
+    var input = document.getElementById(key);
+    if (!input) return;
+
+    fileStore[key] = fileStore[key] || [];
+    btn.addEventListener("click", function () { input.click(); });
+
+    input.addEventListener("change", function () {
+      var names = Array.prototype.map.call(input.files, function (f) { return f.name; });
+      if (!names.length) return;
+      fileStore[key] = names;
+      renderFiles(key);
+      showToast("자료가 첨부되었습니다.");
+    });
+  });
+
+  Object.keys(fileStore).forEach(renderFiles);
+
+  /* 달력 버튼 : 날짜 입력으로 포커스 이동 (1차 구성) */
+  document.querySelectorAll("[data-cal]").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var input = document.getElementById(btn.getAttribute("data-cal"));
+      if (input) input.focus();
+    });
+  });
+
+  var draftBtn = document.querySelector('[data-act="draft"]');
+  var concludeBtn = document.querySelector('[data-act="conclude"]');
+
+  /* 입력 중인 EPC사별 계약 조건을 계약 품의/체결용 읽기 전용 정보로 변환합니다. */
+  function buildReadOnlyVendorTerms() {
+    var source = document.getElementById("vendorBlocks");
+    var target = document.getElementById("vendorTermsReadonly");
+    if (!source || !target) return;
+
+    var clone = source.cloneNode(true);
+
+    clone.querySelectorAll('input[type="file"], button').forEach(function (el) { el.remove(); });
+    clone.querySelectorAll("input, select, textarea").forEach(function (el) {
+      var value = "";
+      if (el.tagName === "SELECT") {
+        var opt = el.options[el.selectedIndex];
+        value = opt && opt.value !== "" ? opt.textContent.trim() : "";
+      } else {
+        value = (el.value || "").trim();
+      }
+
+      var text = document.createElement("span");
+      text.className = "readonly-value" + (value ? "" : " empty");
+      text.textContent = value || "-";
+
+      var wrap = el.closest(".date");
+      (wrap || el).replaceWith(text);
+    });
+    clone.querySelectorAll("[id]").forEach(function (el) { el.removeAttribute("id"); });
+    clone.querySelectorAll("label[for]").forEach(function (el) { el.removeAttribute("for"); });
+
+    target.textContent = "";
+    while (clone.firstChild) target.appendChild(clone.firstChild);
+
+    try {
+      sessionStorage.setItem("pms.contractVendorTerms", target.innerHTML);
+    } catch (err) {}
+  }
+
+  /* [계약 품의] : 버튼 아래에 Alert 팝오버를 띄우고 뒤 화면은 딤드 처리합니다. */
+  draftBtn.addEventListener("click", function () {
+    openAlert(
+      "계약품의를 진행하시겠습니까?\n계약 품의 진행 시, 프로젝트 정보는 변경이 불가능합니다.",
+      null,
+      startDraft,
+      { title: "계약 품의", okText: "계약 품의" }
+    );
+  });
+
+  /* 품의 상신 후 화면 : 계약정보 표 교체 + 입력 영역 종료 + [계약 체결] 활성화 */
+  function syncConcludedAttachments() {
+    var scheduleValue = document.getElementById("concludedScheduleValue");
+    var salesPlanValue = document.getElementById("concludedSalesPlanValue");
+    var scheduleNames = fileStore["repayment-schedule"] || [];
+    var salesPlanNames = fileStore["sales-plan"] || [];
+    if (scheduleValue) scheduleValue.textContent = scheduleNames.length ? scheduleNames.join(", ") : "-";
+    if (salesPlanValue) salesPlanValue.textContent = salesPlanNames.length ? salesPlanNames.join(", ") : "-";
+  }
+
+  function startDraft() {
+    buildReadOnlyVendorTerms();
+    syncConcludedAttachments();
+    document.getElementById("kvDraft").hidden = true;
+    document.getElementById("energyUserInfo").hidden = true;
+    document.getElementById("kvConcluded").hidden = false;
+    document.getElementById("vendorTermsCard").hidden = true;
+    document.getElementById("vendorTermsReadonlyCard").hidden = false;
+
+    draftBtn.textContent = "계약 품의 진행 중";
+    draftBtn.classList.remove("btn-dark");
+    draftBtn.classList.add("is-progress");
+    draftBtn.disabled = true;
+
+    concludeBtn.classList.remove("btn-line");
+    concludeBtn.classList.add("btn-dark");
+
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    showToast("계약 품의가 상신되었습니다.");
+  }
+
+  /* [계약 체결] : 품의 완료 후 체결을 확정합니다. */
+  concludeBtn.addEventListener("click", function () {
+    if (!draftBtn.disabled) {
+      openAlert("계약 품의를 먼저 상신해 주세요.", draftBtn, null, null);
+      return;
+    }
+    openAlert(
+      "프로젝트 계약 체결을 완료하시겠습니까?\n\n등록된 정보 기준으로 투자 및 상환, 발주 메뉴가 활성화되며 이후 계약의 변경 발생 시 계약 변경 절차를 진행하셔야 합니다.",
+      null,
+      function () {
+        setConcludedUI(actualContractDate.value);
+        showToast("계약이 체결되었습니다.");
+      },
+      { title: "계약 체결", okText: "계약 체결", anchor: concludeBtn, requireContractDate: true, contractDate: "2026-07-30" }
+    );
+  });
+
+  function setConcludedUI(contractDate) {
+    var changeBtn = document.querySelector('[data-act="change-contract"]');
+    var cancelBtn = document.querySelector('[data-act="cancel-contract"]');
+    var releaseBtn = document.querySelector('[data-act="release-contract"]');
+    buildReadOnlyVendorTerms();
+    syncConcludedAttachments();
+    draftBtn.hidden = true;
+    changeBtn.hidden = false;
+    cancelBtn.hidden = false;
+    releaseBtn.hidden = false;
+    concludeBtn.textContent = "계약 체결 완료";
+    concludeBtn.classList.remove("btn-dark");
+    concludeBtn.classList.add("btn-line");
+    concludeBtn.disabled = true;
+    document.getElementById("kvDraft").hidden = true;
+    document.getElementById("energyUserInfo").hidden = true;
+    document.getElementById("kvConcluded").hidden = false;
+    document.getElementById("vendorTermsCard").hidden = true;
+    document.getElementById("vendorTermsReadonlyCard").hidden = false;
+    document.getElementById("actualContractDateValue").textContent = contractDate ? contractDate.replace(/-/g, ".") : "-";
+  }
+
+  var changeModal = document.getElementById("changeModal");
+  var basicChangePane = changeModal.querySelector('[data-change-pane="basic"]');
+  basicChangePane.innerHTML =
+    '<div class="change-basic-columns"><div class="change-basic-section"><h4 class="change-subtitle">기본 정보</h4><div class="change-grid">' +
+    '<span class="change-label">프로젝트 번호</span><div class="change-field"><input value="2026_06_12" readonly></div>' +
+    '<label class="change-label" for="changeName">사업명</label><div class="change-field"><input id="changeName" value="천안 (주)선영 LED 에너지효율화사업"></div>' +
+    '<span class="change-label">계약 형태</span><div class="change-field">ESCO 계약</div><span class="change-label">심의 대상</span><div class="change-field">심의 대상</div>' +
+    '<span class="change-label">계약 유형</span><div class="change-field">수익 사업</div><span class="change-label">접수 경로</span><div class="change-field">EPC사</div>' +
+    '<span class="change-label">사업 구분</span><div class="change-field">산업체 ｜ 건축물</div><span class="change-label">대상 설비</span><div class="change-field">LED ｜ 압축기 ｜ 펌프</div></div></div>' +
+    '<div class="change-basic-section"><h4 class="change-subtitle">기본 정보(프로젝트 수행 효과)</h4><div class="change-grid change-effect-grid">' +
+    '<label class="change-label" for="basicSavingKwh">절감량(kWh/년)<span class="change-required" aria-hidden="true">*</span></label><div class="change-field"><input id="basicSavingKwh" type="number" value="461444"></div>' +
+    '<label class="change-label" for="basicSavingToe">절감량(toe/년)<span class="change-required" aria-hidden="true">*</span></label><div class="change-field"><input id="basicSavingToe" type="number" step="0.001" value="105.569"></div>' +
+    '<label class="change-label" for="basicCo2">온실가스 감축량(tCO2/년)<span class="change-required" aria-hidden="true">*</span></label><div class="change-field"><input id="basicCo2" type="number" step="0.001" value="218.837"></div>' +
+    '<label class="change-label" for="businessToe">사업전 사용량(toe/년)<span class="change-required" aria-hidden="true">*</span></label><div class="change-field"><input id="businessToe" type="number" step="0.1" value="27.51"></div>' +
+    '<label class="change-label" for="basicEers">EERS 절감량(toe/년)</label><div class="change-field"><input id="basicEers" type="number" step="0.1" value="47"></div>' +
+    '<span class="change-label">절감률</span><div class="change-field"><input value="64.23" readonly></div><span class="change-label">예상 절감량(toe/년)</span><div class="change-field"><input value="32.2" readonly></div></div></div></div>';
+  basicChangePane.insertAdjacentHTML("beforeend",
+    '<div class="change-full-section"><h4 class="change-subtitle">기본 정보(에너지사용자 및 담당자)</h4><div class="change-basic-columns">' +
+    '<div class="change-basic-section"><div class="change-grid"><label class="change-label" for="changeEnergyUser">에너지 사용자</label><div class="change-field"><input id="changeEnergyUser" value="(주)선영"></div><label class="change-label" for="changeAddress">사용자 소재지</label><div class="change-field"><input id="changeAddress" value="충남 천안시"></div><label class="change-label" for="changeUserManager">에너지사용 담당자</label><div class="change-field"><input id="changeUserManager" value="홍길동"></div></div></div>' +
+    '<div class="change-basic-section"><div class="change-grid"><label class="change-label" for="changeUserTel">담당자 연락처</label><div class="change-field"><input id="changeUserTel" value="010-1234-5678"></div><label class="change-label" for="changeProjectManager">사업 담당자</label><div class="change-field"><input id="changeProjectManager" value="이희성"></div><label class="change-label" for="changeTeam">담당부서</label><div class="change-field"><input id="changeTeam" value="사업개발팀"></div></div></div>' +
+    '</div></div>');
+
+  var detailChangePane = changeModal.querySelector('[data-change-pane="detail"]');
+  detailChangePane.innerHTML =
+    '<h4 class="change-pane-title">세부 정보</h4><div class="change-basic-columns">' +
+    '<div class="change-basic-section"><h4 class="change-subtitle">계약 정보(기본)</h4><div class="change-grid">' +
+    '<label class="change-label" for="changeTotalAmount">총 사업금액(VAT별도/원)</label><div class="change-field"><input id="changeTotalAmount" type="number" value="220000000"></div>' +
+    '<label class="change-label" for="changeInvestAmount">투자금액(VAT별도/원)</label><div class="change-field"><input id="changeInvestAmount" type="number" value="180000000"></div>' +
+    '<label class="change-label" for="changeDetailIrr">IRR(%)</label><div class="change-field"><input id="changeDetailIrr" type="number" step="0.01" value="16"></div>' +
+    '<label class="change-label" for="changeStartDate">착공일자</label><div class="change-field"><input id="changeStartDate" type="date" value="2026-07-30"></div>' +
+    '<label class="change-label" for="changeEndDate">준공(예상) 일자</label><div class="change-field"><input id="changeEndDate" type="date" value="2026-07-30"></div>' +
+    '<label class="change-label" for="changeRepayStart">상환개시일</label><div class="change-field"><input id="changeRepayStart" type="date" value="2026-07-30"></div>' +
+    '<label class="change-label" for="changeRepayEnd">상환완료일</label><div class="change-field"><input id="changeRepayEnd" type="date" value="2029-01-19"></div></div></div>' +
+    '<div class="change-basic-section"><h4 class="change-subtitle">계약 정보(EPC사)</h4><div class="change-grid">' +
+    '<span class="change-label">계약형태</span><div class="change-field"><input value="EPC 계약" readonly></div>' +
+    '<label class="change-label" for="changeEpcMethod">EPC수행방식</label><div class="change-field"><select id="changeEpcMethod"><option>단독 수행</option><option>공동 수행</option><option>분리 발주</option></select></div>' +
+    '<label class="change-label" for="changeEpcVendor">EPC사(협력회사)</label><div class="change-field"><input id="changeEpcVendor" value="(주)포스무역"></div>' +
+    '<label class="change-label" for="changeLicense">EPC사 필요면허</label><div class="change-field"><input id="changeLicense" value="전기공사업"></div>' +
+    '<label class="change-label" for="changePaymentRatio">공사금액지급비율(%)</label><div class="change-field"><input id="changePaymentRatio" value="선금 30 / 기성금 40 / 준공금 30"></div>' +
+    '<label class="change-label" for="changeBondRate">계약이행보증율(%)</label><div class="change-field"><input id="changeBondRate" type="number" value="10"></div>' +
+    '<label class="change-label" for="changeWarrantyRate">하자보수보증율(%)</label><div class="change-field"><input id="changeWarrantyRate" type="number" value="10"></div></div></div></div>';
+
+  var epcChangePane = changeModal.querySelector('[data-change-pane="epc"]');
+  epcChangePane.innerHTML =
+    '<h4 class="change-pane-title">EPC사 정보</h4><div class="change-basic-columns">' +
+    '<div class="change-basic-section"><h4 class="change-subtitle">심의 정보(EPC사) · (주)포스무역</h4><div class="change-grid">' +
+    '<span class="change-label">신용등급</span><div class="change-field">B-</div><span class="change-label">부채비율(%)</span><div class="change-field">77</div><span class="change-label">기업매출(억원)<br>(-3년/-2년/-1년)</span><div class="change-field">39.3 / 44.5 / 36.8</div><span class="change-label">시공경험(3년누계/억원)</span><div class="change-field">150</div><span class="change-label">상시근로자수</span><div class="change-field">20</div><span class="change-label">연대보증(AO 이상)</span><div class="change-field">없음</div><span class="change-label">신인도(ISO)</span><div class="change-field">없음</div><label class="change-label" for="changeEpcNote">특이사항</label><div class="change-field"><textarea id="changeEpcNote">-</textarea></div></div></div>' +
+    '<div class="change-basic-section"><h4 class="change-subtitle">심의 정보(에너지 사용자) · (주)선영</h4><div class="change-grid">' +
+    '<span class="change-label">신용등급</span><div class="change-field">CCC</div><span class="change-label">부채비율(%)</span><div class="change-field">150</div><span class="change-label">기업매출(억원)<br>(-3년/-2년/-1년)</span><div class="change-field">20.2 / 10.0 / 18.9</div><span class="change-label">상시근로자수</span><div class="change-field">50</div><label class="change-label" for="changeUserEtc">기타</label><div class="change-field"><select id="changeUserEtc"><option>해당 없음</option><option>연대보증</option><option>신인도(ISO)</option></select></div><label class="change-label" for="changeUserNote">특이사항</label><div class="change-field"><textarea id="changeUserNote">-</textarea></div></div></div></div>';
+
+  var contractChangePane = changeModal.querySelector('[data-change-pane="contract"]');
+  contractChangePane.innerHTML =
+    '<h4 class="change-pane-title" id="changeProjectContractTitle">프로젝트 계약정보</h4>' +
+    '<section class="change-contract-files" aria-labelledby="changeProjectContractTitle">' +
+    '<div class="change-contract-file-row"><label class="change-contract-file-label" for="change-project-contract">프로젝트 계약서 <span class="change-required" aria-hidden="true">*</span></label><div class="change-contract-file-control"><input class="file-native" id="change-project-contract" type="file" accept=".pdf,.hwp,.hwpx,.doc,.docx"><button class="btn btn-dark" type="button" data-change-file-pick="change-project-contract">찾기</button><div class="file-list" data-list="change-project-contract"></div></div></div>' +
+    '<div class="change-contract-file-row"><label class="change-contract-file-label" for="change-repayment-schedule">상환 스케줄 <span class="change-required" aria-hidden="true">*</span></label><div class="change-contract-file-control"><input class="file-native" id="change-repayment-schedule" type="file" accept=".pdf,.xls,.xlsx,.csv"><button class="btn btn-dark" type="button" data-change-file-pick="change-repayment-schedule">찾기</button><div class="file-list" data-list="change-repayment-schedule"></div></div></div>' +
+    '<div class="change-contract-file-row" data-change-sales-plan-row hidden><label class="change-contract-file-label" for="change-sales-plan">매출 계획표 <span class="change-required" aria-hidden="true">*</span></label><div class="change-contract-file-control"><input class="file-native" id="change-sales-plan" type="file" accept=".pdf,.xls,.xlsx,.csv"><button class="btn btn-dark" type="button" data-change-file-pick="change-sales-plan">찾기</button><div class="file-list" data-list="change-sales-plan"></div></div></div></section>' +
+    '<h4 class="change-pane-title">EPC사 계약정보</h4><div class="change-contract-grid">' +
+    '<div class="change-vendor">(주)포스무역</div>' +
+    '<label class="change-label" for="changeSignedDate">계약 체결일</label><div class="change-field"><input id="changeSignedDate" type="date" value="2026-12-15"></div><label class="change-label" for="changeWorkStart">공사시작일</label><div class="change-field"><input id="changeWorkStart" type="date" value="2026-12-20"></div>' +
+    '<label class="change-label" for="changeContractKind">구분</label><div class="change-field"><select id="changeContractKind"><option>일반 공사비</option><option>자재비</option><option>설계비</option></select></div><label class="change-label" for="changeWorkEnd">공사종료일</label><div class="change-field"><input id="changeWorkEnd" type="date" value="2027-01-20"></div>' +
+    '<label class="change-label" for="changeVendorAmount">계약금액(VAT별도/원)</label><div class="change-field"><input id="changeVendorAmount" type="number" value="220000000"></div><label class="change-label" for="changePayType">공사금액 지급(%)</label><div class="change-field"><select id="changePayType"><option>분할</option><option>선금일시</option><option>기성금 일시</option><option>준공금 일시</option></select></div>' +
+    '<label class="change-label" for="changeSupply">공급가액(원)</label><div class="change-field"><input id="changeSupply" type="number" value="200000000"></div><label class="change-label" for="changePayDetail">지급 상세</label><div class="change-field"><input id="changePayDetail" value="선금 30 / 기성금 40 / 준공금 30"></div>' +
+    '<label class="change-label" for="changeVat">부가세(원)</label><div class="change-field"><input id="changeVat" type="number" value="20000000"></div><label class="change-label" for="changeContractFile">계약서</label><div class="change-field"><input id="changeContractFile" value="포스무역_EPC계약서.pdf" readonly></div>' +
+    '<label class="change-label" for="changeVendorTotal">합계액(VAT포함/원)</label><div class="change-field"><input id="changeVendorTotal" type="number" value="220000000"></div><div class="change-blank"></div></div>';
+  contractChangePane.querySelectorAll("[data-change-file-pick]").forEach(function (button) {
+    var key = button.dataset.changeFilePick;
+    var input = document.getElementById(key);
+    button.addEventListener("click", function () { input.click(); });
+    input.addEventListener("change", function () {
+      if (!input.files || !input.files.length) return;
+      fileStore[key] = Array.from(input.files).map(function (file) { return file.name; });
+      renderFiles(key);
+      showToast("첨부파일이 등록되었습니다.");
+    });
+    renderFiles(key);
+  });
+  function syncChangeContractFiles() {
+    var formValue = document.getElementById("contractFormValue");
+    var contractForm = formValue ? formValue.textContent.trim() : "";
+    var showSalesPlan = contractForm.indexOf("EPC") !== -1 || contractForm.indexOf("기타") !== -1;
+    contractChangePane.querySelector("[data-change-sales-plan-row]").hidden = !showSalesPlan;
+  }
+  var changeColumn = changeModal.querySelector(".change-layout > div:last-child");
+  changeColumn.classList.add("change-content-column");
+  var changeScroll = document.createElement("div");
+  changeScroll.className = "change-scroll-area";
+  Array.from(changeColumn.querySelectorAll(":scope > .change-pane")).forEach(function (pane) {
+    changeScroll.appendChild(pane);
+  });
+  changeColumn.prepend(changeScroll);
+  var changeNote = changeModal.querySelector(".change-note");
+  changeNote.textContent = "* 정보 탭 이동 시 이전 수정 내용의 저장을 먼저 진행해 주세요. 저장되지 않은 정보는 반영되지 않습니다.";
+  var saveChangeButton = document.getElementById("saveChange");
+  saveChangeButton.textContent = "변경 사항 및 사유 저장";
+  var changeInnerFoot = document.createElement("div");
+  changeInnerFoot.className = "change-inner-foot";
+  var changeReasonRow = document.createElement("div");
+  changeReasonRow.className = "change-reason-row";
+  changeReasonRow.innerHTML = '<label for="changeReason">변경 사유</label><input id="changeReason" name="changeReason" maxlength="300" placeholder="정보 수정 시, 관련 정보의 위치 및 변경 사유를 정확하게 입력해 주세요." required>';
+  changeReasonRow.appendChild(saveChangeButton);
+  changeInnerFoot.appendChild(changeReasonRow);
+  changeInnerFoot.appendChild(changeNote);
+  changeColumn.appendChild(changeInnerFoot);
+  var changeRoundFieldMap = {
+    changeName: "rcpName", basicSavingKwh: "kwh", basicSavingToe: "toe", basicCo2: "co2", businessToe: "before", basicEers: "eers",
+    changeTotalAmount: "total-amt", changeInvestAmount: "invest-amt", changeDetailIrr: "irr", changeStartDate: "start-date", changeEndDate: "end-date", changeRepayStart: "repay-start", changeRepayEnd: "repay-end",
+    changeEpcMethod: "epc-method", changeEpcVendor: "epc-search", changeLicense: "license", changeBondRate: "bond-1", changeWarrantyRate: "bond-2",
+    changeEpcNote: "co-note", changeUserEtc: "user-etc", changeUserNote: "user-note",
+    changeSignedDate: "pos-signed", changeWorkStart: "pos-start", changeContractKind: "pos-kind", changeWorkEnd: "pos-end", changeVendorAmount: "pos-amount", changePayType: "pos-paytype", changeSupply: "pos-supply", changeVat: "pos-vat", changeVendorTotal: "pos-total"
+  };
+  var changeOriginalSnapshot = null;
+  function collectChangeRoundSnapshot() {
+    var values = {};
+    Object.keys(changeRoundFieldMap).forEach(function (modalId) {
+      var field = document.getElementById(modalId);
+      if (field) values[changeRoundFieldMap[modalId]] = field.value;
+    });
+    var activeTab = changeModal.querySelector("[data-change-tab].on");
+    return { values: values, reason: document.getElementById("changeReason").value.trim(), section: activeTab ? activeTab.dataset.changeTab : "basic" };
+  }
+  function populateChangeModal(roundData) {
+    if (!roundData || !roundData.values) return;
+    Object.keys(changeRoundFieldMap).forEach(function (modalId) {
+      var field = document.getElementById(modalId);
+      var stored = roundData.values[changeRoundFieldMap[modalId]];
+      if (field && stored !== undefined) field.value = stored;
+    });
+  }
+  function setChangeModal(open) {
+    changeModal.hidden = !open;
+    document.body.classList.toggle("change-open", open);
+    if (open) {
+      syncChangeContractFiles();
+      var roundState = window.PMSProjectRound ? window.PMSProjectRound.getState() : null;
+      if (roundState) populateChangeModal(roundState.rounds[roundState.selected]);
+      document.getElementById("changeReason").value = "";
+      changeOriginalSnapshot = collectChangeRoundSnapshot();
+      document.getElementById("changeName").focus();
+    }
+  }
+  document.querySelector('[data-act="change-contract"]').addEventListener("click", function () { setChangeModal(true); });
+  document.querySelectorAll(".change-actions [data-change-close]").forEach(function (button) {
+    button.addEventListener("click", function () { setChangeModal(false); });
+  });
+  document.querySelectorAll("[data-change-tab]").forEach(function (button) {
+    button.addEventListener("click", function () {
+      document.querySelectorAll("[data-change-tab]").forEach(function (tab) { tab.classList.toggle("on", tab === button); });
+      document.querySelectorAll("[data-change-pane]").forEach(function (pane) { pane.hidden = pane.dataset.changePane !== button.dataset.changeTab; });
+    });
+  });
+  document.getElementById("saveChange").addEventListener("click", function () {
+    var reason = document.getElementById("changeReason");
+    if (!reason.value.trim()) {
+      reason.setCustomValidity("변경 사유를 입력해 주세요.");
+      reason.reportValidity();
+      reason.focus();
+      return;
+    }
+    reason.setCustomValidity("");
+    showToast("변경 사항과 사유를 저장했습니다.");
+  });
+  document.getElementById("changeReason").addEventListener("input", function () { this.setCustomValidity(""); });
+  document.getElementById("changeForm").addEventListener("submit", function (event) {
+    event.preventDefault();
+    var requiredChangeFiles = ["change-project-contract", "change-repayment-schedule"];
+    if (!contractChangePane.querySelector("[data-change-sales-plan-row]").hidden) requiredChangeFiles.push("change-sales-plan");
+    var missingChangeFile = requiredChangeFiles.find(function (key) {
+      return !fileStore[key] || !fileStore[key].length;
+    });
+    if (missingChangeFile) {
+      var contractTab = changeModal.querySelector('[data-change-tab="contract"]');
+      contractTab.click();
+      document.querySelector('[data-change-file-pick="' + missingChangeFile + '"]').focus();
+      if (missingChangeFile === "change-project-contract") showToast("프로젝트 계약서를 첨부해 주세요.");
+      else if (missingChangeFile === "change-repayment-schedule") showToast("상환 스케줄을 첨부해 주세요.");
+      else showToast("매출 계획표를 첨부해 주세요.");
+      return;
+    }
+    var changedSnapshot = collectChangeRoundSnapshot();
+    setChangeModal(false);
+    openAlert("입력한 내용으로 계약을 변경하시겠습니까?", null, function () {
+      if (window.PMSProjectRound) window.PMSProjectRound.applyContractChange({ previous: changeOriginalSnapshot, next: changedSnapshot });
+      showToast("계약 변경 요청이 완료되었습니다.");
+    }, { title: "계약 변경", okText: "계약 변경" });
+  });
+  var terminationModal = document.getElementById("terminationModal");
+  var terminationReason = document.getElementById("terminationReason");
+
+  function setTerminationModal(open) {
+    terminationModal.hidden = !open;
+    document.body.classList.toggle("change-open", open);
+    if (open) {
+      terminationReason.value = "";
+      terminationReason.setCustomValidity("");
+      terminationReason.focus();
+    }
+  }
+
+  function formatTerminationDate(date) {
+    return [date.getFullYear(), String(date.getMonth() + 1).padStart(2, "0"), String(date.getDate()).padStart(2, "0")].join(".");
+  }
+
+  function lockContractActions() {
+    ["change-contract", "cancel-contract", "release-contract"].forEach(function (action) {
+      var button = document.querySelector('[data-act="' + action + '"]');
+      if (!button) return;
+      button.disabled = true;
+      button.classList.add("is-locked");
+    });
+  }
+
+  function showTerminationInfo(info) {
+    document.getElementById("terminationDate").textContent = info.date;
+    document.getElementById("terminationManager").textContent = info.manager;
+    document.getElementById("terminationReasonValue").textContent = info.reason;
+    document.getElementById("terminationInfoCard").hidden = false;
+    lockContractActions();
+  }
+
+  document.querySelector('[data-act="cancel-contract"]').addEventListener("click", function () {
+    setTerminationModal(true);
+  });
+  document.querySelectorAll("[data-termination-close]").forEach(function (button) {
+    button.addEventListener("click", function () { setTerminationModal(false); });
+  });
+  document.getElementById("terminationForm").addEventListener("submit", function (event) {
+    event.preventDefault();
+    var reason = terminationReason.value.trim();
+    if (!reason) {
+      terminationReason.setCustomValidity("계약 해지 사유를 입력해 주세요.");
+      terminationReason.reportValidity();
+      terminationReason.focus();
+      return;
+    }
+    terminationReason.setCustomValidity("");
+    var managerEl = document.querySelector(".user b");
+    var info = {
+      date: formatTerminationDate(new Date()),
+      manager: managerEl ? managerEl.textContent.trim() : "-",
+      reason: reason
+    };
+    document.getElementById("releaseInfoCard").hidden = true;
+    try { sessionStorage.removeItem("pms.contractRelease"); } catch (err) {}
+    showTerminationInfo(info);
+    try { sessionStorage.setItem("pms.contractTermination", JSON.stringify(info)); } catch (err) {}
+    setTerminationModal(false);
+    showToast("계약 해지가 완료되었습니다.");
+  });
+  terminationReason.addEventListener("input", function () { this.setCustomValidity(""); });
+  document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape" && !terminationModal.hidden) setTerminationModal(false);
+  });
+
+  (function restoreTerminationInfo() {
+    var saved = null;
+    try { saved = sessionStorage.getItem("pms.contractTermination"); } catch (err) {}
+    if (!saved) return;
+    try {
+      setConcludedUI();
+      showTerminationInfo(JSON.parse(saved));
+    } catch (err) {}
+  })();
+
+  var releaseModal = document.getElementById("releaseModal");
+  var releaseReason = document.getElementById("releaseReason");
+
+  function setReleaseModal(open) {
+    releaseModal.hidden = !open;
+    document.body.classList.toggle("change-open", open);
+    if (open) {
+      releaseReason.value = "";
+      releaseReason.setCustomValidity("");
+      releaseReason.focus();
+    }
+  }
+
+  function showReleaseInfo(info) {
+    document.getElementById("releaseDate").textContent = info.date;
+    document.getElementById("releaseManager").textContent = info.manager;
+    document.getElementById("releaseReasonValue").textContent = info.reason;
+    document.getElementById("releaseInfoCard").hidden = false;
+    lockContractActions();
+  }
+
+  document.querySelector('[data-act="release-contract"]').addEventListener("click", function () {
+    setReleaseModal(true);
+  });
+  document.querySelectorAll("[data-release-close]").forEach(function (button) {
+    button.addEventListener("click", function () { setReleaseModal(false); });
+  });
+  document.getElementById("releaseForm").addEventListener("submit", function (event) {
+    event.preventDefault();
+    var reason = releaseReason.value.trim();
+    if (!reason) {
+      releaseReason.setCustomValidity("계약 해제 사유를 입력해 주세요.");
+      releaseReason.reportValidity();
+      releaseReason.focus();
+      return;
+    }
+    releaseReason.setCustomValidity("");
+    var managerEl = document.querySelector(".user b");
+    var info = {
+      date: formatTerminationDate(new Date()),
+      manager: managerEl ? managerEl.textContent.trim() : "-",
+      reason: reason
+    };
+    document.getElementById("terminationInfoCard").hidden = true;
+    try { sessionStorage.removeItem("pms.contractTermination"); } catch (err) {}
+    showReleaseInfo(info);
+    try { sessionStorage.setItem("pms.contractRelease", JSON.stringify(info)); } catch (err) {}
+    setReleaseModal(false);
+    showToast("계약 해제가 완료되었습니다.");
+  });
+  releaseReason.addEventListener("input", function () { this.setCustomValidity(""); });
+  document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape" && !releaseModal.hidden) setReleaseModal(false);
+  });
+
+  (function restoreReleaseInfo() {
+    var saved = null;
+    try { saved = sessionStorage.getItem("pms.contractRelease"); } catch (err) {}
+    if (!saved) return;
+    try {
+      setConcludedUI();
+      showReleaseInfo(JSON.parse(saved));
+    } catch (err) {}
+  })();
+
+  /* 사업접수에서 전달된 사업명과 계약 형태를 계약정보에 반영합니다. */
+  (function () {
+    var raw = null;
+    try { raw = sessionStorage.getItem("pms.newProject"); } catch (err) {}
+
+    var data = null;
+    if (raw) {
+      try { data = JSON.parse(raw); } catch (err) {}
+    }
+    if (data && data.name) document.getElementById("projectName").textContent = data.name;
+
+    var formValue = document.getElementById("contractFormValue");
+    if (data && data.contractForm && formValue) formValue.textContent = data.contractForm;
+
+    var isEsco = formValue && formValue.textContent.indexOf("ESCO") !== -1;
+    var isEpc = formValue && formValue.textContent.indexOf("EPC") !== -1 && !isEsco;
+    var scheduleLabel = document.getElementById("repaymentScheduleLabel");
+    var scheduleRow = document.getElementById("repaymentScheduleRow");
+    var salesPlanLabel = document.getElementById("salesPlanLabel");
+    var salesPlanRow = document.getElementById("salesPlanRow");
+    var concludedScheduleLabel = document.getElementById("concludedScheduleLabel");
+    var concludedScheduleValue = document.getElementById("concludedScheduleValue");
+    var concludedSalesPlanLabel = document.getElementById("concludedSalesPlanLabel");
+    var concludedSalesPlanValue = document.getElementById("concludedSalesPlanValue");
+    if (scheduleLabel) scheduleLabel.hidden = !(isEsco || isEpc);
+    if (scheduleRow) scheduleRow.hidden = !(isEsco || isEpc);
+    if (salesPlanLabel) salesPlanLabel.hidden = !isEpc;
+    if (salesPlanRow) salesPlanRow.hidden = !isEpc;
+    if (concludedScheduleLabel) concludedScheduleLabel.hidden = !(isEsco || isEpc);
+    if (concludedScheduleValue) concludedScheduleValue.hidden = !(isEsco || isEpc);
+    if (concludedSalesPlanLabel) concludedSalesPlanLabel.hidden = !isEpc;
+    if (concludedSalesPlanValue) concludedSalesPlanValue.hidden = !isEpc;
+  })();
+
+  /* 같은 세션에서 품의 정보를 다시 열어도 읽기 전용 EPC사 조건을 복원합니다. */
+  (function restoreReadOnlyVendorTerms() {
+    var saved = null;
+    try { saved = sessionStorage.getItem("pms.contractVendorTerms"); } catch (err) {}
+    if (!saved) return;
+    var target = document.getElementById("vendorTermsReadonly");
+    if (target) target.innerHTML = saved;
+  })();
+</script>
+  <script src="/assets/pms-lnb.js"></script>
+  <script src="/assets/pms-intake-wizard.js?v=20260921-2"></script>
+</body>
+</html>

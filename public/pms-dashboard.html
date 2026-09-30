@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>PMS 종합 대시보드 | 사업관리시스템</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/pms-lnb.css">
+  <link rel="stylesheet" href="/assets/pms-dashboard-favorites.css">
+  <link rel="stylesheet" href="/assets/pms-dashboard-favorites-color.css">
+  <style>
+    :root{--bg:#f1f5f9;--surface:#fff;--border:#e5e9f0;--text:#1e293b;--muted:#64748b;--brand:#1d6ff2;--brand-soft:#eff6ff}*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--text);font:14px/1.5 "Noto Sans KR",sans-serif}a{color:inherit;text-decoration:none}ul{list-style:none;margin:0;padding:0}.layout{display:flex;min-height:100vh}.sidebar{width:248px;flex:0 0 248px;background:#fff;border-right:1px solid var(--border)}.sidebar-head{height:60px;padding:0 20px;display:flex;align-items:center;border-bottom:1px solid var(--border)}.logo img{height:30px}.nav{padding:16px 12px}.main{min-width:0;flex:1}.topbar{height:60px;padding:0 26px;display:flex;align-items:center;gap:12px;background:#fff;border-bottom:1px solid var(--border)}.topbar h1{margin:0;font-size:19px}.pms{padding:4px 9px;border-radius:6px;background:var(--brand-soft);color:var(--brand);font-size:12px;font-weight:700}.user{margin-left:auto;color:#475569}.content{display:grid;gap:18px;min-width:0;padding:26px}.page-head{display:flex;align-items:flex-end;justify-content:space-between}.page-head h2{margin:0;font-size:25px;letter-spacing:-.03em}.page-head p{margin:5px 0 0;color:var(--muted)}.basis{color:var(--muted);font-size:12.5px}.card{min-width:0;background:#fff;border:1px solid var(--border);border-radius:10px;box-shadow:0 1px 2px rgba(15,23,42,.04)}@media(max-width:900px){.sidebar{display:none}.content{padding:18px}}@media(max-width:620px){.page-head{align-items:flex-start;gap:8px;flex-direction:column}}
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="sidebar-head"><a class="logo" href="/"><img src="/images/kepco-es-logo.png" alt="켑코이에스 주식회사"></a></div>
+      <nav class="nav" aria-label="주 메뉴"><ul></ul></nav>
+    </aside>
+    <div class="main">
+      <header class="topbar"><h1>사업관리시스템</h1><span class="pms">PMS</span><span class="user"><b>이희성 부장</b> [시스템관리자]</span></header>
+      <main class="content">
+        <div class="page-head"><div><h2>PMS 종합 대시보드</h2><p>프로젝트와 자금 현황을 한눈에 확인하세요.</p></div><span class="basis">기준일자 : 2026.06.10</span></div>
+        <section class="card favorite-section" aria-labelledby="favoriteTitle">
+          <div class="favorite-head"><h3 id="favoriteTitle">즐겨찾기</h3><p>자주 이동하는 메뉴를 최대 5개까지 등록할 수 있습니다.</p><button class="favorite-setting" id="openFavoriteSetting" type="button">메뉴 설정</button></div>
+          <div class="favorite-grid" id="favoriteGrid"></div>
+        </section>
+      </main>
+    </div>
+  </div>
+  <dialog class="favorite-dialog" id="favoriteDialog" aria-labelledby="favoriteDialogTitle">
+    <form method="dialog"><div class="favorite-dialog-head"><h3 id="favoriteDialogTitle">즐겨찾기 설정</h3><button class="favorite-close" value="cancel" aria-label="닫기">×</button></div><div class="favorite-dialog-body"><p class="favorite-guide">1Depth와 2Depth 메뉴를 선택해 주세요. 최대 5개까지 등록됩니다.</p><div class="favorite-edit-list" id="favoriteEditList"></div><div class="favorite-actions"><button class="favorite-save" id="saveFavorites" value="default">저장</button><button class="favorite-cancel" value="cancel">취소</button></div></div></form>
+  </dialog>
+  <script src="/assets/pms-dashboard-favorites.js"></script>
+  <script src="/assets/pms-lnb.js"></script>
+</body>
+</html>

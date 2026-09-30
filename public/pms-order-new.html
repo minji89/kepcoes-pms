@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>신규 발주 | 사업관리시스템(PMS)</title>
+  <link rel="stylesheet" href="/assets/pms-lnb.css">
+  <style>
+    :root{--bg:#f1f5f9;--surface:#fff;--border:#d8dee8;--text:#1e293b;--muted:#64748b;--brand:#1d6ff2;--navy:#173966;--field:#f8fafc;--danger:#dc2626}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:14px/1.5 "Noto Sans KR",sans-serif}a{text-decoration:none;color:inherit}button,input,select{font:inherit}.layout{display:flex;min-height:100vh}.sidebar{width:248px;flex:0 0 248px;background:#fff;border-right:1px solid var(--border)}.sidebar-head{height:60px;display:flex;align-items:center;padding:0 20px;border-bottom:1px solid var(--border)}.logo img{height:30px}.nav{padding:16px 12px}.main{min-width:0;flex:1}.topbar{height:60px;display:flex;align-items:center;gap:12px;padding:0 26px;background:#fff;border-bottom:1px solid var(--border)}.topbar h1{margin:0;font-size:19px}.pms{padding:4px 9px;border-radius:6px;background:#eff6ff;color:var(--brand);font-size:12px;font-weight:700}.user{margin-left:auto;color:var(--muted)}.content{display:grid;gap:18px;padding:26px}.page-head{display:flex;align-items:flex-end;justify-content:space-between}.page-head h2{margin:0;font-size:25px}.crumb{color:var(--muted);font-size:13px}.card{background:#fff;border:1px solid var(--border);border-radius:10px;box-shadow:0 1px 2px rgba(15,23,42,.04)}.tabbar{display:flex;align-items:center;padding:0 20px}.tabs{display:flex}.tab{display:block;padding:18px 26px;border-bottom:3px solid transparent;color:var(--muted);font-size:15px}.tab.on{border-bottom-color:var(--brand);color:var(--brand);font-weight:700}.order-card{min-width:0;padding:22px}.section-title{margin:0 0 12px;padding:0 0 10px 10px;border-bottom:1px solid #94a3b8;border-left:4px solid var(--brand);font-size:17px}.order-table-wrap{width:100%;overflow-x:auto;border:1px solid var(--border);border-radius:8px}.order-form-table{width:100%;min-width:1080px;table-layout:fixed;border-collapse:collapse;font-size:13px}.order-form-table th,.order-form-table td{height:50px;padding:8px 10px;border-right:1px solid #dfe5ec;border-bottom:1px solid #dfe5ec}.order-form-table tr:last-child th,.order-form-table tr:last-child td{border-bottom:0}.order-form-table th:last-child,.order-form-table td:last-child{border-right:0}.order-form-table th{background:#f1f5f9;text-align:left;font-weight:700;color:#334155}.order-form-table td{background:#fff}.order-form-table label{font-weight:700;white-space:nowrap}.req{color:var(--danger)}.ctrl{width:100%;max-width:100%;min-width:0;height:36px;padding:0 10px;border:1px solid #cbd5e1;border-radius:6px;background:#fff;color:#334155}.ctrl:focus{outline:2px solid #bfdbfe;border-color:#2563eb}.ctrl[readonly]{background:#f8fafc;color:#64748b}.ctrl.short{max-width:150px}.ctrl.medium{max-width:320px}.inline{display:flex;align-items:center;gap:8px;min-width:0;white-space:nowrap}.inline .ctrl{min-width:0}.file-native{display:none}.btn{height:36px;padding:0 16px;border:1px solid #cbd5e1;border-radius:6px;background:#fff;color:#334155;font-weight:700;cursor:pointer;white-space:nowrap}.btn:hover{filter:brightness(.97)}.btn-dark{border-color:var(--navy);background:var(--navy);color:#fff}.btn-file{height:32px;padding:0 13px;border-color:#475569;background:#475569;color:#fff}.check-list{display:flex;flex-wrap:wrap;gap:8px 14px}.check-list label{font-weight:400;white-space:nowrap}.actions{display:flex;justify-content:flex-end;gap:8px;margin-top:16px}.actions .btn{min-width:112px}.hint{color:var(--muted);font-size:12px;font-weight:400;white-space:nowrap}.toast{position:fixed;left:50%;bottom:30px;z-index:1200;transform:translateX(-50%);padding:11px 18px;border-radius:999px;background:#0f172a;color:#fff}.toast[hidden]{display:none}.lookup[hidden]{display:none}.lookup{position:fixed;inset:0;z-index:1100;display:grid;place-items:center;padding:24px;background:rgba(15,23,42,.52)}.lookup-dialog{width:min(720px,100%);border-radius:10px;background:#fff;box-shadow:0 24px 70px rgba(15,23,42,.3)}.lookup-head{display:flex;align-items:center;min-height:58px;padding:0 20px;border-bottom:1px solid var(--border)}.lookup-head h3{margin:0;font-size:18px}.lookup-close{margin-left:auto;border:0;background:transparent;color:#64748b;font-size:28px;cursor:pointer}.lookup-body{padding:20px}.lookup-search{display:flex;gap:8px;margin-bottom:14px}.lookup-search .ctrl{flex:1}.lookup-table{width:100%;border-collapse:collapse}.lookup-table th,.lookup-table td{padding:11px 12px;border:1px solid var(--border);text-align:left}.lookup-table th{background:#f1f5f9}.lookup-row{cursor:pointer}.lookup-row:hover,.lookup-row:focus{background:#eff6ff;outline:none}.lookup-note{margin:12px 0 0;color:var(--muted);font-size:12px}@media(max-width:900px){.sidebar{display:none}.content{padding:18px}.tabs{overflow-x:auto}.tab{padding:16px}.page-head{align-items:flex-start;gap:10px;flex-direction:column}}
+  </style>
+</head>
+<body>
+<div class="layout"><aside class="sidebar"><div class="sidebar-head"><a class="logo" href="/"><img src="/images/kepco-es-logo.png" alt="KEPCO ES"></a></div><nav class="nav" aria-label="주 메뉴"><ul><li><a class="nav-item" href="/pms-new-project.html">사업 접수</a></li><li><a class="nav-item active" href="/pms-project-status.html">프로젝트 관리</a></li><li><a class="nav-item" href="/pms-contract-status.html">계약 관리</a></li><li><a class="nav-item" href="/pms-fund-repayment.html">자금 관리</a></li></ul></nav></aside>
+<div class="main"><header class="topbar"><h1>사업관리시스템</h1><span class="pms">PMS</span><span class="user"><b>이희성 부장</b> [시스템관리자]</span></header><main class="content">
+  <div class="page-head"><h2>프로젝트 상세</h2><nav class="crumb">HOME 〉 프로젝트 관리 〉 프로젝트 현황 〉 발주 〉 <b id="pageModeLabel">신규 발주</b></nav></div>
+  <section class="card"><div class="tabbar"><div class="tabs"><a class="tab" href="/pms-project-detail.html">HOME</a><a class="tab" href="/pms-project-promotion.html">추진</a><a class="tab" href="/pms-project-contract.html">계약</a><a class="tab" href="/pms-project-investment.html">투자</a><a class="tab" href="/pms-project-repayment.html">상환</a><a class="tab on" href="/pms-project-order.html">발주</a></div></div></section>
+  <section class="card order-card"><h3 class="section-title" id="formTitle">신규 발주</h3><form id="orderForm"><div class="order-table-wrap"><table class="order-form-table"><colgroup><col style="width:13%"><col style="width:32%"><col style="width:12%"><col style="width:15%"><col style="width:13%"><col style="width:15%"></colgroup><tbody>
+    <tr><th>프로젝트 번호</th><td><div class="inline"><input class="ctrl medium" id="projectNo" value="2026_06_12" readonly><button class="btn btn-file" type="button" data-pick-project>프로젝트 조회</button></div></td><th>프로젝트명</th><td colspan="3"><input class="ctrl" id="projectName" value="천안 (주)선영 LED 에너지효율화사업" readonly></td></tr>
+    <tr><th><label for="orderType">계약구분</label></th><td><select class="ctrl short" id="orderType"><option>일반</option><option>공사</option><option>용역</option></select></td><th><label for="orderFormat">발주형태</label></th><td><select class="ctrl short" id="orderFormat"><option>단독 발주</option><option>연계 발주</option><option>공동 발주</option></select></td><th><label for="orderChannel">발주 구분</label></th><td><select class="ctrl short" id="orderChannel"><option>PMS</option><option>외부</option></select></td></tr>
+    <tr><th><label for="orderNo">계약번호</label></th><td><div class="inline"><input class="ctrl short" id="orderNo" readonly><span class="hint">계약 저장 시, 자동부여됩니다.</span></div></td><th><label for="contractMethod">계약방법</label></th><td colspan="3"><select class="ctrl short" id="contractMethod"><option>수의계약</option><option>경쟁계약</option></select></td></tr>
+    <tr><th><label for="orderName">계약명 <span class="req">*</span></label></th><td><input class="ctrl" id="orderName" required></td><th><label for="estimate">추정가격(소요예산) <span class="req">*</span></label></th><td><input class="ctrl" id="estimate" inputmode="numeric" required></td><th><label for="signedDate">계약 체결일</label></th><td><input class="ctrl" id="signedDate" type="date" value="2026-07-30"></td></tr>
+    <tr><th>계약 상대자 <span class="req">*</span></th><td><div class="inline"><button class="btn btn-file" type="button" data-pick-partner>EPC사 조회</button><input class="ctrl" id="partner" readonly required></div></td><th><label for="basis">계약 근거(사유)</label></th><td colspan="3"><input class="ctrl" id="basis"></td></tr>
+    <tr><th><label for="qualification">입찰 참가자격</label></th><td><input class="ctrl" id="qualification"></td><th><label for="selection">낙찰자 결정방법</label></th><td colspan="3"><input class="ctrl" id="selection"></td></tr>
+    <tr><th>계약 대상자 필요면허</th><td><div class="check-list"><label><input type="checkbox"> 종합건설업</label><label><input type="checkbox"> 전문건설업</label><label><input type="checkbox"> 개별공사업</label><label><input type="checkbox"> 용역업</label><label><input type="checkbox"> 기타</label></div></td><th><label for="licenseDetail">필요면허 상세</label></th><td colspan="3"><input class="ctrl" id="licenseDetail"></td></tr>
+    <tr><th><label for="supply">계약 공급가액(원) <span class="req">*</span></label></th><td><input class="ctrl" id="supply" inputmode="numeric" required></td><th><label for="vat">부가세(원) <span class="req">*</span></label></th><td><input class="ctrl" id="vat" inputmode="numeric" required></td><th><label for="total">합계(원)</label></th><td><input class="ctrl" id="total" readonly></td></tr>
+    <tr><th>납기일/공사기간 <span class="req">*</span></th><td><div class="inline"><input class="ctrl" id="periodStart" type="date" value="2026-07-01" required><span>~</span><input class="ctrl" id="periodEnd" type="date" value="2026-07-30" required></div></td><th><label for="defectTerm">하자이행 보증기간(개월)</label></th><td colspan="3"><input class="ctrl short" id="defectTerm" type="number"></td></tr>
+    <tr><th><label for="advanceRate">선금이행 보증금율(%) <span class="req">*</span></label></th><td><input class="ctrl short" id="advanceRate" type="number" required></td><th>선금이행 보증보험</th><td colspan="3"><input class="file-native" type="file" id="advanceFile"><button class="btn btn-file" type="button" data-file="advanceFile">파일찾기</button><span class="hint" data-file-name="advanceFile"></span></td></tr>
+    <tr><th><label for="performRate">계약이행 보증금율(%) <span class="req">*</span></label></th><td><input class="ctrl short" id="performRate" type="number" required></td><th>계약이행 보증보험</th><td colspan="3"><input class="file-native" type="file" id="performFile"><button class="btn btn-file" type="button" data-file="performFile">파일찾기</button><span class="hint" data-file-name="performFile"></span></td></tr>
+    <tr><th><label for="defectRate">하자이행 보증보험(%) <span class="req">*</span></label></th><td><input class="ctrl short" id="defectRate" type="number" required></td><th>하자이행 보증보험</th><td colspan="3"><input class="file-native" type="file" id="defectFile"><button class="btn btn-file" type="button" data-file="defectFile">파일찾기</button><span class="hint" data-file-name="defectFile"></span></td></tr>
+    <tr><th>계약서 <span class="req">*</span></th><td colspan="5"><input class="file-native" type="file" id="contractFile"><button class="btn btn-file" type="button" data-file="contractFile">파일찾기</button><span class="hint" data-file-name="contractFile">선택된 파일 없음</span></td></tr>
+    <tr><th>계약 참고(계약 요청서 외)</th><td colspan="5"><input class="file-native" type="file" id="referenceFile"><button class="btn btn-file" type="button" data-file="referenceFile">파일찾기</button><span class="hint" data-file-name="referenceFile"></span></td></tr>
+    <tr id="changeReasonRow" hidden><th><label for="changeReason">변경내역 <span class="req">*</span></label></th><td colspan="5"><input class="ctrl" id="changeReason" maxlength="300" placeholder="변경 사유와 주요 변경사항을 입력해 주세요."></td></tr>
+  </tbody></table></div><div class="actions"><button class="btn btn-dark" id="submitLabel" type="submit">발주계약 등록</button><button class="btn" type="button" data-cancel>취소</button></div></form></section>
+</main></div></div><div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+<div class="lookup" id="projectLookup" role="dialog" aria-modal="true" aria-labelledby="projectLookupTitle" hidden><div class="lookup-dialog"><header class="lookup-head"><h3 id="projectLookupTitle">프로젝트 조회</h3><button class="lookup-close" type="button" data-close-lookup aria-label="닫기">×</button></header><div class="lookup-body"><div class="lookup-search"><input class="ctrl" id="projectKeyword" placeholder="프로젝트 번호 또는 프로젝트명을 입력하세요."><button class="btn btn-dark" type="button" data-search-project>조회</button></div><table class="lookup-table"><thead><tr><th>프로젝트 번호</th><th>프로젝트명</th></tr></thead><tbody id="projectRows"></tbody></table><p class="lookup-note">선택할 프로젝트 행을 클릭하세요.</p></div></div></div>
+<div class="lookup" id="partnerLookup" role="dialog" aria-modal="true" aria-labelledby="partnerLookupTitle" hidden><div class="lookup-dialog"><header class="lookup-head"><h3 id="partnerLookupTitle">EPC사 조회</h3><button class="lookup-close" type="button" data-close-lookup aria-label="닫기">×</button></header><div class="lookup-body"><div class="lookup-search"><input class="ctrl" id="partnerKeyword" placeholder="업체명 또는 사업자등록번호를 입력하세요."><button class="btn btn-dark" type="button" data-search-partner>조회</button></div><table class="lookup-table"><thead><tr><th>업체명</th><th>사업자등록번호</th></tr></thead><tbody id="partnerRows"></tbody></table><p class="lookup-note">계약 상대자로 지정할 EPC사 행을 클릭하세요.</p></div></div></div>
+<script>
+(function () {
+  var projects = [
+    { no: "2026_06_12", name: "천안 (주)선영 LED 에너지효율화사업" },
+    { no: "2026_05_08", name: "전기공사중계조합 본관시설 LED 교체공사" }
+  ];
+  var partners = [
+    { name: "㈜포스무역", businessNo: "120-86-10234" },
+    { name: "경진엔스씨㈜", businessNo: "214-81-48291" },
+    { name: "한국종합안전(주)", businessNo: "312-81-77320" }
+  ];
+  var params = new URLSearchParams(window.location.search);
+  var isChangeMode = params.get("mode") === "change";
+  var currentOrder = {
+    no: params.get("no") || "58247-3916-84-7K-P",
+    projectNo: "2026_06_12",
+    projectName: "천안 (주)선영 LED 에너지효율화사업",
+    name: "서초동 1601-9 오피스텔 가설울타리 설치·해체 공사",
+    format: "연계 발주",
+    method: "수의계약",
+    estimate: "220,000,000",
+    signedDate: "2026-10-10",
+    partner: "경진엔스씨㈜",
+    basis: "사업 수행을 위한 전문 시공업체 계약",
+    qualification: "관련 공사업 등록 업체",
+    selection: "견적 및 수행능력 종합평가",
+    supply: "200,000,000",
+    vat: "20,000,000",
+    total: "220,000,000",
+    periodStart: "2026-07-01",
+    periodEnd: "2026-07-30",
+    defectTerm: "24",
+    advanceRate: "10",
+    performRate: "10",
+    defectRate: "5"
+  };
+  var lastTrigger = null;
+
+  function configureMode() {
+    if (!isChangeMode) return;
+    document.title = "발주계약 변경 | 사업관리시스템(PMS)";
+    document.getElementById("pageModeLabel").textContent = "발주계약 변경";
+    document.getElementById("formTitle").textContent = "발주계약 변경";
+    document.getElementById("submitLabel").textContent = "변경사항 저장";
+    document.getElementById("changeReasonRow").hidden = false;
+    document.getElementById("changeReason").required = true;
+    document.getElementById("projectNo").value = currentOrder.projectNo;
+    document.getElementById("projectName").value = currentOrder.projectName;
+    document.getElementById("orderNo").value = currentOrder.no;
+    document.getElementById("orderName").value = currentOrder.name;
+    document.getElementById("orderFormat").value = currentOrder.format;
+    document.getElementById("contractMethod").value = currentOrder.method;
+    document.getElementById("estimate").value = currentOrder.estimate;
+    document.getElementById("signedDate").value = currentOrder.signedDate;
+    document.getElementById("partner").value = currentOrder.partner;
+    document.getElementById("basis").value = currentOrder.basis;
+    document.getElementById("qualification").value = currentOrder.qualification;
+    document.getElementById("selection").value = currentOrder.selection;
+    document.getElementById("supply").value = currentOrder.supply;
+    document.getElementById("vat").value = currentOrder.vat;
+    document.getElementById("total").value = currentOrder.total;
+    document.getElementById("periodStart").value = currentOrder.periodStart;
+    document.getElementById("periodEnd").value = currentOrder.periodEnd;
+    document.getElementById("defectTerm").value = currentOrder.defectTerm;
+    document.getElementById("advanceRate").value = currentOrder.advanceRate;
+    document.getElementById("performRate").value = currentOrder.performRate;
+    document.getElementById("defectRate").value = currentOrder.defectRate;
+    document.querySelector('[data-file-name="contractFile"]').textContent = "기존 계약서 유지 (변경 시 새 파일 선택)";
+  }
+
+  function numericValue(id) {
+    return Number(document.getElementById(id).value.replace(/[^0-9]/g, "")) || 0;
+  }
+  function formatAmount(input) {
+    var value = input.value.replace(/[^0-9]/g, "");
+    input.value = value ? Number(value).toLocaleString("ko-KR") : "";
+  }
+  function updateTotal() {
+    document.getElementById("total").value = (numericValue("supply") + numericValue("vat")).toLocaleString("ko-KR");
+  }
+  ["estimate", "supply", "vat"].forEach(function (id) {
+    document.getElementById(id).addEventListener("input", function () {
+      formatAmount(this);
+      if (id === "supply" || id === "vat") updateTotal();
+    });
+  });
+
+  function openLookup(id, trigger) {
+    lastTrigger = trigger;
+    var modal = document.getElementById(id);
+    modal.hidden = false;
+    document.body.style.overflow = "hidden";
+    modal.querySelector("input").focus();
+  }
+  function closeLookup(modal) {
+    modal.hidden = true;
+    document.body.style.overflow = "";
+    if (lastTrigger) lastTrigger.focus();
+  }
+  function renderProjects() {
+    var keyword = document.getElementById("projectKeyword").value.trim().toLowerCase();
+    document.getElementById("projectRows").innerHTML = projects.filter(function (row) {
+      return !keyword || (row.no + " " + row.name).toLowerCase().includes(keyword);
+    }).map(function (row) {
+      return '<tr class="lookup-row" tabindex="0" data-project="' + row.no + '"><td>' + row.no + "</td><td>" + row.name + "</td></tr>";
+    }).join("") || '<tr><td colspan="2">조회 결과가 없습니다.</td></tr>';
+  }
+  function renderPartners() {
+    var keyword = document.getElementById("partnerKeyword").value.trim().toLowerCase();
+    document.getElementById("partnerRows").innerHTML = partners.filter(function (row) {
+      return !keyword || (row.name + " " + row.businessNo).toLowerCase().includes(keyword);
+    }).map(function (row) {
+      return '<tr class="lookup-row" tabindex="0" data-partner="' + row.businessNo + '"><td>' + row.name + "</td><td>" + row.businessNo + "</td></tr>";
+    }).join("") || '<tr><td colspan="2">조회 결과가 없습니다.</td></tr>';
+  }
+
+  document.querySelector("[data-pick-project]").addEventListener("click", function () {
+    renderProjects(); openLookup("projectLookup", this);
+  });
+  document.querySelector("[data-pick-partner]").addEventListener("click", function () {
+    renderPartners(); openLookup("partnerLookup", this);
+  });
+  document.querySelector("[data-search-project]").addEventListener("click", renderProjects);
+  document.querySelector("[data-search-partner]").addEventListener("click", renderPartners);
+  document.querySelectorAll("[data-close-lookup]").forEach(function (button) {
+    button.addEventListener("click", function () { closeLookup(button.closest(".lookup")); });
+  });
+  document.querySelectorAll(".lookup").forEach(function (modal) {
+    modal.addEventListener("click", function (event) { if (event.target === modal) closeLookup(modal); });
+  });
+  document.getElementById("projectRows").addEventListener("click", function (event) {
+    var row = event.target.closest("[data-project]"); if (!row) return;
+    var project = projects.find(function (item) { return item.no === row.dataset.project; });
+    document.getElementById("projectNo").value = project.no;
+    document.getElementById("projectName").value = project.name;
+    closeLookup(document.getElementById("projectLookup"));
+  });
+  document.getElementById("partnerRows").addEventListener("click", function (event) {
+    var row = event.target.closest("[data-partner]"); if (!row) return;
+    var partner = partners.find(function (item) { return item.businessNo === row.dataset.partner; });
+    document.getElementById("partner").value = partner.name;
+    closeLookup(document.getElementById("partnerLookup"));
+  });
+
+  document.querySelectorAll("[data-file]").forEach(function (button) {
+    button.addEventListener("click", function () { document.getElementById(button.dataset.file).click(); });
+  });
+  document.querySelectorAll(".file-native").forEach(function (input) {
+    input.addEventListener("change", function () {
+      var name = document.querySelector('[data-file-name="' + input.id + '"]');
+      if (name) name.textContent = input.files.length ? input.files[0].name : "선택된 파일 없음";
+    });
+  });
+  document.querySelector("[data-cancel]").addEventListener("click", function () {
+    location.href = isChangeMode ? "/pms-order-detail.html?no=" + encodeURIComponent(currentOrder.no) : "/pms-project-order.html";
+  });
+  document.getElementById("orderForm").addEventListener("submit", function (event) {
+    event.preventDefault();
+    if (!this.reportValidity()) return;
+    var toast = document.getElementById("toast");
+    if (!document.getElementById("partner").value) {
+      toast.textContent = "계약 상대자를 선택해 주세요.";
+      toast.hidden = false;
+      document.querySelector("[data-pick-partner]").focus();
+      return;
+    }
+    if (!isChangeMode && !document.getElementById("contractFile").files.length) {
+      toast.textContent = "계약서 파일을 선택해 주세요.";
+      toast.hidden = false;
+      document.querySelector('[data-file="contractFile"]').focus();
+      return;
+    }
+    toast.textContent = isChangeMode ? "발주계약 변경사항이 저장되었습니다." : "발주계약이 등록되었습니다.";
+    toast.hidden = false;
+    setTimeout(function () {
+      location.href = isChangeMode ? "/pms-order-detail.html?no=" + encodeURIComponent(currentOrder.no) : "/pms-project-order.html";
+    }, 900);
+  });
+  configureMode();
+  renderProjects();
+  renderPartners();
+})();
+</script><script src="/assets/pms-lnb.js"></script>
+</body></html>

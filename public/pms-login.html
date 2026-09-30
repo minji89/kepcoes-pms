@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PMS 로그인 | 켑코이에스</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#122b55;--blue:#1769e8;--line:#dce4ee;--muted:#64748b;--error:#dc2626}*{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:"Noto Sans KR",sans-serif;color:#18243a}body{min-height:100vh;background:#eef3f8}.login-shell{display:grid;grid-template-columns:minmax(420px,44%) minmax(560px,56%);min-height:100vh}.brand-panel{position:relative;overflow:hidden;display:flex;flex-direction:column;padding:52px 64px;color:#fff;background:linear-gradient(145deg,#10294f 0%,#164b91 58%,#1575df 100%)}.brand-panel:before,.brand-panel:after{content:"";position:absolute;border-radius:50%;border:1px solid rgba(255,255,255,.12)}.brand-panel:before{width:560px;height:560px;right:-280px;top:-170px}.brand-panel:after{width:380px;height:380px;left:-170px;bottom:-180px}.brand-logo{position:relative;z-index:1;width:190px;padding:14px 17px;border-radius:8px;background:#fff}.brand-logo img{display:block;width:100%;height:auto}.brand-copy{position:relative;z-index:1;margin:auto 0;max-width:510px}.brand-copy .eyebrow{margin:0 0 18px;color:#9fc9ff;font-size:14px;font-weight:700;letter-spacing:.14em}.brand-copy h1{margin:0;font-size:43px;line-height:1.28;letter-spacing:-.055em}.brand-copy p{margin:22px 0 0;color:#d7e6fb;font-size:16px;line-height:1.8}.brand-foot{position:relative;z-index:1;color:#b8cce6;font-size:12px}.login-panel{display:grid;place-items:center;padding:48px;background:#f8fafc}.login-card{width:min(460px,100%);padding:46px 44px;border:1px solid #e2e8f0;border-radius:16px;background:#fff;box-shadow:0 18px 55px rgba(23,42,72,.1)}.login-card h2{margin:0;color:var(--navy);font-size:30px;letter-spacing:-.045em}.login-intro{margin:10px 0 32px;color:var(--muted);font-size:14px}.field{display:grid;gap:8px;margin-top:18px}.field label{color:#334155;font-size:13px;font-weight:700}.input-wrap{position:relative}.input-wrap input{width:100%;height:50px;padding:0 46px 0 15px;border:1px solid #ccd6e2;border-radius:8px;background:#fff;color:#18243a;font:14px inherit;outline:0}.input-wrap input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(23,105,232,.12)}.input-icon{position:absolute;right:15px;top:50%;width:20px;height:20px;transform:translateY(-50%);color:#8a9aaf;pointer-events:none}.password-toggle{position:absolute;right:8px;top:50%;display:grid;place-items:center;width:36px;height:36px;padding:0;transform:translateY(-50%);border:0;background:transparent;color:#718096;cursor:pointer}.password-toggle svg{width:20px;height:20px}.login-options{display:flex;align-items:center;justify-content:space-between;margin:17px 0 25px;color:#526277;font-size:13px}.remember{display:flex;;align-items:center;gap:7px;cursor:pointer}.remember input{width:16px;height:16px;accent-color:var(--blue)}.help-link{color:#42566f;text-decoration:none}.help-link:hover{text-decoration:underline}.login-btn{width:100%;height:52px;border:0;border-radius:8px;background:var(--navy);color:#fff;font:700 15px inherit;cursor:pointer}.login-btn:hover{background:#0c2347}.login-btn:focus-visible,.password-toggle:focus-visible,.help-link:focus-visible{outline:3px solid rgba(23,105,232,.28);outline-offset:2px}.login-error{min-height:21px;margin:12px 0 0;color:var(--error);font-size:12.5amlpx}.security-note{display:flex;gap:9px;margin:24px 0 0;padding-top:20px;border-top:1px solid #edf1f5;color:#718096;font-size:12px;line-height:1.6}.security-note svg{flex:none;width:18px;height:18px;margin-top:1px}.contact{margin:17px 0 0;color:#718096;font-size:12px;text-align:center}@media(max-width:900px){.login-shell{grid-template-columns:1fr}.brand-panel{min-height:250px;padding:30px}.brand-copy{margin:38px 0 16px}.brand-copy h1{font-size:30px}.brand-copy p,.brand-foot{display:none}.brand-logo{width:160px}.login-panel{padding:30px 20px}.login-card{padding:36px 28px}}@media(max-width:480px){.brand-panel{min-height:210px}.login-card{border-radius:12px}.login-card h2{font-size:26px}}
+.login-error{font-size:12.5px}
+.brand-panel{color:var(--navy);background:#fff}
+.brand-panel:before,.brand-panel:after{border-color:rgba(23,105,232,.12)}
+.brand-panel:before{background:rgba(23,105,232,.025)}
+.brand-panel:after{background:rgba(18,43,85,.025)}
+.brand-logo{border:1px solid #e5ebf2}
+.brand-copy .eyebrow{color:var(--blue)}
+.brand-copy p{color:#566983}
+.brand-foot{color:#8a9aaf}
+.login-panel{background:linear-gradient(145deg,#10294f 0%,#164b91 58%,#1575df 100%)}
+.login-card{border-color:rgba(255,255,255,.72);box-shadow:0 22px 60px rgba(5,20,48,.3)}
+.login-intro{color:var(--error);font-weight:700}
+.inquiry-box{display:flex;align-items:center;gap:12px;margin-top:16px;padding:16px 18px;border:1px solid #dce4ee;border-radius:12px;background:#fff;color:#334155}
+.inquiry-icon{flex:none;width:18px;height:18px;color:#475569}
+.inquiry-content{font-size:13px;line-height:1.55;color:#334155;word-break:keep-all}
+.inquiry-line{color:#334155}
+.inquiry-email{color:#1769e8;text-decoration:none;font-weight:500}
+.inquiry-email:hover{text-decoration:underline}
+@media(max-width:900px){.brand-panel{min-height:410px}.brand-copy{margin:38px 0 0}.brand-copy p{display:block}}
+</style>
+</head>
+<body>
+<main class="login-shell">
+  <section class="brand-panel" aria-label="PMS 소개">
+    <div class="brand-logo"><img src="/images/kepco-es-logo.png" alt="켑코이에스 주식회사"></div>
+    <div class="brand-copy"><p class="eyebrow">PROJECT MANAGEMENT SYSTEM</p><h1>사업관리시스템<br>PMS</h1><p>프로젝트 접수부터 계약, 투자, 상환까지<br>사업 전 과정을 통합 관리합니다.</p>
+    </div>
+    <p class="brand-foot">© KEPCO Energy Solution Co., Ltd. All rights reserved.</p>
+  </section>
+  <section class="login-panel">
+    <div class="login-card">
+      <h2>외부 사용자 로그인</h2>
+      <form id="loginForm" novalidate>
+        <div class="field"><label for="userId">아이디</label><div class="input-wrap"><input id="userId" name="userId" autocomplete="username" placeholder="아이디를 입력해 주세요" required><svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4.5 21a7.5 7.5 0 0 1 15 0"/></svg></div></div>
+        <div class="field"><label for="password">비밀번호</label><div class="input-wrap"><input id="password" name="password" type="password" autocomplete="current-password" placeholder="비밀번호를 입력해 주세요" required><button class="password-toggle" id="passwordToggle" type="button" aria-label="비밀번호 표시"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z"/><circle cx="12" cy="12" r="2.5"/></svg></button></div></div>
+        <div class="login-options"><label class="remember"><input id="rememberId" type="checkbox">아이디 저장</label></div>
+        <button class="login-btn" type="submit">로그인</button>
+        <p class="login-error" id="loginError" role="alert" aria-live="polite"></p>
+        <div class="inquiry-box">
+          <svg class="inquiry-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          <div class="inquiry-content">
+            <div class="inquiry-line">로그인 문의(운영담당) : 홍길동 과장 : 02-6959-4561 |</div>
+            <a class="inquiry-email" href="mailto:simon@kepcoes.co.kr">simon@kepcoes.co.kr</a>
+          </div>
+        </div>
+      </form>
+      <p class="security-note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg><span>외부 접속 시 계정 정보를 타인에게 노출하지 마세요.<br>일정 시간 동안 사용하지 않으면 자동으로 로그아웃됩니다.</span></p>
+    </div>
+  </section>
+</main>
+<script>
+(function(){
+  "use strict";
+  var form=document.getElementById("loginForm"),userId=document.getElementById("userId"),password=document.getElementById("password"),remember=document.getElementById("rememberId"),error=document.getElementById("loginError"),toggle=document.getElementById("passwordToggle");
+  var savedId=localStorage.getItem("pmsSavedId");if(savedId){userId.value=savedId;remember.checked=true}
+  toggle.addEventListener("click",function(){var visible=password.type==="text";password.type=visible?"password":"text";toggle.setAttribute("aria-label",visible?"비밀번호 표시":"비밀번호 숨기기")});
+  form.addEventListener("submit",function(event){event.preventDefault();error.textContent="";if(!userId.value.trim()){error.textContent="아이디를 입력해 주세요.";userId.focus();return}if(!password.value){error.textContent="비밀번호를 입력해 주세요.";password.focus();return}if(remember.checked)localStorage.setItem("pmsSavedId",userId.value.trim());else localStorage.removeItem("pmsSavedId");window.top.location.href="/pms-dashboard.html"});
+})();
+</script>
+</body>
+</html>

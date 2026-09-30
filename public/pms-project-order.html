@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>프로젝트 발주 현황 | 사업관리시스템(PMS)</title>
+<meta name="description" content="켑코이에스 사업관리시스템(PMS) 프로젝트 발주 현황 화면입니다." />
+<meta name="theme-color" content="#1e3a5f" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<style>
+  :root {
+    --bg: #f1f5f9;
+    --surface: #ffffff;
+    --border: #e5e9f0;
+    --text: #1e293b;
+    --muted: #64748b;
+    --brand: #1d6ff2;
+    --brand-soft: #eff6ff;
+    --navy: #1e3a5f;
+    --green: #10b981;
+    --amber: #f59e0b;
+    --field: #f1f5f9;
+    --radius: 10px;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Noto Sans KR", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a { color: inherit; text-decoration: none; }
+  ul { list-style: none; margin: 0; padding: 0; }
+
+  .sr-only {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+  }
+
+  .layout { display: flex; min-height: 100vh; }
+
+  /* ---------- Sidebar ---------- */
+  .sidebar {
+    width: 248px; flex: 0 0 248px; background: var(--surface);
+    border-right: 1px solid var(--border); display: flex; flex-direction: column;
+  }
+  .sidebar-head {
+    height: 60px; display: flex; align-items: center; justify-content: space-between;
+    padding: 0 20px; border-bottom: 1px solid var(--border);
+  }
+  .logo { display: flex; align-items: center; min-width: 0; }
+  .logo img { display: block; height: 30px; width: auto; max-width: 100%; }
+  .hamburger {
+    background: none; border: 0; padding: 6px; cursor: pointer;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .hamburger i { display: block; width: 18px; height: 2px; background: #334155; border-radius: 2px; }
+
+  .nav { padding: 16px 12px; flex: 1; }
+  .nav-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 14px; border-radius: 8px;
+    color: #475569; font-size: 14.5px; font-weight: 500;
+  }
+  .nav-item .chev {
+    margin-left: auto; width: 8px; height: 8px; flex: none;
+    border-right: 1.6px solid #94a3b8; border-bottom: 1.6px solid #94a3b8;
+    transform: rotate(45deg) translateY(-2px);
+  }
+  .nav-item.active .chev { border-color: var(--brand); }
+  .nav-item .chev.up { transform: rotate(-135deg) translateY(-2px); }
+  .nav-item.open .chev { border-color: #64748b; }
+  .nav-item.active { background: var(--brand-soft); color: var(--brand); font-weight: 700; }
+  .nav-icon { width: 20px; height: 20px; flex: none; color: currentColor; }
+
+  .subnav { padding: 2px 0 6px 26px; }
+  .subnav-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 10px; font-size: 14px; color: #475569;
+  }
+  .subnav-item.active { color: var(--brand); font-weight: 700; }
+  .dot { width: 5px; height: 5px; border-radius: 50%; background: var(--brand); flex: none; }
+
+  .sidebar-foot { padding: 16px 16px 22px; display: grid; gap: 10px; }
+  .side-btn {
+    display: flex; align-items: center; gap: 10px;
+    padding: 12px 14px; border: 1px solid var(--border);
+    border-radius: 8px; font-size: 13.5px; color: #475569; background: var(--surface);
+  }
+  .side-btn.primary { border-color: #bfdbfe; background: var(--brand-soft); color: var(--brand); font-weight: 700; }
+
+  /* ---------- Main ---------- */
+  .main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+  .topbar {
+    height: 60px; background: var(--surface); border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 16px; padding: 0 26px;
+  }
+  .topbar h1 { margin: 0; font-size: 19px; font-weight: 700; letter-spacing: -0.02em; }
+  .badge-pms {
+    background: var(--brand-soft); color: var(--brand);
+    font-size: 12px; font-weight: 700; padding: 4px 9px; border-radius: 6px;
+  }
+  .topbar-right { margin-left: auto; display: flex; align-items: center; gap: 14px; }
+  .seg { display: flex; align-items: center; gap: 6px; }
+  .seg-label { color: var(--muted); font-size: 13px; margin-right: 2px; }
+  .seg-btn {
+    padding: 5px 12px; border-radius: 6px; font-size: 13px;
+    color: var(--muted); background: transparent; border: 0; cursor: pointer; font-family: inherit;
+  }
+  .seg-btn.on { background: #334155; color: #fff; font-weight: 700; }
+  .user { font-size: 13.5px; }
+  .user b { font-weight: 700; }
+  .user small { color: var(--muted); }
+  .logout { color: var(--muted); font-size: 13px; text-decoration: underline; }
+
+  .content { padding: 26px; display: grid; gap: 18px; }
+  .page-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  .page-head h2 { margin: 0; font-size: 25px; font-weight: 700; letter-spacing: -0.03em; }
+  .crumb { display: flex; align-items: center; gap: 10px; color: var(--muted); font-size: 13px; }
+  .crumb .sep { color: #cbd5e1; font-size: 11px; }
+  .crumb .now { color: var(--text); font-weight: 700; }
+
+  .card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+  }
+  .card-body { padding: 20px 24px 24px; }
+
+  /* ---------- Search panel ---------- */
+  .search { display: flex; gap: 20px; padding: 22px 24px; }
+  .search-rows { flex: 1; min-width: 0; display: grid; gap: 12px; }
+  .srow { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .srow-label { width: 88px; flex: none; font-size: 14px; font-weight: 700; color: #334155; }
+  .ctrl {
+    min-width: 140px; height: 36px; padding: 0 12px; border: 1px solid #cbd5e1;
+    border-radius: 6px; background: var(--surface); color: var(--text); font: inherit;
+  }
+
+  /* Tabs */
+  .tabbar { display: flex; align-items: center; gap: 8px; padding: 0 20px; }
+  .tabs { display: flex; }
+  .tab {
+    display: block; padding: 18px 26px; font-size: 15px; color: var(--muted); font-weight: 500;
+    border-bottom: 3px solid transparent; background: none; border-top: 0; border-left: 0; border-right: 0;
+    cursor: pointer; font-family: inherit;
+  }
+  .tab.on { color: var(--brand); font-weight: 700; border-bottom-color: var(--brand); }
+  .tab-right { margin-left: auto; display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--muted); }
+  select {
+    font-family: inherit; font-size: 14px; font-weight: 700; color: var(--text);
+    padding: 8px 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface);
+  }
+
+  /* ---------- Buttons ---------- */
+  .btn {
+    height: 36px; padding: 0 16px; font-family: inherit; font-size: 13.5px; font-weight: 700;
+    border-radius: 8px; cursor: pointer; display: inline-flex; align-items: center;
+    justify-content: center; gap: 7px; border: 1px solid transparent;
+  }
+  .btn-excel { background: var(--green); color: #fff; border-color: var(--green); }
+  .btn-excel:hover { background: #0da271; }
+  .btn-dark { background: var(--navy); color: #fff; border-color: var(--navy); }
+  .btn-dark:hover { background: #16304f; }
+  .btn-line { background: var(--surface); border-color: #cbd5e1; color: #334155; }
+  .btn-line:hover { border-color: var(--brand); color: var(--brand); }
+  .btn svg { width: 15px; height: 15px; }
+
+  /* ---------- Section head ---------- */
+  .sec-head { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+  .sec-title { margin: 0; font-size: 16px; font-weight: 700; letter-spacing: -0.02em; }
+  .sec-head .spacer { flex: 1; }
+  .sec-head .acts { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+
+  .order-card { overflow: hidden; }
+  .order-card .card-body { padding: 22px 24px 26px; }
+  .order-head { align-items: center; margin-bottom: 14px; padding-bottom: 13px; border-bottom: 1px solid #94a3b8; }
+  .order-head .sec-title { font-size: 18px; }
+  .base-date { margin-left: 38px; color: #475569; font-size: 13px; }
+  .base-date strong { color: #1e293b; font-weight: 600; }
+  .project-order-summary {
+    display: grid; grid-template-columns: 145px minmax(220px,1fr) 170px minmax(280px,1.35fr);
+    margin-bottom: 16px; border: 1px solid #d7dee8; background: #fff;
+  }
+  .summary-key,.summary-value { min-height: 48px; padding: 13px 15px; display: flex; align-items: center; border-bottom: 1px solid #e2e8f0; }
+  .summary-key { background: #eef2f6; color: #334155; font-weight: 700; }
+  .summary-value { color: #1e293b; }
+  .summary-value.num { justify-content: flex-end; }
+  .summary-last { border-bottom: 0; }
+  .summary-wide { grid-column: span 3; }
+  .order-table-title { margin: 0 0 10px; padding-top: 4px; font-size: 15px; font-weight: 700; }
+
+  /* ---------- Table (프로젝트 현황과 동일 형태 / 가로 스크롤) ---------- */
+  /* 표만 가로 스크롤되도록 감싼 요소들의 최소 폭을 해제합니다. */
+  .main, .content, .card, .card-body, .table-scroll { min-width: 0; }
+  .table-scroll { overflow-x: auto; border: 1px solid #cbd5e1; border-radius: 0; scrollbar-gutter: stable; }
+  /* 발주계약의 전체 항목을 한 행에 유지하고 목록 영역에서 가로로 확인합니다. */
+  table { width: 100%; border-collapse: collapse; min-width: 3600px; }
+  .order-list-table { table-layout: fixed; }
+  .order-list-table th:nth-child(1) { width: 64px; }
+  .order-list-table th:nth-child(2),.order-list-table th:nth-child(3),.order-list-table th:nth-child(4) { width: 110px; }
+  .order-list-table th:nth-child(5),.order-list-table th:nth-child(7),.order-list-table th:nth-child(9) { width: 150px; }
+  .order-list-table th:nth-child(6),.order-list-table th:nth-child(8),.order-list-table th:nth-child(10) { width: 260px; }
+  .order-list-table th:nth-child(11),.order-list-table th:nth-child(12),.order-list-table th:nth-child(13) { width: 145px; }
+  .order-list-table th:nth-child(14) { width: 150px; }
+  .order-list-table th:nth-child(15) { width: 220px; }
+  .order-list-table th:nth-child(16) { width: 180px; }
+  .order-list-table th:nth-child(n+17):nth-child(-n+20) { width: 155px; }
+  .order-list-table th:nth-child(21) { width: 100px; }
+  .order-list-table th:nth-child(n+22) { width: 130px; }
+  caption { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  thead th {
+    background: #eef2f6; color: #27364a; font-size: 12.5px; font-weight: 700;
+    padding: 12px 10px; border: 1px solid #cbd5e1; white-space: nowrap;
+  }
+  tbody td {
+    padding: 13px 10px; text-align: center; font-size: 13px; color: #334155;
+    border: 1px solid #d8dee8; white-space: nowrap;
+  }
+  tbody tr:last-child td { border-bottom: 0; }
+  tbody tr:hover td { background: #fafcff; }
+  .num { text-align: right; font-variant-numeric: tabular-nums; }
+  /* 계약명 : 좌측 정렬 + 링크 표기 */
+  .cell-name { text-align: left; }
+  .doc-link { color: var(--brand); text-decoration: underline; }
+  .doc-link:hover { color: #1552bd; }
+  .empty { color: var(--muted); }
+
+  /* ---------- 발주 제안 : 좌측 목록 / 우측 상세 ---------- */
+  .proposal-layout { display: grid; grid-template-columns: minmax(390px, 0.72fr) minmax(620px, 1.28fr); min-height: 520px; align-items: start; }
+  .proposal-pane { min-width: 0; padding: 20px 22px 24px; overflow-y: visible; }
+  .proposal-pane + .proposal-pane { border-left: 1px solid var(--border); }
+  .proposal-pane:first-child .table-scroll { width: 100%; overflow: visible; max-height: none; }
+  .proposal-table { width: 100%; min-width: 0; table-layout: fixed; }
+  .proposal-table th, .proposal-table td { padding: 11px 8px; white-space: normal; word-break: keep-all; overflow-wrap: anywhere; }
+  .proposal-table th:nth-child(1) { width: 46px; }
+  .proposal-table th:nth-child(2) { width: 92px; }
+  .proposal-table th:nth-child(4) { width: 88px; }
+  .proposal-table th:nth-child(5) { width: 100px; }
+  .proposal-table tbody tr { cursor: pointer; }
+  .proposal-table tbody tr.selected td { background: var(--brand-soft); color: #1e40af; }
+  .proposal-table .cell-name { max-width: 220px; overflow: hidden; text-overflow: ellipsis; }
+  .detail-grid { display: grid; grid-template-columns: 150px minmax(0, 1fr) 150px minmax(0, 1fr); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; background: var(--border); gap: 1px; }
+  .detail-key, .detail-value { min-height: 46px; padding: 11px 13px; display: flex; align-items: center; }
+  .detail-key { background: var(--field); color: #334155; font-size: 13px; font-weight: 600; }
+  .detail-value { background: var(--surface); color: var(--text); font-size: 13.5px; word-break: break-word; }
+  .detail-value.num { justify-content: flex-end; }
+  .detail-span-3 { grid-column: span 3; }
+  .detail-file { color: var(--brand); text-decoration: underline; }
+  .proposal-empty { min-height: 360px; display: grid; place-items: center; color: var(--muted); }
+
+  /* ---------- Toast ---------- */
+  .toast {
+    position: fixed; left: 50%; bottom: 34px; transform: translateX(-50%) translateY(12px);
+    background: #0f172a; color: #fff; font-size: 13.5px; font-weight: 500;
+    padding: 12px 20px; border-radius: 999px; opacity: 0; pointer-events: none;
+    transition: opacity 0.18s ease, transform 0.18s ease; z-index: 80;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  @media (max-width: 1100px) {
+    .sidebar { display: none; }
+    .proposal-layout { grid-template-columns: 1fr; }
+    .proposal-pane + .proposal-pane { border-left: 0; border-top: 1px solid var(--border); }
+    .project-order-summary { grid-template-columns: 135px minmax(180px,1fr); }
+    .summary-wide { grid-column: auto; }
+  }
+</style>
+  <link rel="stylesheet" href="/assets/pms-lnb.css" />
+  <link rel="stylesheet" href="/assets/pms-intake-wizard.css?v=20260917-3" />
+  <link rel="stylesheet" href="/assets/pms-overview-list.css" />
+</head>
+<body>
+<div class="layout">
+
+  <!-- ============ Sidebar ============ -->
+  <aside class="sidebar">
+    <div class="sidebar-head">
+      <a class="logo" href="/pms-project-detail.html">
+        <img src="/images/kepco-es-logo.png" alt="켑코이에스 주식회사 KEPCO ENERGY SOLUTION CO., LTD" />
+      </a>
+      <button class="hamburger" type="button" aria-label="메뉴 접기">
+        <i></i><i></i><i></i>
+      </button>
+    </div>
+
+    <nav class="nav" aria-label="주 메뉴">
+      <ul>
+        <li>
+          <a class="nav-item open" href="/pms-new-project.html">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 21V5a1 1 0 0 1 1-1h7a1 1 0 0 1 1 1v16"/><path d="M13 10h6a1 1 0 0 1 1 1v10"/><path d="M7 8h3M7 12h3M7 16h3M16 14h1M16 18h1"/></svg>
+            사업접수 <span class="chev up" aria-hidden="true"></span>
+          </a>
+          <ul class="subnav">
+            <li><a class="subnav-item" href="/pms-new-project.html"><span class="dot" aria-hidden="true"></span>신규 프로젝트 등록</a></li>
+            <li><a class="subnav-item" href="/pms-promotion-status.html"><span class="dot" aria-hidden="true"></span>추진단계 프로젝트 현황</a></li>
+          </ul>
+        </li>
+        <li>
+          <a class="nav-item active" href="#" aria-current="page">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h6a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Z"/><path d="M15 11v4"/></svg>
+            프로젝트 관리 <span class="chev up" aria-hidden="true"></span>
+          </a>
+          <ul class="subnav">
+            <li><a class="subnav-item active" href="/pms-project-status.html"><span class="dot" aria-hidden="true"></span>프로젝트 현황</a></li>
+          </ul>
+        </li>
+        <li>
+          <a class="nav-item" href="/pms-contract-status.html">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h9l5 5v11H5z"/><path d="M9 13h6M9 17h4"/></svg>
+            계약관리 <span class="chev" aria-hidden="true"></span>
+          </a>
+        </li>
+        <li>
+          <a class="nav-item" href="/pms-fund-repayment.html">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8Z"/><path d="M7 12h4"/></svg>
+            자금관리 <span class="chev" aria-hidden="true"></span>
+          </a>
+        </li>
+        <li>
+          <a class="nav-item" href="#">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 20V10M12 20V4M19 20v-7"/></svg>
+            통계(분석) <span class="chev" aria-hidden="true"></span>
+          </a>
+        </li>
+        <li>
+          <a class="nav-item" href="#">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s7-6.3 7-11a7 7 0 1 0-14 0c0 4.7 7 11 7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg>
+            출장관리 <span class="chev" aria-hidden="true"></span>
+          </a>
+        </li>
+        <li>
+          <a class="nav-item" href="#">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M4.5 20a7.5 7.5 0 0 1 15 0"/></svg>
+            마이페이지 <span class="chev" aria-hidden="true"></span>
+          </a>
+        </li>
+        <li>
+          <a class="nav-item" href="#">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-2.9 1.2 2 2 0 1 1-4 0 1.7 1.7 0 0 0-2.9-1.2l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1A1.7 1.7 0 0 0 3 15a2 2 0 1 1 0-4 1.7 1.7 0 0 0 1.5-2.7l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1A1.7 1.7 0 0 0 10 4.3a2 2 0 1 1 4 0 1.7 1.7 0 0 0 2.7 1.2l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1A1.7 1.7 0 0 0 21 11a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 0Z"/></svg>
+            공통관리 <span class="chev" aria-hidden="true"></span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <div class="sidebar-foot">
+      <a class="side-btn" href="#">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 10h6M7 14h4"/></svg>
+        사업관리시스템(PMS)
+      </a>
+      <a class="side-btn" href="#">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="M6 3h9l4 4v14H6z"/><path d="M9 12h6M9 16h6"/></svg>
+        전자입찰시스템(SRM)
+      </a>
+      <a class="side-btn primary" href="#">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 17v.01"/><path d="M12 13.5a2.5 2.5 0 1 0-2.5-3"/></svg>
+        온라인 매뉴얼
+      </a>
+    </div>
+  </aside>
+
+  <!-- ============ Main ============ -->
+  <div class="main">
+    <header class="topbar">
+      <h1>사업관리시스템</h1>
+      <span class="badge-pms">PMS</span>
+
+      <div class="topbar-right">
+        <div class="seg" role="group" aria-label="권한 선택">
+          <span class="seg-label">권한</span>
+          <button class="seg-btn on" type="button">그룹#1</button>
+          <button class="seg-btn" type="button">그룹#3</button>
+          <button class="seg-btn" type="button">그룹#4</button>
+        </div>
+        <p class="user"><b>이희성 부장</b> <small>[시스템관리자]</small></p>
+        <a class="logout" href="#">로그아웃</a>
+      </div>
+    </header>
+
+    <main class="content">
+      <div class="page-head">
+        <h2>프로젝트 상세</h2>
+        <nav class="crumb" aria-label="현재 위치">
+          <a href="#">HOME</a><span class="sep" aria-hidden="true">›</span>
+          <a href="#">프로젝트 관리</a><span class="sep" aria-hidden="true">›</span>
+          <a href="/pms-project-status.html">프로젝트 현황</a><span class="sep" aria-hidden="true">›</span>
+          <span class="now">발주</span>
+        </nav>
+      </div>
+
+      <!-- Tabs -->
+      <section class="card">
+        <div class="tabbar">
+          <div class="tabs" role="tablist" aria-label="프로젝트 상세 탭">
+            <a class="tab" href="/pms-project-detail.html" role="tab" aria-selected="false">HOME</a>
+            <a class="tab" href="/pms-project-promotion.html" role="tab" aria-selected="false">추진</a>
+            <a class="tab" href="/pms-project-contract.html" role="tab" aria-selected="false">계약</a>
+            <a class="tab" href="/pms-project-investment.html" role="tab" aria-selected="false">투자</a>
+            <a class="tab" href="/pms-project-investment-epc.html" role="tab" aria-selected="false">투자(EPC)</a>
+            <a class="tab" href="/pms-project-repayment.html" role="tab" aria-selected="false">상환</a>
+            <a class="tab on" id="orderTab" href="/pms-project-order.html" role="tab" aria-selected="true">발주</a>
+          </div>
+          <div class="tab-right" data-project-round><span>차수</span><strong class="project-round-current">1차</strong></div>
+        </div>
+      </section>
+
+      <!-- ============ 프로젝트 발주 현황 ============ -->
+      <section class="card order-card" aria-labelledby="orderTitle">
+        <div class="card-body">
+          <div class="sec-head order-head">
+            <h3 class="sec-title" id="orderTitle">프로젝트 발주계약</h3>
+            <span class="base-date">기준일 : <strong>2026.10.23</strong></span>
+            <span class="spacer"></span>
+            <button class="btn btn-excel" type="button" data-act="excel">다운로드(Excel)</button>
+            <button class="btn btn-dark" type="button" data-act="new">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+              발주 계약 추가
+            </button>
+          </div>
+
+          <div class="pms-overview" aria-label="프로젝트 발주계약 개요">
+            <div class="pms-overview__item"><div class="pms-overview__label">프로젝트 번호</div><div class="pms-overview__value">2026_06_12</div></div>
+            <div class="pms-overview__item"><div class="pms-overview__label">사업명</div><div class="pms-overview__value">천안 (주)선영 LED 에너지효율화사업</div></div>
+            <div class="pms-overview__item"><div class="pms-overview__label">총 사업금액(VAT별도/원)</div><div class="pms-overview__value pms-overview__value--number">220,000,000</div></div>
+            <div class="pms-overview__item"><div class="pms-overview__label">투자금액(VAT별도/원)</div><div class="pms-overview__value pms-overview__value--number">180,000,000</div></div>
+            <div class="pms-overview__item"><div class="pms-overview__label">총 지급액(원)</div><div class="pms-overview__value pms-overview__value--number">100,000,000</div></div>
+            <div class="pms-overview__item"><div class="pms-overview__label">상태</div><div class="pms-overview__value"><span class="pms-status-badge">발주 진행 중</span></div></div>
+          </div>
+
+          <h4 class="order-table-title pms-list-section-title">발주계약 목록</h4>
+
+          <!-- 전체 데이터 열을 줄바꿈 없이 동일한 한 행으로 표시합니다. -->
+          <div class="table-scroll pms-list-scroll" tabindex="0" role="region" aria-label="프로젝트 발주 현황 표 (가로 스크롤)">
+            <table class="order-list-table pms-list" aria-labelledby="orderTitle">
+              <caption>발주계약 목록 : 프로젝트, 수주계약, 발주계약 및 보증 정보</caption>
+              <thead>
+                <tr class="pms-list__columns">
+                  <th scope="col">순번</th>
+                  <th scope="col">계약 구분</th>
+                  <th scope="col">발주 형태</th>
+                  <th scope="col">발주 구분</th>
+                  <th scope="col">프로젝트 번호</th>
+                  <th scope="col">프로젝트명</th>
+                  <th scope="col">(수주)계약번호</th>
+                  <th scope="col">(수주)계약명</th>
+                  <th scope="col">발주계약번호</th>
+                  <th scope="col">발주계약명</th>
+                  <th scope="col">계약체결일</th>
+                  <th scope="col">거래처</th>
+                  <th scope="col">계약방법</th>
+                  <th scope="col">계약금액</th>
+                  <th scope="col">납기일/공사기간</th>
+                  <th scope="col">거래처 필요면허</th>
+                  <th scope="col">선급이행 보증금율(%)</th>
+                  <th scope="col">계약이행 보증금율(%)</th>
+                  <th scope="col">하자이행 보증금율(%)</th>
+                  <th scope="col">하자이행 보증기간(개월)</th>
+                  <th scope="col">계약서류</th>
+                  <th scope="col">등록자</th>
+                  <th scope="col">등록일</th>
+                  <th scope="col">수정자</th>
+                  <th scope="col">수정일</th>
+                </tr>
+              </thead>
+              <tbody id="orderBody"></tbody>
+            </table>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ============ 발주 제안 : 목록 / 상세 ============ -->
+      <section class="card" id="proposalSection" aria-label="발주 제안" hidden>
+        <div class="proposal-layout">
+          <section class="proposal-pane" aria-labelledby="proposalListTitle">
+            <div class="sec-head">
+              <h3 class="sec-title" id="proposalListTitle">발주 계약 목록</h3>
+            </div>
+            <div class="table-scroll">
+              <table class="proposal-table" aria-labelledby="proposalListTitle">
+                <caption>발주 계약 목록</caption>
+                <thead><tr><th scope="col">순번</th><th scope="col">계약번호</th><th scope="col">계약명</th><th scope="col">계약체결일</th><th scope="col">계약대상자</th></tr></thead>
+                <tbody id="proposalBody"></tbody>
+              </table>
+            </div>
+          </section>
+          <section class="proposal-pane" aria-labelledby="proposalDetailTitle">
+            <div class="sec-head">
+              <h3 class="sec-title" id="proposalDetailTitle">발주 계약 상세</h3>
+            </div>
+            <div id="proposalDetail"></div>
+          </section>
+        </div>
+      </section>
+    </main>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function () {
+  "use strict";
+
+  /* ---------- 공통 유틸 ---------- */
+  function won(value) {
+    return Number(value).toLocaleString("ko-KR");
+  }
+
+  var toastTimer = null;
+  function showToast(message) {
+    var toast = document.getElementById("toast");
+    toast.textContent = message;
+    toast.classList.add("show");
+    window.clearTimeout(toastTimer);
+    toastTimer = window.setTimeout(function () {
+      toast.classList.remove("show");
+    }, 2200);
+  }
+
+  /* ---------- 발주 현황 데이터 ---------- */
+  var orders = [
+    {
+      no: "58247-3916-84-7K-P",
+      name: "서초동 1601-9 오피스텔 가설울타리 설치·해체 공사",
+      contractType: "공사", orderType: "연계 발주", orderChannel: "PMS",
+      projectNo: "2026_06_12", projectName: "천안 (주)선영 LED 에너지효율화사업",
+      salesNo: "2026_1023_123K", salesName: "전기공사중계조합 본관시설 LED 교체공사",
+      signedAt: "2026.10.10",
+      partner: "경진엔스씨㈜",
+      method: "수의계약", license: "기타", documents: "3",
+      creator: "홍길동", createdAt: "2026.09.25", editor: "-", editedAt: "-",
+      amount: 13310000,
+      period: "2026.10.10 ~ 2026.12.10",
+      advanceRate: 30,
+      performRate: 30,
+      defectRate: 30,
+      defectTerm: "24",
+    },
+    {
+      no: "93618-2547-39-2M-R",
+      name: "서초동 1601-9 오피스텔 안전 계획서 및 인접건물 사전조사 보고서 작성 용역",
+      contractType: "용역", orderType: "단독 발주", orderChannel: "SRM",
+      projectNo: "2026_06_12", projectName: "천안 (주)선영 LED 에너지효율화사업",
+      salesNo: "-", salesName: "-",
+      signedAt: "2026.11.10",
+      partner: "한국종합안전(주)",
+      method: "수의계약", license: "전문건설업", documents: "3",
+      creator: "SRM", createdAt: "2026.04.25", editor: "SRM", editedAt: "2026.04.27",
+      amount: 13310000,
+      period: "2026.10.10 ~ 2026.12.10",
+      advanceRate: 10,
+      performRate: 1,
+      defectRate: 1,
+      defectTerm: "24",
+    },
+  ];
+
+  var proposals = [
+    {
+      no: "58247-3916-84-7K-P", name: "서초동 1601-9 오피스텔 제1관측 1B - 13F 기초 공사",
+      proposedAt: "2026.12.15", partner: "(주)이에이에테크놀로지", category: "공사",
+      method: "수의계약", basis: "", qualification: "구조물해체비계공사업 및 석면해체·제거업 자격면허 보유 업체",
+      selection: "경쟁입찰(일반) - 제한적 최저가 입찰", license: "전문건설업",
+      licenseDetail: "구조물해체비계공사업, 석면해체·제거업 자격면허",
+      supply: 73000000, vat: 7300000, total: 80300000, period: "2025.12.30 ~ 2026.01.30",
+      defectTerm: "", advanceRate: "10", contractRate: "10", defectRate: "10",
+      advanceFile: "(주)이에이에테크놀로지_선급이행 보증보험.pdf",
+      contractFile: "(주)이에이에테크놀로지_계약이행 보증보험.pdf",
+      defectFile: "(주)이에이에테크놀로지_하자이행 보증보험.pdf",
+      contractFileName: "(주)이에이에테크놀로지_계약서.pdf", note: ""
+    },
+    {
+      no: "93618-2547-39-2M-R", name: "서초동 1601-9 오피스텔 안전 계획서 및 인접건물 사전조사 보고서 작성 용역",
+      proposedAt: "2026.11.10", partner: "한국종합안전(주)", category: "용역",
+      method: "수의계약", basis: "", qualification: "건설안전 기술용역 수행 가능 업체",
+      selection: "경쟁입찰(일반) - 제한적 최저가 입찰", license: "전문건설업", licenseDetail: "건설안전 기술용역",
+      supply: 12000000, vat: 1200000, total: 13200000, period: "2026.11.10 ~ 2027.01.15",
+      defectTerm: "", advanceRate: "10", contractRate: "10", defectRate: "10",
+      advanceFile: "한국종합안전_선급이행 보증보험.pdf", contractFile: "한국종합안전_계약이행 보증보험.pdf",
+      defectFile: "한국종합안전_하자이행 보증보험.pdf", contractFileName: "한국종합안전_계약서.pdf", note: ""
+    }
+  ];
+  var selectedProposal = 0;
+
+  /* ---------- 표 렌더링 ---------- */
+  function renderOrders() {
+    var body = document.getElementById("orderBody");
+    body.innerHTML = "";
+
+    if (!orders.length) {
+      var empty = document.createElement("tr");
+      empty.innerHTML = '<td class="empty" colspan="25">발주 내역이 없습니다.</td>';
+      body.appendChild(empty);
+      return;
+    }
+
+    orders.forEach(function (row, i) {
+      var tr = document.createElement("tr");
+      var projectHome = "/pms-project-detail.html?projectNo=" + encodeURIComponent(row.projectNo);
+      tr.innerHTML =
+        "<td>" + (i + 1) + "</td>" +
+        "<td>" + row.contractType + "</td>" +
+        "<td>" + row.orderType + "</td>" +
+        "<td>" + row.orderChannel + "</td>" +
+        '<td><a class="doc-link" href="' + projectHome + '">' + row.projectNo + "</a></td>" +
+        '<td class="cell-name"><a class="doc-link" href="' + projectHome + '">' + row.projectName + "</a></td>" +
+        "<td>" + row.salesNo + "</td>" +
+        '<td class="cell-name">' + row.salesName + "</td>" +
+        '<td><a class="doc-link" href="/pms-order-detail.html?no=' + encodeURIComponent(row.no) + '">' + row.no + "</a></td>" +
+        '<td class="cell-name"><a class="doc-link" href="/pms-order-detail.html?no=' +
+          encodeURIComponent(row.no) + '">' + row.name + "</a></td>" +
+        "<td>" + row.signedAt + "</td>" +
+        "<td>" + row.partner + "</td>" +
+        "<td>" + row.method + "</td>" +
+        '<td class="num">' + won(row.amount) + "</td>" +
+        "<td>" + row.period + "</td>" +
+        "<td>" + row.license + "</td>" +
+        "<td>" + row.advanceRate + "</td>" +
+        "<td>" + row.performRate + "</td>" +
+        "<td>" + row.defectRate + "</td>" +
+        "<td>" + row.defectTerm + "</td>" +
+        "<td>" + row.documents + "</td>" +
+        "<td>" + row.creator + "</td>" +
+        "<td>" + row.createdAt + "</td>" +
+        "<td>" + row.editor + "</td>" +
+        "<td>" + row.editedAt + "</td>";
+      body.appendChild(tr);
+    });
+  }
+
+  function detailRow(label, value, wide, numeric) {
+    return '<div class="detail-key">' + label + '</div><div class="detail-value' +
+      (wide ? ' detail-span-3' : '') + (numeric ? ' num' : '') + '">' + value + '</div>';
+  }
+
+  function renderProposalDetail() {
+    var box = document.getElementById("proposalDetail");
+    var row = proposals[selectedProposal];
+    if (!row) { box.innerHTML = '<div class="proposal-empty">선택된 발주 제안이 없습니다.</div>'; return; }
+    box.innerHTML = '<div class="detail-grid">' +
+      detailRow("계약번호", row.no) + detailRow("계약구분", row.category) +
+      detailRow("계약명", row.name, true) + detailRow("계약방법", row.method) + detailRow("계약체결일", row.proposedAt) +
+      detailRow("계약 대상자", row.partner) + detailRow("계약 근거(사유)", row.basis || "") +
+      detailRow("입찰 참가자격", row.qualification) + detailRow("낙찰자 결정방법", row.selection) +
+      detailRow("계약 대상자 필요면허", row.license, true) + detailRow("필요면허 상세", row.licenseDetail, true) +
+      detailRow("공급가액(원)", won(row.supply), false, true) + detailRow("부가세(원)", won(row.vat), false, true) +
+      detailRow("합계(원)", won(row.total), true, true) + detailRow("공사기간", row.period) + detailRow("하자이행 보증기간(개월)", row.defectTerm) +
+      detailRow("선급이행 보증금율(%)", row.advanceRate) + detailRow("선급이행 보증보험", '<span class="detail-file">' + row.advanceFile + '</span>') +
+      detailRow("계약이행 보증금율(%)", row.contractRate) + detailRow("계약이행 보증보험", '<span class="detail-file">' + row.contractFile + '</span>') +
+      detailRow("하자이행 보증보험율(%)", row.defectRate) + detailRow("하자이행 보증보험", '<span class="detail-file">' + row.defectFile + '</span>') +
+      detailRow("계약서", '<span class="detail-file">' + row.contractFileName + '</span>', true) +
+      detailRow("계약 참고사항(요청서 외)", row.note, true) + '</div>';
+  }
+
+  function renderProposals() {
+    var body = document.getElementById("proposalBody");
+    body.innerHTML = "";
+    proposals.forEach(function (row, i) {
+      var tr = document.createElement("tr");
+      tr.classList.toggle("selected", i === selectedProposal);
+      tr.setAttribute("tabindex", "0");
+      tr.setAttribute("data-proposal", i);
+      tr.innerHTML = '<td>' + (i + 1) + '</td><td>' + row.no + '</td><td class="cell-name">' + row.name +
+        '</td><td>' + row.proposedAt + '</td><td>' + row.partner + '</td>';
+      body.appendChild(tr);
+    });
+    renderProposalDetail();
+  }
+
+  document.getElementById("proposalBody").addEventListener("click", function (event) {
+    var row = event.target.closest("[data-proposal]");
+    if (!row) return;
+    selectedProposal = Number(row.getAttribute("data-proposal"));
+    renderProposals();
+  });
+
+  /* ---------- 이벤트 ---------- */
+  /* 계약명은 발주 상세 페이지로 이동하는 링크입니다. (기본 동작 유지) */
+  document.querySelector('[data-act="new"]').addEventListener("click", function () {
+    window.location.assign("/pms-order-new.html");
+  });
+
+  document.querySelector('[data-act="excel"]').addEventListener("click", function () {
+    var headers = Array.from(document.querySelectorAll(".order-list-table thead th")).map(function (cell) { return cell.textContent.trim(); });
+    var lines = orders.map(function (row, index) {
+      return [index + 1, row.contractType, row.orderType, row.orderChannel, row.projectNo, row.projectName,
+        row.salesNo, row.salesName, row.no, row.name, row.signedAt, row.partner, row.method, row.amount,
+        row.period, row.license, row.advanceRate, row.performRate, row.defectRate, row.defectTerm,
+        row.documents, row.creator, row.createdAt, row.editor, row.editedAt];
+    });
+    var csv = "\ufeff" + [headers].concat(lines).map(function (line) {
+      return line.map(function (value) { return '"' + String(value).replaceAll('"', '""') + '"'; }).join(",");
+    }).join("\n");
+    var url = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" }));
+    var link = document.createElement("a");
+    link.href = url; link.download = "프로젝트_발주계약_20261023.csv"; link.click();
+    URL.revokeObjectURL(url);
+    showToast("발주계약 목록을 다운로드했습니다.");
+  });
+
+  var proposalView = new URLSearchParams(window.location.search).get("view") === "proposal";
+  document.querySelector('[aria-labelledby="orderTitle"]').hidden = proposalView;
+  document.getElementById("proposalSection").hidden = !proposalView;
+  document.getElementById("orderTab").classList.toggle("on", !proposalView);
+  document.getElementById("orderTab").setAttribute("aria-selected", proposalView ? "false" : "true");
+  if (proposalView) document.querySelector(".crumb .now").textContent = "발주 제안";
+
+  renderOrders();
+  renderProposals();
+})();
+</script>
+  <script src="/assets/pms-lnb.js"></script>
+  <script src="/assets/pms-intake-wizard.js?v=20260921-2"></script>
+</body>
+</html>
