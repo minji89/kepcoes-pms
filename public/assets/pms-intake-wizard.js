@@ -52,6 +52,10 @@
     return (text || "").replace(/\s+/g, "");
   }
 
+  function usesContractType(form) {
+    return form === "esco" || form === "etc";
+  }
+
   /* ---------- 마크업 생성 ---------- */
   function arrowIcon(direction) {
     var points = direction === "prev" ? "12,3 12,15 4,9" : "6,3 14,9 6,15";
@@ -157,8 +161,11 @@
     next.disabled = !state.picked[STEPS[state.index].key];
 
     /* 사업 접수 버튼은 3개 STEP 이 모두 선택된 마지막 STEP 에서만 노출합니다. */
+    var hasContractTypeStep = usesContractType(state.picked.form);
     var isEpc = state.picked.form === "epc";
-    var complete = Boolean(state.picked.form && state.picked.review && (isEpc || state.picked.type));
+    var complete = Boolean(
+      state.picked.form && state.picked.review && (!hasContractTypeStep || state.picked.type)
+    );
     overlay.querySelector(".iw-panel").classList.toggle("iw-confirm-ready", state.index === LAST && complete);
     var summary = overlay.querySelector(".iw-summary");
     var typeSummary = summary.querySelector('[data-summary="type"]').parentElement;
@@ -200,18 +207,18 @@
   }
 
   function previousIndex() {
-    return state.index === LAST && state.picked.form === "epc" ? 0 : state.index - 1;
+    return state.index === LAST && !usesContractType(state.picked.form) ? 0 : state.index - 1;
   }
 
   function nextIndex() {
-    return state.index === 0 && state.picked.form === "epc" ? LAST : state.index + 1;
+    return state.index === 0 && !usesContractType(state.picked.form) ? LAST : state.index + 1;
   }
 
   function pick(stepIndex, value) {
     var step = STEPS[stepIndex];
     state.picked[step.key] = value;
 
-    if (step.key === "form" && value === "epc") {
+    if (step.key === "form" && !usesContractType(value)) {
       delete state.picked.type;
       var typeSection = overlay.querySelector('.iw-step[data-step="2"]');
       typeSection.querySelectorAll(".iw-option").forEach(function (button) {
@@ -226,7 +233,7 @@
     });
 
     if (stepIndex < LAST) {
-      goTo(stepIndex === 0 && value === "epc" ? LAST : stepIndex + 1);
+      goTo(stepIndex === 0 && !usesContractType(value) ? LAST : stepIndex + 1);
     } else {
       render();
     }
