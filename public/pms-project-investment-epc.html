@@ -112,7 +112,7 @@ document.getElementById("resetBtn").addEventListener("click",function(){document
 document.querySelectorAll("[data-period]").forEach(function(button){button.addEventListener("click",function(){var end=new Date(),start=new Date(end);if(button.dataset.period==="day")start.setDate(end.getDate()-1);else start.setMonth(end.getMonth()-Number(button.dataset.period));document.getElementById("startDate").value=start.toISOString().slice(0,10);document.getElementById("endDate").value=end.toISOString().slice(0,10)})});
 document.getElementById("excelBtn").addEventListener("click",downloadExcel);document.getElementById("detailExcelBtn").addEventListener("click",downloadExcel);document.querySelectorAll(".seg-btn").forEach(function(btn){btn.addEventListener("click",function(){document.querySelectorAll(".seg-btn").forEach(function(item){item.classList.remove("on")});btn.classList.add("on")})});renderEpcs();renderPayments();
 </script>
-<script src="/assets/pms-lnb.js"></script>
+<script src="/assets/pms-lnb.js?v=20260930-2"></script>
 <script src="/assets/pms-project-round.js"></script>
 </body>
 </html>

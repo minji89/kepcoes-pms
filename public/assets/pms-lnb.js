@@ -191,6 +191,50 @@
     }, true);
   }
 
+  function getCurrentProjectContractForm() {
+    try {
+      var raw = sessionStorage.getItem("pms.newProject");
+      var savedProject = raw ? JSON.parse(raw) : null;
+      if (savedProject && savedProject.contractForm) return savedProject.contractForm;
+    } catch (err) {}
+
+    var contractFormField = document.querySelector("#rcpForm, #contractFormValue");
+    return contractFormField ? contractFormField.textContent.trim() : "";
+  }
+
+  function syncProjectInvestmentTab() {
+    var normalPath = "/pms-project-investment.html";
+    var epcPath = "/pms-project-investment-epc.html";
+    var projectTabs = document.querySelector(".tabs");
+    if (!projectTabs) return;
+
+    var contractForm = getCurrentProjectContractForm();
+    if (!contractForm) return;
+
+    var isEpc = /^EPC/i.test(contractForm);
+    var activePath = isEpc ? epcPath : normalPath;
+    var hiddenPath = isEpc ? normalPath : epcPath;
+    var pagePath = window.location.pathname;
+
+    if (pagePath === hiddenPath) {
+      window.location.replace(activePath + window.location.search + window.location.hash);
+      return;
+    }
+
+    projectTabs.querySelectorAll('a[href^="' + hiddenPath + '"]').forEach(function (tab) {
+      tab.remove();
+    });
+
+    projectTabs.querySelectorAll('a[href^="' + activePath + '"]').forEach(function (tab) {
+      tab.textContent = "\uD22C\uC790";
+    });
+
+    document.querySelectorAll('.card-more[href^="' + hiddenPath + '"]').forEach(function (link) {
+      var url = new URL(link.href, window.location.origin);
+      link.href = activePath + url.search + url.hash;
+    });
+  }
+
   /* nav-item 에서 아이콘/화살표를 제외한 라벨만 읽습니다. */
   function labelOf(navItem) {
     var clone = navItem.cloneNode(true);
@@ -850,6 +894,7 @@
   function initLnb() {
     ensureIntakeWizardAssets();
     ensureExplicitModalDismissal();
+    syncProjectInvestmentTab();
     ensureGlobalLogout();
     ensureGlobalProjectSearch();
 
