@@ -7,8 +7,8 @@ export const metadata: Metadata = {
   description: 'Created with v0',
   generator: 'v0.app',
   icons: {
-    icon: '/images/kepco-es-logo.png',
-    apple: '/images/kepco-es-logo.png',
+    icon: '/images/kepco-es-favicon.png',
+    apple: '/images/kepco-es-favicon.png',
   },
 }
 
