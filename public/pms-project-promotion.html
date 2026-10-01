@@ -2253,6 +2253,15 @@
 
     setText("rcpName", data.name);
     setText("rcpForm", data.contractForm);
+    if (new URLSearchParams(window.location.search).get("projectNo") === "2026-05001") {
+      setText("rcpForm", "EPC 계약");
+      document.querySelectorAll('.tabs a[href^="/pms-project-investment"]').forEach(function (tab) {
+        if (tab.textContent.indexOf("투자") !== -1) {
+          tab.href = "https://02kepcoes.vercel.app/pms-project-investment-epc.html";
+          tab.textContent = "투자";
+        }
+      });
+    }
     setText("rcpReview", data.reviewTarget);
     var isEpcContract = /^EPC/i.test(data.contractForm || "");
     var contractTypeCell = document.getElementById("rcpType");

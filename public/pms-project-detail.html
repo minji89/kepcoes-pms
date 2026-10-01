@@ -827,6 +827,15 @@
       setText("rcpForm", "EPC계약");
       setText("rcpChannel", "EPC사");
       if (contractTypeCell) contractTypeCell.textContent = "";
+      document.querySelectorAll('.tabs a[href^="/pms-project-investment"]').forEach(function (tab) {
+        if (tab.textContent.indexOf("투자") !== -1) {
+          tab.href = "https://02kepcoes.vercel.app/pms-project-investment-epc.html";
+          tab.textContent = "투자";
+        }
+      });
+      document.querySelectorAll('.tabs a[href="/pms-project-promotion.html"]').forEach(function (tab) {
+        tab.href = "/pms-project-promotion.html?projectNo=2026-05001";
+      });
     } else if (projectNo === "2026-05002") {
       setText("rcpForm", "ESCO계약");
       setText("rcpChannel", "온라인");
