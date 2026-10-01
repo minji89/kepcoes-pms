@@ -840,6 +840,12 @@
       setText("rcpForm", "ESCO계약");
       setText("rcpChannel", "온라인");
       if (contractTypeCell) contractTypeCell.textContent = data.contractType || "수익사업";
+      document.querySelectorAll('.tabs a[href^="/pms-project-investment"]').forEach(function (tab) {
+        if (tab.textContent.indexOf("투자") !== -1) {
+          tab.href = "https://02kepcoes.vercel.app/pms-project-investment.html";
+          tab.textContent = "투자";
+        }
+      });
     }
   })();
 
