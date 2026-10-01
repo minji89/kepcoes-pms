@@ -551,8 +551,6 @@
             <div class="acts">
               <button class="btn btn-dark" type="button" data-act="notes">중도 상환</button>
               <button class="btn btn-dark" type="button" data-act="add">스케줄 수정 +</button>
-              <button class="btn btn-dark" type="button" data-act="upload" hidden>상환 스케줄 업로드 +</button>
-              <input class="sr-only" type="file" id="scheduleFile" accept=".xlsx,.xls,.csv" />
             </div>
           </div>
 
@@ -635,7 +633,6 @@
       <div class="schedule-edit-wrap"><table class="schedule-edit-table"><colgroup><col style="width:54px"><col style="width:118px"><col style="width:128px"><col style="width:122px"><col style="width:108px"><col style="width:108px"><col style="width:132px"><col style="width:220px"><col style="width:92px"></colgroup><thead><tr><th rowspan="2">회차</th><th colspan="6">예정 스케줄</th><th rowspan="2">비고(특이사항)</th><th rowspan="2"><span class="sr-only">수정</span></th></tr><tr><th>상환예정일</th><th>세금계산서발행일</th><th>상환액(원)</th><th>부가세(원)</th><th>지연이자(원)</th><th>회차별 상환총액(원)</th></tr></thead><tbody id="scheduleEditBody"></tbody><tfoot id="scheduleEditTotal"></tfoot></table></div>
     </div>
     <div class="modal-foot">
-      <button class="btn btn-dark" type="button" data-act="schedule-modal-upload">스케줄 업로드</button>
       <button class="btn btn-line" type="button" data-close>취소</button>
     </div>
   </div>
@@ -899,7 +896,7 @@
     showToast((index + 1) + "회차 변경 내용을 모달에 반영했습니다.");
   });
 
-  document.querySelector('[data-act="schedule-modal-upload"]').addEventListener("click", function () {
+  document.querySelector('[data-act="schedule-modal-upload"]') && document.querySelector('[data-act="schedule-modal-upload"]').addEventListener("click", function () {
     if (!window.confirm("변경된 스케줄을 업로드 하시겠습니까?")) return;
     schedule = (scheduleDraft || schedule).map(function (row) { return Object.assign({}, row); });
     scheduleDraft = null;
@@ -911,14 +908,16 @@
 
   /* ---------- 상환 스케줄 업로드 ---------- */
   var fileInput = document.getElementById("scheduleFile");
-  document.querySelector('[data-act="upload"]').addEventListener("click", function () {
-    fileInput.click();
-  });
-  fileInput.addEventListener("change", function () {
-    if (!fileInput.files.length) return;
-    showToast(fileInput.files[0].name + " 업로드가 요청되었습니다.");
-    fileInput.value = "";
-  });
+  if (fileInput) {
+    document.querySelector('[data-act="upload"]').addEventListener("click", function () {
+      fileInput.click();
+    });
+    fileInput.addEventListener("change", function () {
+      if (!fileInput.files.length) return;
+      showToast(fileInput.files[0].name + " 업로드가 요청되었습니다.");
+      fileInput.value = "";
+    });
+  }
 
   /* ---------- 특이사항 관리 ---------- */
   var repaymentNote = {
