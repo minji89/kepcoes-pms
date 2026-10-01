@@ -68,5 +68,21 @@
   form.addEventListener("submit",function(event){event.preventDefault();error.textContent="";if(!userId.value.trim()){error.textContent="아이디를 입력해 주세요.";userId.focus();return}if(!password.value){error.textContent="비밀번호를 입력해 주세요.";password.focus();return}if(remember.checked)localStorage.setItem("pmsSavedId",userId.value.trim());else localStorage.removeItem("pmsSavedId");window.top.location.href="/pms-dashboard.html"});
 })();
 </script>
+<script>
+(function(){
+  var form=document.getElementById("loginForm"),userId=document.getElementById("userId"),error=document.getElementById("loginError");
+  form.addEventListener("submit",function(event){
+    var enteredId=userId.value.trim();
+    if(enteredId!=="1"&&enteredId!=="2"){
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      error.textContent="아이디는 1 또는 2를 입력해 주세요.";
+      userId.focus();
+      return;
+    }
+    localStorage.setItem("pmsUserRole",enteredId==="2"?"admin":"user");
+  },true);
+})();
+</script>
 </body>
 </html>
