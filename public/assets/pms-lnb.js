@@ -1263,7 +1263,7 @@
     if (localStorage.getItem("pmsUserRole") === "user") {
       Array.prototype.forEach.call(nav.children, function (li) {
         var item = li.querySelector(":scope > .nav-item");
-        if (item && labelOf(item) === "공통 관리") li.remove();
+        if (item && labelOf(item) === "\uACF5\uD1B5 \uAD00\uB9AC") li.remove();
       });
     }
     var srmLink = document.querySelector('.lnb-utility-link[href="https://srm.kepco.net/"]');
