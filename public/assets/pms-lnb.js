@@ -245,6 +245,17 @@
         tab.href = "https://02kepcoes.vercel.app/pms-project-investment-epc.html";
         tab.textContent = "투자";
       });
+      var epcInvestmentTab = projectTabs.querySelector('a[href^="' + epcPath + '"]');
+      if (!epcInvestmentTab) {
+        epcInvestmentTab = document.createElement("a");
+        epcInvestmentTab.className = "tab";
+        epcInvestmentTab.setAttribute("role", "tab");
+        epcInvestmentTab.href = "https://02kepcoes.vercel.app/pms-project-investment-epc.html";
+        epcInvestmentTab.textContent = "투자";
+        var epcRepaymentTab = projectTabs.querySelector('a[href="/pms-project-repayment.html"]');
+        if (epcRepaymentTab) projectTabs.insertBefore(epcInvestmentTab, epcRepaymentTab);
+        else projectTabs.appendChild(epcInvestmentTab);
+      }
     }
 
     if ((pagePath === "/pms-project-detail.html" || pagePath === "/pms-project-detail-esco.html" || pagePath === "/pms-project-promotion.html") && projectNo === "2026-05002") {
