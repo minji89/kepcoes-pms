@@ -297,6 +297,14 @@
       investmentTabs.slice(1).forEach(function (tab) { tab.remove(); });
     }
 
+    if (pagePath === "/pms-project-promotion.html" && projectNo === "2026-05002") {
+      var escoInvestmentTabs = Array.prototype.filter.call(projectTabs.querySelectorAll("a.tab"), function (tab) {
+        return tab.textContent.trim() === "투자";
+      });
+      escoInvestmentTabs.slice(1).forEach(function (tab) { tab.remove(); });
+      if (escoInvestmentTabs[0]) escoInvestmentTabs[0].href = "https://02kepcoes.vercel.app/pms-project-investment.html";
+    }
+
     document.querySelectorAll('.card-more[href^="' + hiddenPath + '"]').forEach(function (link) {
       var url = new URL(link.href, window.location.origin);
       link.href = activePath + url.search + url.hash;
