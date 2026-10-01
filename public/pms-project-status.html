@@ -793,9 +793,9 @@
         var link = row.children[2].querySelector("a");
         link.textContent = project.name;
         link.href = project.number === "2026-05001"
-          ? "https://02kepcoes.vercel.app/pms-project-detail-epc.html"
+          ? "/pms-project-detail-epc.html?projectNo=2026-05001"
           : project.number === "2026-05002"
-            ? "/pms-project-detail-esco.html"
+            ? "/pms-project-detail-esco.html?projectNo=2026-05002"
             : "/pms-project-detail.html?projectNo=" + encodeURIComponent(project.number);
         link.title = project.name + " 상세 보기";
         var badge = row.children[3].querySelector(".state");
