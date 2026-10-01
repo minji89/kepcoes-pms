@@ -2263,6 +2263,12 @@
         tab.textContent = "투자";
       });
     }
+    if (new URLSearchParams(window.location.search).get("projectNo") === "2026-05002") {
+      setText("rcpForm", "ESCO 계약");
+      document.querySelectorAll('.tabs a[href="/pms-project-investment-epc.html"]').forEach(function (tab) {
+        tab.remove();
+      });
+    }
     setText("rcpReview", data.reviewTarget);
     var isEpcContract = /^EPC/i.test(data.contractForm || "");
     var contractTypeCell = document.getElementById("rcpType");

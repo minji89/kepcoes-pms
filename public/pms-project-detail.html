@@ -841,6 +841,12 @@
       setText("rcpForm", "ESCO계약");
       setText("rcpChannel", "온라인");
       if (contractTypeCell) contractTypeCell.textContent = data.contractType || "수익사업";
+      document.querySelectorAll('.tabs a[href="/pms-project-promotion.html"]').forEach(function (tab) {
+        tab.href = "/pms-project-promotion.html?projectNo=2026-05002";
+      });
+      document.querySelectorAll('.tabs a[href="/pms-project-investment-epc.html"]').forEach(function (tab) {
+        tab.remove();
+      });
     }
   })();
 
