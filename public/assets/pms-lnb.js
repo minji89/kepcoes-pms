@@ -465,7 +465,7 @@
       [
         ["\uACB0\uC0B0", 2],
         ["\uC77C\uC815", 4],
-        ["\uC9C0\uD45C", 4]
+        ["\uC9C0\uD45C", 2]
       ].forEach(function (group) {
         var th = document.createElement("th");
         th.colSpan = group[1];
@@ -474,16 +474,16 @@
       });
       [
         "\uD68C\uC218\uCD1D\uC561", "\uC218\uC775\uB960(%)", "\uACC4\uC57D\uC77C", "\uC900\uACF5\uC77C", "\uC0C1\uD658\uAC1C\uC2DC\uC77C", "\uC0C1\uD658\uC885\uB8CC\uC77C",
-        "IRR(%)", "XIRR(%)", "\uACB0\uC0B0IRR(%)", "\uACB0\uC0B0XIRR(%)"
+        "IRR(%)", "\uACB0\uC0B0IRR(%)"
       ].forEach(function (label) {
         var th = document.createElement("th");
         th.textContent = label;
         detailHead.appendChild(th);
       });
       var detailRows = [
-        ["4,345,123", "6", "2025.10.23", "2025.10.23", "2025.10.23", "2025.10.23", "6", "13.5", "6", "13.5"],
-        ["4,345,123", "-", "2025.03.03", "2025.03.03", "2025.03.03", "2025.03.03", "6", "13.5", "6", "13.5"],
-        ["4,345,123", "6", "2025.10.23", "2025.10.23", "2025.10.23", "2025.10.23", "4", "7", "4", "7"]
+        ["4,345,123", "6", "2025.10.23", "2025.10.23", "2025.10.23", "2025.10.23", "6", "6"],
+        ["4,345,123", "-", "2025.03.03", "2025.03.03", "2025.03.03", "2025.03.03", "6", "6"],
+        ["4,345,123", "6", "2025.10.23", "2025.10.23", "2025.10.23", "2025.10.23", "4", "4"]
       ];
       sourceRows.forEach(function (row, index) {
         detailRows[index].forEach(function (value) {
