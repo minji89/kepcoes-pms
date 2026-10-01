@@ -1260,10 +1260,10 @@
     });
 
     renderLnbUtilities(nav);
-    if (localStorage.getItem("pmsUserRole") === "user") {
+    if (localStorage.getItem("pmsUserRole") === "user" || localStorage.getItem("pmsUserRole") === "1" || localStorage.getItem("pmsSavedId") === "1") {
       Array.prototype.forEach.call(nav.children, function (li) {
         var item = li.querySelector(":scope > .nav-item");
-        if (item && labelOf(item) === "\uACF5\uD1B5 \uAD00\uB9AC") li.remove();
+        if (item && labelOf(item).replace(/\s/g, "") === "\uACF5\uD1B5\uAD00\uB9AC") li.remove();
       });
     }
     var srmLink = document.querySelector('.lnb-utility-link[href="https://srm.kepco.net/"]');
