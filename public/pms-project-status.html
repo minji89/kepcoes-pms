@@ -793,7 +793,7 @@
         var link = row.children[2].querySelector("a");
         link.textContent = project.name;
         link.href = project.number === "2026-05001"
-          ? "/pms-project-detail-epc.html"
+          ? "https://02kepcoes.vercel.app/pms-project-detail-epc.html"
           : project.number === "2026-05002"
             ? "/pms-project-detail-esco.html"
             : "/pms-project-detail.html?projectNo=" + encodeURIComponent(project.number);
