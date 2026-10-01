@@ -210,7 +210,8 @@
 
     var pagePath = window.location.pathname;
     var contractForm = getCurrentProjectContractForm();
-    if (!contractForm && pagePath !== normalPath && pagePath !== epcPath) return;
+    var isSpecialProjectHome = pagePath === "/pms-project-detail.html" && new URLSearchParams(window.location.search).get("projectNo") === "2026-05002";
+    if (!contractForm && pagePath !== normalPath && pagePath !== epcPath && !isSpecialProjectHome) return;
 
     var isEpc = contractForm ? /^EPC/i.test(contractForm) : pagePath === epcPath;
     var activePath = isEpc ? epcPath : normalPath;
@@ -228,6 +229,12 @@
     projectTabs.querySelectorAll('a[href^="' + activePath + '"]').forEach(function (tab) {
       tab.textContent = "\uD22C\uC790";
     });
+
+    if (pagePath === "/pms-project-detail.html" && new URLSearchParams(window.location.search).get("projectNo") === "2026-05002") {
+      projectTabs.querySelectorAll('a[href^="' + normalPath + '"]').forEach(function (tab) {
+        tab.href = "https://02kepcoes.vercel.app/pms-project-investment.html";
+      });
+    }
 
     document.querySelectorAll('.card-more[href^="' + hiddenPath + '"]').forEach(function (link) {
       var url = new URL(link.href, window.location.origin);
