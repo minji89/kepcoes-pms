@@ -2265,6 +2265,10 @@
     }
     if (new URLSearchParams(window.location.search).get("projectNo") === "2026-05002") {
       setText("rcpForm", "ESCO 계약");
+      document.querySelectorAll('.tabs a[href="/pms-project-investment.html"]').forEach(function (tab) {
+        tab.href = "https://02kepcoes.vercel.app/pms-project-investment.html";
+        tab.textContent = "투자";
+      });
       document.querySelectorAll('.tabs a[href="/pms-project-investment-epc.html"]').forEach(function (tab) {
         tab.remove();
       });
