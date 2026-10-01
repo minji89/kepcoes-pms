@@ -821,6 +821,17 @@
     setText("rcpChannel", data.channel);
     setList("rcpBizType", data.bizTypes);
     setList("rcpEquip", data.equipments);
+
+    // 프로젝트 현황 목록에서 진입한 프로젝트는 번호별 계약 형태를 최우선으로 적용합니다.
+    if (projectNo === "2026-05001") {
+      setText("rcpForm", "EPC계약");
+      setText("rcpChannel", "EPC사");
+      if (contractTypeCell) contractTypeCell.textContent = "";
+    } else if (projectNo === "2026-05002") {
+      setText("rcpForm", "ESCO계약");
+      setText("rcpChannel", "온라인");
+      if (contractTypeCell) contractTypeCell.textContent = data.contractType || "수익사업";
+    }
   })();
 
   // 투자 업체 탭 선택 시 해당 업체의 투자금 정보를 표시
