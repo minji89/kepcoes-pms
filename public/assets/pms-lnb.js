@@ -245,7 +245,7 @@
         tab.remove();
       });
       projectTabs.querySelectorAll('a[href^="' + epcPath + '"]').forEach(function (tab) {
-        tab.href = "https://02kepcoes.vercel.app/pms-project-investment-epc.html";
+        tab.href = "https://02kepcoes.vercel.app/pms-project-investment-epc.html?projectNo=2026-05001";
         tab.textContent = "투자";
       });
       var epcInvestmentTab = projectTabs.querySelector('a[href^="' + epcPath + '"]');
@@ -253,7 +253,7 @@
         epcInvestmentTab = document.createElement("a");
         epcInvestmentTab.className = "tab";
         epcInvestmentTab.setAttribute("role", "tab");
-        epcInvestmentTab.href = "https://02kepcoes.vercel.app/pms-project-investment-epc.html";
+        epcInvestmentTab.href = "https://02kepcoes.vercel.app/pms-project-investment-epc.html?projectNo=2026-05001";
         epcInvestmentTab.textContent = "투자";
         var epcRepaymentTab = projectTabs.querySelector('a[href="/pms-project-repayment.html"]');
         if (epcRepaymentTab) projectTabs.insertBefore(epcInvestmentTab, epcRepaymentTab);
@@ -273,12 +273,12 @@
         var repaymentTab = projectTabs.querySelector('a[href="/pms-project-repayment.html"]');
         if (repaymentTab) projectTabs.insertBefore(escoInvestmentTab, repaymentTab);
         else projectTabs.appendChild(escoInvestmentTab);
-        escoInvestmentTab.href = "https://02kepcoes.vercel.app/pms-project-investment.html";
+        escoInvestmentTab.href = "https://02kepcoes.vercel.app/pms-project-investment.html?projectNo=2026-05002";
         escoInvestmentTab.textContent = "투자";
         escoInvestmentTab.setAttribute("data-esco-investment-tab", "true");
       }
       projectTabs.querySelectorAll('a[href^="' + normalPath + '"], a[data-esco-investment-tab="true"]').forEach(function (tab) {
-        tab.href = "https://02kepcoes.vercel.app/pms-project-investment.html";
+        tab.href = "https://02kepcoes.vercel.app/pms-project-investment.html?projectNo=2026-05002";
         tab.textContent = "투자";
         tab.setAttribute("data-esco-investment-tab", "true");
       });
@@ -286,7 +286,7 @@
 
     if (pagePath === "/pms-project-detail.html" && new URLSearchParams(window.location.search).get("projectNo") === "2026-05002") {
       projectTabs.querySelectorAll('a[href^="' + normalPath + '"]').forEach(function (tab) {
-        tab.href = "https://02kepcoes.vercel.app/pms-project-investment.html";
+        tab.href = "https://02kepcoes.vercel.app/pms-project-investment.html?projectNo=2026-05002";
       });
     }
 
