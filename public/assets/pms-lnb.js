@@ -210,10 +210,11 @@
 
     var pagePath = window.location.pathname;
     var contractForm = getCurrentProjectContractForm();
-    var isSpecialProjectHome = pagePath === "/pms-project-detail.html" && new URLSearchParams(window.location.search).get("projectNo") === "2026-05002";
+    var projectNo = new URLSearchParams(window.location.search).get("projectNo");
+    var isSpecialProjectHome = pagePath === "/pms-project-detail.html" && (projectNo === "2026-05001" || projectNo === "2026-05002");
     if (!contractForm && pagePath !== normalPath && pagePath !== epcPath && !isSpecialProjectHome) return;
 
-    var isEpc = isSpecialProjectHome ? false : (contractForm ? /^EPC/i.test(contractForm) : pagePath === epcPath);
+    var isEpc = isSpecialProjectHome ? projectNo === "2026-05001" : (contractForm ? /^EPC/i.test(contractForm) : pagePath === epcPath);
     var activePath = isEpc ? epcPath : normalPath;
     var hiddenPath = isEpc ? normalPath : epcPath;
 
