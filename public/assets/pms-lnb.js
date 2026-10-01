@@ -233,6 +233,11 @@
     });
 
     if ((pagePath === "/pms-project-detail.html" || pagePath === "/pms-project-detail-epc.html" || pagePath === "/pms-project-promotion.html") && projectNo === "2026-05001") {
+      if (pagePath === "/pms-project-detail-epc.html") {
+        projectTabs.querySelectorAll('a[href^="/pms-project-promotion.html"]').forEach(function (tab) {
+          tab.href = "/pms-project-promotion.html?projectNo=2026-05001";
+        });
+      }
       projectTabs.querySelectorAll('a[href^="' + normalPath + '"]').forEach(function (tab) {
         tab.remove();
       });
