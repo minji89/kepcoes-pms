@@ -27,10 +27,10 @@
 
   /* 현재 경로 → 활성 2depth 라벨 (상세 페이지는 소속 메뉴를 활성화) */
   MENU["\uC0AC\uC5C5\uACB0\uC0B0"] = [
-    { label: "\uC0AC\uC5C5 \uACB0\uC0B0", href: "/pms-business-settlement.html?view=list" },
+    { label: "\uC0AC\uC5C5 \uACB0\uC0B0", href: "/pms-business-settlement.html" },
   ];
   MENU["\uC0AC\uC5C5\uAD00\uB9AC"] = [
-    { label: "\uC0AC\uC5C5\uACB0\uC0B0", href: "/pms-business-settlement.html?view=list" },
+    { label: "\uC0AC\uC5C5\uACB0\uC0B0", href: "/pms-business-settlement.html" },
   ];
   MENU["\uC0AC\uC5C5\uC811\uC218"] = [
     { label: "\uC2E0\uADDC \uD504\uB85C\uC81D\uD2B8 \uB4F1\uB85D", href: "/pms-new-project.html" },
@@ -337,7 +337,7 @@
       '<li><a class="nav-item" href="/pms-project-status.html"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h6a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Z"/></svg>\uD504\uB85C\uC81D\uD2B8 \uAD00\uB9AC<span class="chev" aria-hidden="true"></span></a></li>' +
       '<li><a class="nav-item" href="/pms-contract-status.html"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h9l5 5v11H5z"/><path d="M9 13h6M9 17h4"/></svg>\uACC4\uC57D \uAD00\uB9AC<span class="chev" aria-hidden="true"></span></a></li>' +
       '<li><a class="nav-item" href="/pms-fund-interest.html"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7" width="18" height="11" rx="2"/><path d="M7 12h4"/></svg>\uC790\uAE08 \uAD00\uB9AC<span class="chev" aria-hidden="true"></span></a></li>' +
-      '<li><a class="nav-item" href="/pms-business-settlement.html?view=list"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 20V10M12 20V4M19 20v-7"/></svg>\uC0AC\uC5C5 \uACB0\uC0B0<span class="chev" aria-hidden="true"></span></a></li>' +
+      '<li><a class="nav-item" href="/pms-business-settlement.html"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 20V10M12 20V4M19 20v-7"/></svg>\uC0AC\uC5C5 \uACB0\uC0B0<span class="chev" aria-hidden="true"></span></a></li>' +
       '<li><a class="nav-item" href="/pms-statistics-overview.html"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19V9M10 19V5M16 19v-7M3 19h18"/></svg>\uD1B5\uACC4<span class="chev" aria-hidden="true"></span></a></li>' +
       '<li><a class="nav-item" href="/pms-my-projects.html"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M4.5 20a7.5 7.5 0 0 1 15 0"/></svg>\uB9C8\uC774 \uD398\uC774\uC9C0<span class="chev" aria-hidden="true"></span></a></li>' +
       '<li><a class="nav-item" href="/pms-business-trip-status.html"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19h16M6 16l2-8h8l2 8M9 8V5h6v3"/><circle cx="8" cy="19" r="1.5"/><circle cx="16" cy="19" r="1.5"/></svg>\uCD9C\uC7A5 \uAD00\uB9AC<span class="chev" aria-hidden="true"></span></a></li>' +
