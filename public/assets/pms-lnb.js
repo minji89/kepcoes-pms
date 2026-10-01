@@ -241,6 +241,16 @@
       });
     }
 
+    if ((pagePath === "/pms-project-detail.html" || pagePath === "/pms-project-promotion.html") && projectNo === "2026-05002") {
+      projectTabs.querySelectorAll('a[href^="' + epcPath + '"]').forEach(function (tab) {
+        tab.remove();
+      });
+      projectTabs.querySelectorAll('a[href^="' + normalPath + '"]').forEach(function (tab) {
+        tab.href = "https://02kepcoes.vercel.app/pms-project-investment.html";
+        tab.textContent = "투자";
+      });
+    }
+
     if (pagePath === "/pms-project-detail.html" && new URLSearchParams(window.location.search).get("projectNo") === "2026-05002") {
       projectTabs.querySelectorAll('a[href^="' + normalPath + '"]').forEach(function (tab) {
         tab.href = "https://02kepcoes.vercel.app/pms-project-investment.html";
