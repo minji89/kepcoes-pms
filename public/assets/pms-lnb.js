@@ -213,7 +213,7 @@
     var isSpecialProjectHome = pagePath === "/pms-project-detail.html" && new URLSearchParams(window.location.search).get("projectNo") === "2026-05002";
     if (!contractForm && pagePath !== normalPath && pagePath !== epcPath && !isSpecialProjectHome) return;
 
-    var isEpc = contractForm ? /^EPC/i.test(contractForm) : pagePath === epcPath;
+    var isEpc = isSpecialProjectHome ? false : (contractForm ? /^EPC/i.test(contractForm) : pagePath === epcPath);
     var activePath = isEpc ? epcPath : normalPath;
     var hiddenPath = isEpc ? normalPath : epcPath;
 
