@@ -210,7 +210,8 @@
 
     var pagePath = window.location.pathname;
     var contractForm = getCurrentProjectContractForm();
-    var projectNo = new URLSearchParams(window.location.search).get("projectNo");
+    var projectNo = new URLSearchParams(window.location.search).get("projectNo") ||
+      (pagePath === "/pms-project-detail-epc.html" ? "2026-05001" : pagePath === "/pms-project-detail-esco.html" ? "2026-05002" : null);
     var isSpecialProjectHome = pagePath === "/pms-project-detail.html" && (projectNo === "2026-05001" || projectNo === "2026-05002");
     if (!contractForm && pagePath !== normalPath && pagePath !== epcPath && !isSpecialProjectHome) return;
 
@@ -231,7 +232,7 @@
       tab.textContent = "\uD22C\uC790";
     });
 
-    if ((pagePath === "/pms-project-detail.html" || pagePath === "/pms-project-promotion.html") && projectNo === "2026-05001") {
+    if ((pagePath === "/pms-project-detail.html" || pagePath === "/pms-project-detail-epc.html" || pagePath === "/pms-project-promotion.html") && projectNo === "2026-05001") {
       projectTabs.querySelectorAll('a[href^="' + normalPath + '"]').forEach(function (tab) {
         tab.remove();
       });
@@ -241,7 +242,7 @@
       });
     }
 
-    if ((pagePath === "/pms-project-detail.html" || pagePath === "/pms-project-promotion.html") && projectNo === "2026-05002") {
+    if ((pagePath === "/pms-project-detail.html" || pagePath === "/pms-project-detail-esco.html" || pagePath === "/pms-project-promotion.html") && projectNo === "2026-05002") {
       projectTabs.querySelectorAll('a[href^="' + epcPath + '"]').forEach(function (tab) {
         tab.remove();
       });

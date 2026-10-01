@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>프로젝트 상세 | 사업관리시스템 (PMS)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #f1f5f9;
+    --surface: #ffffff;
+    --border: #e5e9f0;
+    --text: #1e293b;
+    --muted: #64748b;
+    --brand: #1d6ff2;
+    --brand-soft: #eff6ff;
+    --green: #10b981;
+    --amber: #f59e0b;
+    --track: #e2e8f0;
+    --radius: 10px;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Noto Sans KR", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a { color: inherit; text-decoration: none; }
+  ul { list-style: none; margin: 0; padding: 0; }
+
+  .sr-only {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+  }
+
+  .layout { display: flex; min-height: 100vh; }
+
+  /* ---------- Sidebar ---------- */
+  .sidebar {
+    width: 248px;
+    flex: 0 0 248px;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .sidebar-head {
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .logo { display: flex; align-items: center; min-width: 0; }
+  .logo img { display: block; height: 30px; width: auto; max-width: 100%; }
+
+  .hamburger {
+    background: none; border: 0; padding: 6px; cursor: pointer;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .hamburger i { display: block; width: 18px; height: 2px; background: #334155; border-radius: 2px; }
+
+  .nav { padding: 16px 12px; flex: 1; }
+  .nav-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 14px; border-radius: 8px;
+    color: #475569; font-size: 14.5px; font-weight: 500;
+  }
+  .nav-item .chev {
+    margin-left: auto; width: 8px; height: 8px; flex: none;
+    border-right: 1.6px solid #94a3b8; border-bottom: 1.6px solid #94a3b8;
+    transform: rotate(45deg) translateY(-2px);
+  }
+  .nav-item.active .chev { border-color: var(--brand); }
+  .nav-item .chev.up { transform: rotate(-135deg) translateY(-2px); }
+  .nav-item.open .chev { border-color: #64748b; }
+  .nav-item.active { background: var(--brand-soft); color: var(--brand); font-weight: 700; }
+  .nav-icon { width: 20px; height: 20px; flex: none; color: currentColor; }
+
+  .subnav { padding: 2px 0 6px 26px; }
+  .subnav-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 10px; font-size: 14px; color: #475569;
+  }
+  .subnav-item.active { color: var(--brand); font-weight: 700; }
+  .dot { width: 5px; height: 5px; border-radius: 50%; background: var(--brand); flex: none; }
+
+  .sidebar-foot { padding: 16px 16px 22px; display: grid; gap: 10px; }
+  .side-btn {
+    display: flex; align-items: center; gap: 10px;
+    padding: 12px 14px; border: 1px solid var(--border);
+    border-radius: 8px; font-size: 13.5px; color: #475569; background: var(--surface);
+  }
+  .side-btn.primary { border-color: #bfdbfe; background: var(--brand-soft); color: var(--brand); font-weight: 700; }
+
+  /* ---------- Main ---------- */
+  .main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+
+  .topbar {
+    height: 60px; background: var(--surface); border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 16px; padding: 0 26px;
+  }
+  .topbar h1 { margin: 0; font-size: 19px; font-weight: 700; letter-spacing: -0.02em; }
+  .badge-pms {
+    background: var(--brand-soft); color: var(--brand);
+    font-size: 12px; font-weight: 700; padding: 4px 9px; border-radius: 6px;
+  }
+  .topbar-right { margin-left: auto; display: flex; align-items: center; gap: 14px; }
+
+  .seg { display: flex; align-items: center; gap: 6px; }
+  .seg-label { color: var(--muted); font-size: 13px; margin-right: 2px; }
+  .seg-btn {
+    padding: 5px 12px; border-radius: 6px; font-size: 13px;
+    color: var(--muted); background: transparent; border: 0; cursor: pointer;
+    font-family: inherit;
+  }
+  .seg-btn.on { background: #334155; color: #fff; font-weight: 700; }
+
+  .user { font-size: 13.5px; }
+  .user b { font-weight: 700; }
+  .user small { color: var(--muted); }
+  .logout { color: var(--muted); font-size: 13px; text-decoration: underline; }
+
+  .content { padding: 26px; display: grid; gap: 18px; }
+
+  .page-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  .page-head h2 { margin: 0; font-size: 25px; font-weight: 700; letter-spacing: -0.03em; }
+
+  .crumb { display: flex; align-items: center; gap: 10px; color: var(--muted); font-size: 13px; }
+  .crumb .sep { color: #cbd5e1; font-size: 11px; }
+  .crumb .now { color: var(--text); font-weight: 700; }
+
+  .card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+  }
+
+  /* Tabs */
+  .tabbar { display: flex; align-items: center; gap: 8px; padding: 0 20px; }
+  .tabs { display: flex; }
+  .tab {
+    display: block; padding: 18px 26px; font-size: 15px; color: var(--muted); font-weight: 500;
+    border-bottom: 3px solid transparent; background: none; border-top: 0; border-left: 0; border-right: 0;
+    cursor: pointer; font-family: inherit;
+  }
+  .tab.on { color: var(--brand); font-weight: 700; border-bottom-color: var(--brand); }
+  .tab-right { margin-left: auto; display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--muted); }
+  select {
+    font-family: inherit; font-size: 14px; font-weight: 700; color: var(--text);
+    padding: 8px 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface);
+  }
+
+  /* Info strip */
+  .info-strip { display: grid; grid-template-columns: 1.35fr 1.1fr 1fr 0.8fr; }
+  .overview-card { position: relative; z-index: 20; }
+  .overview-head { display: flex; align-items: center; min-height: 58px; padding: 0 24px; border-bottom: 1px solid var(--border); }
+  .overview-head h3 { margin: 0; font-size: 16px; font-weight: 700; }
+  .attachment-popover { position: relative; margin-left: auto; }
+  .attachment-trigger {
+    min-width: 156px; height: 36px; padding: 0 16px; border: 1px solid #bfdbfe; border-radius: 7px;
+    background: #eff6ff; color: #1e3a5f; font: inherit; font-size: 13px; font-weight: 700; cursor: pointer;
+  }
+  .attachment-trigger:hover, .attachment-trigger:focus-visible, .attachment-trigger[aria-expanded="true"] { background: #dbeafe; border-color: #93c5fd; outline: none; }
+  .attachment-layer {
+    position: absolute; z-index: 40; top: calc(100% + 8px); right: 0; width: min(640px, calc(100vw - 84px));
+    padding: 18px; border: 1px solid #94a3b8; border-radius: 8px; background: #fff;
+    box-shadow: 0 16px 34px rgba(15, 23, 42, 0.18);
+  }
+  .attachment-layer[hidden] { display: none; }
+  .attachment-layer h4 { margin: 0 0 12px; color: #1e293b; font-size: 14px; }
+  .attachment-groups { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+  .attachment-group + .attachment-group { padding-left: 22px; border-left: 1px solid var(--border); }
+  .attachment-list { display: grid; gap: 0; margin: 0; }
+  .attachment-item { display: grid; grid-template-columns: 140px minmax(0, 1fr); align-items: center; gap: 10px; min-height: 38px; border-bottom: 1px dashed #cbd5e1; }
+  .attachment-item:last-child { border-bottom: 0; }
+  .attachment-item dt { color: #334155; font-size: 12.5px; font-weight: 700; white-space: nowrap; }
+  .attachment-item dd { min-width: 0; margin: 0; }
+  .attachment-file { width: 100%; padding: 5px 9px; overflow: hidden; border: 1px solid #cbd5e1; border-radius: 4px; background: #f8fafc; color: #334155; font: inherit; font-size: 12px; text-align: left; text-overflow: ellipsis; white-space: nowrap; cursor: pointer; }
+  .attachment-file:hover, .attachment-file:focus-visible { border-color: var(--brand); color: var(--brand); outline: none; }
+  .info-col { padding: 20px 24px; }
+  .info-col + .info-col { border-left: 1px solid var(--border); }
+  .info-row { display: flex; align-items: center; gap: 18px; padding: 7px 0; }
+  .info-row dt { width: 74px; flex: none; color: var(--muted); font-size: 13.5px; margin: 0; }
+  .info-row dd { margin: 0; font-weight: 700; font-size: 15px; }
+  .divider-v { color: #cbd5e1; font-weight: 400; margin: 0 8px; }
+
+  /* Grid rows */
+  .grid-3 { display: grid; grid-template-columns: 1.05fr 1fr 1fr; gap: 18px; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1.35fr; gap: 18px; }
+  .card-body { padding: 20px 24px 24px; }
+  .card-title { display: flex; align-items: center; gap: 9px; font-size: 16px; font-weight: 700; margin: 0 0 16px; }
+  .card-title-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 16px; }
+  .card-title-row .card-title { margin: 0; }
+  .card-more { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 6px; color: var(--navy); font-size: 21px; font-weight: 500; line-height: 1; }
+  .card-more:hover { background: var(--brand-soft); color: var(--brand); }
+  .title-ico { width: 20px; height: 20px; color: var(--brand); }
+
+  /* Timeline */
+  .timeline li { display: flex; align-items: center; gap: 14px; padding: 7px 0; }
+  .step-ico { width: 20px; height: 20px; flex: none; }
+  .step-name { width: 92px; flex: none; font-weight: 700; font-size: 14px; }
+  .step-done .step-name { color: var(--text); }
+  .step-todo .step-name, .step-todo .step-date, .step-todo .step-user { color: #94a3b8; font-weight: 500; }
+  .step-date { width: 96px; flex: none; color: var(--muted); font-size: 13.5px; }
+  .step-user { color: var(--muted); font-size: 13.5px; }
+  .vline { color: #e2e8f0; }
+
+  /* Donut */
+  .progress-wrap { display: flex; align-items: center; gap: 26px; }
+  .donut {
+    width: 122px; height: 122px; border-radius: 50%; flex: none;
+    display: grid; place-items: center; position: relative;
+  }
+  .donut::after {
+    content: ""; position: absolute; inset: 15px; background: var(--surface); border-radius: 50%;
+  }
+  .donut-val { position: relative; z-index: 1; font-size: 22px; font-weight: 700; letter-spacing: -0.02em; }
+  .donut-blue { background: conic-gradient(var(--brand) 0 60.6%, var(--track) 60.6% 100%); }
+  .donut-green { background: conic-gradient(var(--green) 0 60.6%, var(--track) 60.6% 100%); }
+
+  .metrics { display: grid; gap: 14px; min-width: 0; }
+  .metric-label { color: var(--muted); font-size: 13.5px; margin-bottom: 4px; }
+  .metric-value { font-size: 20px; font-weight: 700; letter-spacing: -0.02em; }
+  .metric-value.blue { color: var(--brand); }
+  .metric-value.green { color: var(--green); }
+  .metric-value .unit { font-size: 13px; font-weight: 500; color: var(--muted); margin-left: 4px; }
+  .metric + .metric { border-top: 1px solid var(--border); padding-top: 14px; }
+
+  /* Plan vs performance */
+  .performance-head { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .performance-head .card-title { margin-bottom: 0; }
+  .performance-head .card-more { margin-left: auto; }
+  .performance-note { color: var(--muted); font-size: 12.5px; }
+  .performance-table { margin-top: 16px; overflow-x: auto; border: 1px solid var(--border); border-radius: 8px; }
+  .performance-table table { min-width: 1120px; }
+  .performance-table thead th { padding: 10px 8px; text-align: center; border-right: 1px solid var(--border); }
+  .performance-table tbody td { padding: 12px 8px; border-right: 1px solid var(--border); }
+  .performance-table th:last-child, .performance-table td:last-child { border-right: 0; }
+  .performance-charts { display: grid; grid-template-columns: 1fr 1fr 2.2fr; margin-top: 18px; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+  .performance-chart { min-width: 0; padding: 18px 20px; }
+  .performance-chart + .performance-chart { border-left: 1px solid var(--border); }
+  .performance-chart h4 { margin: 0 0 14px; color: #334155; font-size: 13.5px; }
+  .performance-donut-wrap { display: flex; align-items: center; justify-content: center; min-height: 132px; }
+  .performance-donut { --rate: 0%; width: 118px; height: 118px; border-radius: 50%; display: grid; place-items: center; position: relative; background: conic-gradient(var(--brand) 0 var(--rate), var(--track) var(--rate) 100%); }
+  .performance-donut::after { content: ""; position: absolute; inset: 13px; border-radius: 50%; background: var(--surface); }
+  .performance-donut.green { background: conic-gradient(var(--green) 0 var(--rate), var(--track) var(--rate) 100%); }
+  .performance-donut strong { position: relative; z-index: 1; font-size: 20px; }
+  .performance-bars { display: grid; gap: 14px; padding-top: 4px; }
+  .performance-bar { display: grid; grid-template-columns: 54px minmax(160px, 1fr) 46px; align-items: center; gap: 10px; font-size: 13px; }
+  .performance-bar-track { height: 10px; overflow: hidden; border-radius: 999px; background: #e9eef5; }
+  .performance-bar-fill { display: block; width: var(--rate); height: 100%; border-radius: inherit; background: var(--brand); }
+  .performance-bar:nth-child(2) .performance-bar-fill { background: #3b82f6; }
+  .performance-bar:nth-child(3) .performance-bar-fill { background: #60a5fa; }
+  .performance-bar strong { text-align: right; font-size: 12.5px; }
+
+  /* Definition tables */
+  .def-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 28px; }
+  .def-grid.three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .def-row { display: flex; align-items: flex-start; gap: 12px; padding: 9px 0; border-bottom: 1px dashed #eef2f7; }
+  .def-row dt { flex: 1 1 auto; color: var(--muted); font-size: 13px; margin: 0; white-space: nowrap; }
+  .def-row dd { margin: 0; text-align: right; font-weight: 500; font-size: 13.5px; }
+  .def-row dd.link { color: var(--brand); font-weight: 700; }
+  .vendor-tabs { display: flex; gap: 8px; margin: 0 0 14px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+  .vendor-tab { appearance: none; border: 1px solid transparent; background: transparent; padding: 7px 12px; border-radius: 5px; color: var(--muted); font: inherit; font-size: 12.5px; cursor: pointer; transition: color .15s ease, background .15s ease, border-color .15s ease; }
+  .vendor-tab:hover { border-color: #bfdbfe; background: #eff6ff; color: var(--brand); }
+  .vendor-tab:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+  .vendor-tab.active { background: var(--brand-soft); color: var(--brand); font-weight: 700; }
+
+
+  .repayment-info { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 28px; }
+  .repayment-info-col { display: grid; align-content: start; gap: 0; }
+  .repayment-info-row { display: grid; grid-template-columns: minmax(112px, auto) 1fr; align-items: center; min-height: 40px; border-bottom: 1px dotted #9ca3af; font-size: 13px; }
+  .repayment-info-row dt { display: flex; align-items: center; gap: 7px; margin: 0; color: #111827; font-weight: 700; white-space: nowrap; }
+  .repayment-info-row dt::before { content: ""; width: 7px; height: 7px; flex: 0 0 7px; border-radius: 50%; background: #111; }
+  .repayment-info-row dd { min-width: 0; margin: 0; padding-left: 13px; border-left: 1px solid #9ca3af; color: #1f2937; font-variant-numeric: tabular-nums; }
+  .repayment-info-row .repayment-status { font-weight: 700; }
+
+  .pill {
+    display: inline-block; padding: 4px 10px; border-radius: 999px;
+    font-size: 12px; font-weight: 700;
+  }
+  .pill-green { background: #dcfce7; color: #15803d; }
+  .pill-amber { background: #fef3c7; color: #b45309; }
+
+  /* Table */
+  .table-scroll { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; min-width: 980px; }
+  thead th {
+    background: #f8fafc; color: var(--muted); font-size: 13px; font-weight: 700;
+    padding: 13px 12px; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+  tbody td {
+    padding: 15px 12px; text-align: center; font-size: 13.5px;
+    border-bottom: 1px solid var(--border); white-space: nowrap;
+  }
+  tbody tr:hover td { background: #fafcff; }
+
+  @media (max-width: 1280px) {
+    .grid-3, .grid-2, .info-strip { grid-template-columns: 1fr; }
+    .info-col + .info-col { border-left: 0; border-top: 1px solid var(--border); }
+    .performance-charts { grid-template-columns: 1fr 1fr; }
+    .performance-chart:last-child { grid-column: 1 / -1; border-left: 0; border-top: 1px solid var(--border); }
+  }
+  @media (max-width: 760px) {
+    .repayment-info { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 900px) {
+    .sidebar { display: none; }
+    .content { padding: 18px; }
+    .def-grid, .def-grid.three { grid-template-columns: 1fr; }
+    .tabs { overflow-x: auto; }
+    .performance-charts { grid-template-columns: 1fr; }
+    .performance-chart + .performance-chart, .performance-chart:last-child { grid-column: auto; border-left: 0; border-top: 1px solid var(--border); }
+  }
+</style>
+  <link rel="stylesheet" href="/assets/pms-lnb.css" />
+  <link rel="stylesheet" href="/assets/pms-intake-wizard.css?v=20260917-3" />
+</head>
+<body>
+<div class="layout">
+
+  <!-- ============ Sidebar ============ -->
+  <aside class="sidebar">
+    <div class="sidebar-head">
+      <a class="logo" href="/pms-project-detail.html">
+        <img src="/images/kepco-es-logo.png" alt="켑코이에스 주식회사 KEPCO ENERGY SOLUTION CO., LTD" />
+      </a>
+      <button class="hamburger" type="button" aria-label="메뉴 접기">
+        <i></i><i></i><i></i>
+      </button>
+    </div>
+
+    <nav class="nav" aria-label="주 메뉴">
+      <ul>
+        <li>
+          <a class="nav-item open" href="/pms-new-project.html">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 21V5a1 1 0 0 1 1-1h7a1 1 0 0 1 1 1v16"/><path d="M13 10h6a1 1 0 0 1 1 1v10"/><path d="M7 8h3M7 12h3M7 16h3M16 14h1M16 18h1"/></svg>
+            사업접수 <span class="chev up" aria-hidden="true"></span>
+          </a>
+          <ul class="subnav">
+            <li><a class="subnav-item" href="/pms-new-project.html"><span class="dot" aria-hidden="true"></span>신규 프로젝트 등록</a></li>
+            <li><a class="subnav-item" href="/pms-promotion-status.html"><span class="dot" aria-hidden="true"></span>추진단계 프로젝트 현황</a></li>
+          </ul>
+        </li>
+        <li>
+          <a class="nav-item active" href="#" aria-current="page">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h6a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Z"/><path d="M15 11v4"/></svg>
+            프로젝트 관리 <span class="chev up" aria-hidden="true"></span>
+          </a>
+          <ul class="subnav">
+            <li><a class="subnav-item active" href="/pms-project-status.html"><span class="dot" aria-hidden="true"></span>프로젝트 현황</a></li>
+          </ul>
+        </li>
+        <li>
+          <a class="nav-item" href="/pms-contract-status.html">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h9l5 5v11H5z"/><path d="M9 13h6M9 17h4"/></svg>
+            계약관리 <span class="chev" aria-hidden="true"></span>
+          </a>
+        </li>
+        <li>
+          <a class="nav-item" href="/pms-fund-repayment.html">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8Z"/><path d="M7 12h4"/></svg>
+            자금관리 <span class="chev" aria-hidden="true"></span>
+          </a>
+        </li>
+        <li>
+          <a class="nav-item" href="#">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 20V10M12 20V4M19 20v-7"/></svg>
+            통계(분석) <span class="chev" aria-hidden="true"></span>
+          </a>
+        </li>
+        <li>
+          <a class="nav-item" href="#">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s7-6.3 7-11a7 7 0 1 0-14 0c0 4.7 7 11 7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg>
+            출장관리 <span class="chev" aria-hidden="true"></span>
+          </a>
+        </li>
+        <li>
+          <a class="nav-item" href="#">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M4.5 20a7.5 7.5 0 0 1 15 0"/></svg>
+            마이페이지 <span class="chev" aria-hidden="true"></span>
+          </a>
+        </li>
+        <li>
+          <a class="nav-item" href="#">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-2.9 1.2 2 2 0 1 1-4 0 1.7 1.7 0 0 0-2.9-1.2l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1A1.7 1.7 0 0 0 3 15a2 2 0 1 1 0-4 1.7 1.7 0 0 0 1.5-2.7l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1A1.7 1.7 0 0 0 10 4.3a2 2 0 1 1 4 0 1.7 1.7 0 0 0 2.7 1.2l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1A1.7 1.7 0 0 0 21 11a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 0Z"/></svg>
+            공통관리 <span class="chev" aria-hidden="true"></span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <div class="sidebar-foot">
+      <a class="side-btn" href="#">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 10h6M7 14h4"/></svg>
+        사업관리시스템(PMS)
+      </a>
+      <a class="side-btn" href="#">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="M6 3h9l4 4v14H6z"/><path d="M9 12h6M9 16h6"/></svg>
+        전자입찰시스템(SRM)
+      </a>
+      <a class="side-btn primary" href="#">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 17v.01"/><path d="M12 13.5a2.5 2.5 0 1 0-2.5-3"/></svg>
+        온라인 매뉴얼
+      </a>
+    </div>
+  </aside>
+
+  <!-- ============ Main ============ -->
+  <div class="main">
+    <header class="topbar">
+      <h1>사업관리시스템</h1>
+      <span class="badge-pms">PMS</span>
+
+      <div class="topbar-right">
+        <div class="seg" role="group" aria-label="권한 선택">
+          <span class="seg-label">권한</span>
+          <button class="seg-btn on" type="button">그룹#1</button>
+          <button class="seg-btn" type="button">그룹#3</button>
+          <button class="seg-btn" type="button">그룹#4</button>
+        </div>
+        <p class="user"><b>이희성 부장</b> <small>[시스템관리자]</small></p>
+        <a class="logout" href="#">로그아웃</a>
+      </div>
+    </header>
+
+    <main class="content">
+      <div class="page-head">
+        <h2>프로젝트 상세</h2>
+        <nav class="crumb" aria-label="현재 위치">
+          <a href="#">HOME</a><span class="sep" aria-hidden="true">›</span>
+          <a href="#">프로젝트 관리</a><span class="sep" aria-hidden="true">›</span>
+          <a href="#">프로젝트 현황</a><span class="sep" aria-hidden="true">›</span>
+          <span class="now">상세</span>
+        </nav>
+      </div>
+
+      <!-- Tabs -->
+      <section class="card">
+        <div class="tabbar">
+          <div class="tabs" role="tablist" aria-label="프로젝트 상세 탭">
+            <button class="tab on" type="button" role="tab" aria-selected="true">HOME</button>
+            <a class="tab" href="/pms-project-promotion.html" role="tab" aria-selected="false">추진</a>
+            <a class="tab" href="/pms-project-contract.html" role="tab" aria-selected="false">계약</a>
+            <a class="tab" href="/pms-project-investment.html" role="tab" aria-selected="false">투자</a>
+            <a class="tab" href="/pms-project-investment-epc.html" role="tab" aria-selected="false">투자(EPC)</a>
+            <a class="tab" href="/pms-project-repayment.html" role="tab" aria-selected="false">상환</a>
+            <a class="tab" href="/pms-project-order.html" role="tab" aria-selected="false">발주</a>
+          </div>
+          <div class="tab-right" data-project-round><span>차수</span><strong class="project-round-current">1차</strong></div>
+        </div>
+      </section>
+
+      <!-- Basic info -->
+      <section class="card overview-card" aria-labelledby="overviewTitle">
+        <div class="overview-head">
+          <h3 id="overviewTitle">프로젝트 개요</h3>
+          <div class="attachment-popover" id="attachmentPopover">
+            <button class="attachment-trigger" id="attachmentTrigger" type="button" aria-expanded="false" aria-controls="attachmentLayer">프로젝트 첨부파일</button>
+            <div class="attachment-layer" id="attachmentLayer" role="region" aria-labelledby="attachmentLayerTitle" hidden>
+              <h4 id="attachmentLayerTitle">프로젝트 첨부파일</h4>
+              <div class="attachment-groups">
+                <dl class="attachment-list">
+                  <div class="attachment-item"><dt>사업추진 계획안</dt><dd><button class="attachment-file" type="button" title="(주)선영 사업추진 계획안.pdf">(주)선영 사업추진 계획안.pdf</button></dd></div>
+                  <div class="attachment-item"><dt>사업추진 시행안</dt><dd><button class="attachment-file" type="button" title="(주)선영 사업추진 시행안.pdf">(주)선영 사업추진 시행안.pdf</button></dd></div>
+                  <div class="attachment-item"><dt>프로젝트 계약서(최초)</dt><dd><button class="attachment-file" type="button" title="(주)선영 사업추진 계약서.pdf">(주)선영 사업추진 계약서.pdf</button></dd></div>
+                  <div class="attachment-item"><dt>프로젝트 계약서(1차)</dt><dd><button class="attachment-file" type="button" title="(주)선영 사업추진 계약서_1차.pdf">(주)선영 사업추진 계약서_1차.pdf</button></dd></div>
+                </dl>
+                <dl class="attachment-list">
+                  <div class="attachment-item"><dt>기타 첨부 문서</dt><dd><button class="attachment-file" type="button" title="(주)선영 사업추진 계획안.pdf">(주)선영 사업추진 계획안.pdf</button></dd></div>
+                  <div class="attachment-item"><dt><span class="sr-only">기타 첨부 문서</span></dt><dd><button class="attachment-file" type="button" title="(주)선영 사업추진 시행안.pdf">(주)선영 사업추진 시행안.pdf</button></dd></div>
+                  <div class="attachment-item"><dt><span class="sr-only">기타 첨부 문서</span></dt><dd><button class="attachment-file" type="button" title="(주)선영 추가 첨부 문서.pdf">(주)선영 추가 첨부 문서.pdf</button></dd></div>
+                </dl>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="info-strip">
+          <div class="info-col">
+            <dl>
+              <div class="info-row"><dt>프로젝트 명</dt><dd id="rcpName">천안 (주)선영 LED 에너지효율화사업</dd></div>
+              <div class="info-row"><dt>사업구분</dt><dd id="rcpBizType">산업체 <span class="divider-v">|</span> 건축물</dd></div>
+            </dl>
+          </div>
+          <div class="info-col">
+            <dl>
+              <div class="info-row"><dt>대상설비</dt><dd id="rcpEquip">LED <span class="divider-v">|</span> 압축기 <span class="divider-v">|</span> 펌프</dd></div>
+              <div class="info-row"><dt>접수경로</dt><dd id="rcpChannel">EPC사</dd></div>
+            </dl>
+          </div>
+          <div class="info-col">
+            <dl>
+              <div class="info-row"><dt>계약형태</dt><dd id="rcpForm">EPC계약</dd></div>
+              <div class="info-row"><dt>계약유형</dt><dd id="rcpType">수익사업</dd></div>
+            </dl>
+          </div>
+          <div class="info-col">
+            <dl>
+              <div class="info-row"><dt>심의대상</dt><dd id="rcpReview">대상</dd></div>
+              <div class="info-row"><dt>계약일자</dt><dd>-</dd></div>
+            </dl>
+          </div>
+        </div>
+      </section>
+
+      <!-- History + progress -->
+      <div class="grid-3">
+        <section class="card">
+          <div class="card-body">
+            <h3 class="card-title">프로젝트 이력</h3>
+            <ul class="timeline">
+              <li class="step-done">
+                <svg class="step-ico" viewBox="0 0 24 24" fill="#10b981" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m8 12.5 2.5 2.5L16 9.5" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <span class="step-name">프로젝트 생성</span>
+                <span class="step-date">2026.07.01</span>
+                <span class="vline">|</span>
+                <span class="step-user">홍길동</span>
+              </li>
+              <li class="step-done">
+                <svg class="step-ico" viewBox="0 0 24 24" fill="#10b981" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m8 12.5 2.5 2.5L16 9.5" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <span class="step-name">사업 심의</span>
+                <span class="step-date">2026.07.01</span>
+                <span class="vline">|</span>
+                <span class="step-user">홍길동</span>
+              </li>
+              <li class="step-todo">
+                <svg class="step-ico" viewBox="0 0 24 24" fill="none" stroke="#cbd5e1" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/></svg>
+                <span class="step-name">사업 시행</span><span class="step-date">-</span><span class="vline">|</span><span class="step-user">-</span>
+              </li>
+              <li class="step-todo">
+                <svg class="step-ico" viewBox="0 0 24 24" fill="none" stroke="#cbd5e1" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/></svg>
+                <span class="step-name">계약 품의</span><span class="step-date">-</span><span class="vline">|</span><span class="step-user">-</span>
+              </li>
+              <li class="step-todo">
+                <svg class="step-ico" viewBox="0 0 24 24" fill="none" stroke="#cbd5e1" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/></svg>
+                <span class="step-name">계약 체결</span><span class="step-date">-</span><span class="vline">|</span><span class="step-user">-</span>
+              </li>
+              <li class="step-todo">
+                <svg class="step-ico" viewBox="0 0 24 24" fill="none" stroke="#cbd5e1" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/></svg>
+                <span class="step-name">상환 완료</span><span class="step-date">-</span><span class="vline">|</span><span class="step-user">-</span>
+              </li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="card-body">
+            <div class="card-title-row"><h3 class="card-title">투자 진행현황</h3><a class="card-more" href="/pms-project-investment.html" aria-label="투자 진행현황 상세">+</a></div>
+            <div class="progress-wrap">
+              <div class="donut donut-blue" role="img" aria-label="투자 진행률 60.6퍼센트">
+                <span class="donut-val">60.6%</span>
+              </div>
+              <dl class="metrics">
+                <div class="metric">
+                  <dt class="metric-label">누적 지급금액</dt>
+                  <dd class="metric-value blue">180,000,000<span class="unit">원</span></dd>
+                </div>
+                <div class="metric">
+                  <dt class="metric-label">투자금액(목표)</dt>
+                  <dd class="metric-value">297,350,000<span class="unit">원</span></dd>
+                </div>
+              </dl>
+            </div>
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="card-body">
+            <div class="card-title-row"><h3 class="card-title">상환 진행현황</h3><a class="card-more" href="/pms-project-repayment.html" aria-label="상환 진행현황 상세">+</a></div>
+            <div class="progress-wrap">
+              <div class="donut donut-green" role="img" aria-label="상환 진행률 60.6퍼센트">
+                <span class="donut-val">60.6%</span>
+              </div>
+              <dl class="metrics">
+                <div class="metric">
+                  <dt class="metric-label">누적 상환금액</dt>
+                  <dd class="metric-value green">293,350,000<span class="unit">원</span></dd>
+                </div>
+                <div class="metric">
+                  <dt class="metric-label">상환완료 금액</dt>
+                  <dd class="metric-value">1,183,350,000<span class="unit">원</span></dd>
+                </div>
+              </dl>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- Plan vs performance -->
+      <section class="card" aria-labelledby="performanceTitle">
+        <div class="card-body">
+          <div class="performance-head">
+            <h3 class="card-title" id="performanceTitle">
+              <svg class="title-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19V9M10 19V5M16 19v-7M3 19h18"/></svg>
+              계획대비 실적
+            </h3>
+            <span class="performance-note">조회일 기준, 전일까지 실적까지 반영됩니다.</span>
+            <a class="card-more" href="/pms-fund-plan-performance.html" aria-label="계획대비 실적 상세">+</a>
+          </div>
+
+          <div class="performance-table">
+            <table>
+              <caption class="sr-only">계획대비 실적 금액 현황</caption>
+              <thead>
+                <tr><th colspan="2">총 매출</th><th rowspan="2">영업외 수익<br>(원)</th><th colspan="3">(계획)상환(원)</th><th colspan="3">(실적)상환(원)</th></tr>
+                <tr><th>계획(원)</th><th>실적(원)</th><th>원리금</th><th>원금</th><th>이자</th><th>원리금</th><th>원금</th><th>이자</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>3,924,000</td><td>2,781,749</td><td>2,781,749</td><td>3,924,000</td><td>2,781,749</td><td>1,219,000</td><td>3,924,000</td><td>2,781,749</td><td>1,219,000</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="performance-charts">
+            <section class="performance-chart" aria-labelledby="salesRateTitle">
+              <h4 id="salesRateTitle">총 매출 계획 대비 실적 달성률</h4>
+              <div class="performance-donut-wrap"><div class="performance-donut" style="--rate:60.6%" role="img" aria-label="총 매출 달성률 60.6퍼센트"><strong>60.6%</strong></div></div>
+            </section>
+            <section class="performance-chart" aria-labelledby="incomeRateTitle">
+              <h4 id="incomeRateTitle">영업외 수익 계획 대비 실적 달성률</h4>
+              <div class="performance-donut-wrap"><div class="performance-donut green" style="--rate:60.6%" role="img" aria-label="영업외 수익 달성률 60.6퍼센트"><strong>60.6%</strong></div></div>
+            </section>
+            <section class="performance-chart" aria-labelledby="repaymentRateTitle">
+              <h4 id="repaymentRateTitle">계획 대비 상환 실적 달성률</h4>
+              <div class="performance-bars">
+                <div class="performance-bar"><span>원리금</span><span class="performance-bar-track"><span class="performance-bar-fill" style="--rate:87%"></span></span><strong>87%</strong></div>
+                <div class="performance-bar"><span>원금</span><span class="performance-bar-track"><span class="performance-bar-fill" style="--rate:77%"></span></span><strong>77%</strong></div>
+                <div class="performance-bar"><span>이자</span><span class="performance-bar-track"><span class="performance-bar-fill" style="--rate:67%"></span></span><strong>67%</strong></div>
+              </div>
+            </section>
+          </div>
+        </div>
+      </section>
+
+      <!-- Investment + repayment info -->
+      <div class="grid-2">
+        <section class="card">
+          <div class="card-body">
+            <div class="card-title-row"><h3 class="card-title"><svg class="title-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>투자금 정보</h3><a class="card-more" id="vendorDetailLink" href="/pms-project-investment.html?vendor=0" aria-label="포스무역 지급정보 상세">+</a></div>
+            <div class="vendor-tabs" role="tablist" aria-label="투자 업체">
+              <button class="vendor-tab active" type="button" role="tab" id="vendorTab-pos" aria-selected="true" aria-controls="vendorPanel" data-vendor="pos">(주)포스무역</button>
+              <button class="vendor-tab" type="button" role="tab" id="vendorTab-garam" aria-selected="false" aria-controls="vendorPanel" data-vendor="garam" tabindex="-1">(주)가람석재</button>
+              <button class="vendor-tab" type="button" role="tab" id="vendorTab-hong" aria-selected="false" aria-controls="vendorPanel" data-vendor="hong" tabindex="-1">홍마트</button>
+            </div>
+            <div class="def-grid" id="vendorPanel" role="tabpanel" aria-labelledby="vendorTab-pos">
+              <dl>
+                <div class="def-row"><dt>거래처명</dt><dd id="vendorName">(주)포스무역</dd></div>
+                <div class="def-row"><dt>공사시작일</dt><dd id="vendorStart">2026.07.31</dd></div>
+                <div class="def-row"><dt>공사종료일</dt><dd id="vendorEnd">2026.08.30</dd></div>
+                <div class="def-row"><dt>계약금액(VAT별도/원)</dt><dd id="vendorContract">220,000,000</dd></div>
+                <div class="def-row"><dt>공급가액(원)</dt><dd id="vendorSupply">220,000,000</dd></div>
+              </dl>
+              <dl>
+                <div class="def-row"><dt>합계액(VAT포함/원)</dt><dd id="vendorTotal">242,000,000</dd></div>
+                <div class="def-row"><dt>누적 지급액(원)</dt><dd id="vendorPaid">180,000,000</dd></div>
+                <div class="def-row"><dt>부가세(원)</dt><dd id="vendorVat">22,000,000</dd></div>
+                <div class="def-row"><dt>공사금액 지급(비율)</dt><dd id="vendorInstallment">33.3 / 33.3 / 33.4</dd></div>
+                <div class="def-row"><dt>지급률(%)</dt><dd class="link" id="vendorRate">60.5</dd></div>
+              </dl>
+            </div>
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="card-body">
+            <div class="card-title-row"><h3 class="card-title"><svg class="title-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18M7 15h4"/></svg>상환 정보</h3><a class="card-more" href="/pms-project-repayment.html" aria-label="상환 정보 상세">+</a></div>
+            <div class="repayment-info">
+              <dl class="repayment-info-col">
+                <div class="repayment-info-row"><dt>에너지 사용자명</dt><dd>(주)선영</dd></div>
+                <div class="repayment-info-row"><dt>상환 개시일</dt><dd>2026.10.31</dd></div>
+                <div class="repayment-info-row"><dt>총 상환금액</dt><dd>1,183,350,000 원</dd></div>
+                <div class="repayment-info-row"><dt>누적 상환액</dt><dd>293,350,000 원</dd></div>
+              </dl>
+              <dl class="repayment-info-col">
+                <div class="repayment-info-row"><dt>사용자 거래처명</dt><dd>선영_천안</dd></div>
+                <div class="repayment-info-row"><dt>상환 완료일</dt><dd>2028.09.30</dd></div>
+                <div class="repayment-info-row"><dt>상환율(%)</dt><dd>32</dd></div>
+                <div class="repayment-info-row"><dt>IRR(%)</dt><dd>9.54</dd></div>
+                <div class="repayment-info-row"><dt>상태</dt><dd><span class="repayment-status">상환 진행 중</span></dd></div>
+              </dl>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- Schedule table -->
+      <section class="card">
+        <div class="card-body" style="padding-bottom: 0;">
+          <div class="performance-head"><h3 class="card-title"><svg class="title-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 11h18"/></svg>상환 예정</h3><span class="performance-note">조회일 기준, 도래한 상환예정 스케줄만 노출됩니다.</span><a class="card-more" href="/pms-project-repayment.html" aria-label="상환 예정 상세">+</a></div>
+        </div>
+        <div class="table-scroll">
+          <table>
+            <caption class="sr-only">상환 예정 내역</caption>
+            <thead>
+              <tr>
+                <th scope="col">상환예정일</th>
+                <th scope="col">세금계산서발행일</th>
+                <th scope="col">상환액(원)</th>
+                <th scope="col">부가세(원)</th>
+                <th scope="col">회차별 상환총액(원)</th>
+                <th scope="col">지연이자(원)</th>
+                <th scope="col">실제 상환일</th>
+                <th scope="col">상환액</th>
+                <th scope="col">잔여액(원)</th>
+                <th scope="col">상태</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>2026.10.23</td>
+                <td>2026.10.15</td>
+                <td>46,761,000</td>
+                <td>4,676,100</td>
+                <td>51,437,100</td>
+                <td>0</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td><span class="pill pill-amber">대기</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+</div>
+
+<script>
+  // 프로젝트 첨부파일 레이어: hover·클릭·키보드 포커스로 열고 영역 이탈 시 닫습니다.
+  (function setupAttachmentLayer() {
+    var popover = document.getElementById("attachmentPopover");
+    var trigger = document.getElementById("attachmentTrigger");
+    var layer = document.getElementById("attachmentLayer");
+    if (!popover || !trigger || !layer) return;
+
+    function setOpen(open) {
+      layer.hidden = !open;
+      trigger.setAttribute("aria-expanded", String(open));
+    }
+
+    popover.addEventListener("mouseenter", function () { setOpen(true); });
+    popover.addEventListener("mouseleave", function () { setOpen(false); });
+    trigger.addEventListener("click", function () { setOpen(true); });
+    popover.addEventListener("focusin", function () { setOpen(true); });
+    popover.addEventListener("focusout", function (event) {
+      if (!event.relatedTarget || !popover.contains(event.relatedTarget)) setOpen(false);
+    });
+    document.addEventListener("pointerdown", function (event) {
+      if (!popover.contains(event.target)) setOpen(false);
+    });
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Escape" && !layer.hidden) {
+        setOpen(false);
+        trigger.focus();
+      }
+    });
+  })();
+
+  // 사업접수(신규 프로젝트 등록)에서 전달된 데이터를 HOME 기본정보 영역에 주입
+  (function () {
+    var raw;
+    try { raw = sessionStorage.getItem("pms.newProject"); } catch (err) { return; }
+    if (!raw) return;
+
+    var data;
+    try { data = JSON.parse(raw); } catch (err) { return; }
+    if (!data) return;
+    var projectNo = "2026-05001";
+    if (projectNo === "2026-05001") {
+      data.contractForm = "EPC계약";
+      data.channel = "EPC사";
+    } else if (projectNo === "2026-05002") {
+      data.contractForm = "ESCO계약";
+      data.channel = "온라인";
+    }
+
+    // 단일 값 텍스트 주입
+    function setText(id, value) {
+      var el = document.getElementById(id);
+      if (el && value) el.textContent = value;
+    }
+    // 복수 선택 값은 세로 구분자(|)로 연결해 주입
+    function setList(id, values) {
+      var el = document.getElementById(id);
+      if (!el || !values || !values.length) return;
+      el.innerHTML = "";
+      values.forEach(function (v, i) {
+        if (i > 0) {
+          var sep = document.createElement("span");
+          sep.className = "divider-v";
+          sep.setAttribute("aria-hidden", "true");
+          sep.textContent = "|";
+          el.appendChild(sep);
+        }
+        el.appendChild(document.createTextNode(v));
+      });
+    }
+
+    setText("rcpName", data.name);
+    setText("rcpNameRepay", data.name);
+    setText("rcpForm", data.contractForm);
+    setText("rcpReview", data.reviewTarget);
+    var isEpcContract = /^EPC/i.test(data.contractForm || "");
+    var contractTypeCell = document.getElementById("rcpType");
+    if (contractTypeCell) contractTypeCell.textContent = isEpcContract ? "" : (data.contractType || "");
+    setText("rcpChannel", data.channel);
+    setList("rcpBizType", data.bizTypes);
+    setList("rcpEquip", data.equipments);
+
+    // 프로젝트 현황 목록에서 진입한 프로젝트는 번호별 계약 형태를 최우선으로 적용합니다.
+    if (projectNo === "2026-05001") {
+      setText("rcpForm", "EPC계약");
+      setText("rcpChannel", "EPC사");
+      if (contractTypeCell) contractTypeCell.textContent = "";
+      document.querySelectorAll('.tabs a[href="/pms-project-investment.html"]').forEach(function (tab) {
+        tab.remove();
+      });
+      document.querySelectorAll('.tabs a[href="/pms-project-investment-epc.html"]').forEach(function (tab) {
+        tab.href = "https://02kepcoes.vercel.app/pms-project-investment-epc.html";
+        tab.textContent = "투자";
+      });
+      document.querySelectorAll('.tabs a[href="/pms-project-promotion.html"]').forEach(function (tab) {
+        tab.href = "/pms-project-promotion.html?projectNo=2026-05001";
+      });
+    } else if (projectNo === "2026-05002") {
+      setText("rcpForm", "ESCO계약");
+      setText("rcpChannel", "온라인");
+      if (contractTypeCell) contractTypeCell.textContent = data.contractType || "수익사업";
+      document.querySelectorAll('.tabs a[href="/pms-project-promotion.html"]').forEach(function (tab) {
+        tab.href = "/pms-project-promotion.html?projectNo=2026-05002";
+      });
+      document.querySelectorAll('.tabs a[href="/pms-project-investment-epc.html"]').forEach(function (tab) {
+        tab.remove();
+      });
+    }
+  })();
+
+  // 투자 업체 탭 선택 시 해당 업체의 투자금 정보를 표시
+  (function () {
+    var vendors = {
+      pos: { name: "(주)포스무역", start: "2026.07.31", end: "2026.08.30", contract: "220,000,000", supply: "220,000,000", total: "242,000,000", paid: "180,000,000", vat: "22,000,000", installment: "33.3 / 33.3 / 33.4", rate: "60.5" },
+      garam: { name: "(주)가람석재", start: "2026.08.10", end: "2026.09.15", contract: "145,000,000", supply: "145,000,000", total: "159,500,000", paid: "95,700,000", vat: "14,500,000", installment: "30 / 40 / 30", rate: "60.0" },
+      hong: { name: "홍마트", start: "2026.09.01", end: "2026.10.20", contract: "98,000,000", supply: "98,000,000", total: "107,800,000", paid: "43,120,000", vat: "9,800,000", installment: "40 / 30 / 30", rate: "40.0" }
+    };
+    var fields = { name: "vendorName", start: "vendorStart", end: "vendorEnd", contract: "vendorContract", supply: "vendorSupply", total: "vendorTotal", paid: "vendorPaid", vat: "vendorVat", installment: "vendorInstallment", rate: "vendorRate" };
+    var tabs = Array.prototype.slice.call(document.querySelectorAll(".vendor-tab"));
+    var panel = document.getElementById("vendorPanel");
+    var detailLink = document.getElementById("vendorDetailLink");
+    var vendorIndexes = { pos: 0, garam: 1, hong: 2 };
+
+    function selectVendor(tab) {
+      var data = vendors[tab.dataset.vendor];
+      if (!data) return;
+      tabs.forEach(function (item) {
+        var selected = item === tab;
+        item.classList.toggle("active", selected);
+        item.setAttribute("aria-selected", String(selected));
+        item.tabIndex = selected ? 0 : -1;
+      });
+      Object.keys(fields).forEach(function (key) {
+        var field = document.getElementById(fields[key]);
+        if (field) field.textContent = data[key];
+      });
+      if (panel) panel.setAttribute("aria-labelledby", tab.id);
+      if (detailLink) {
+        detailLink.href = "/pms-project-investment.html?vendor=" + vendorIndexes[tab.dataset.vendor];
+        detailLink.setAttribute("aria-label", data.name + " 지급정보 상세");
+      }
+    }
+
+    tabs.forEach(function (tab, index) {
+      tab.addEventListener("click", function () { selectVendor(tab); });
+      tab.addEventListener("keydown", function (event) {
+        if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+        event.preventDefault();
+        var nextIndex = event.key === "ArrowRight" ? (index + 1) % tabs.length : (index - 1 + tabs.length) % tabs.length;
+        tabs[nextIndex].focus();
+        selectVendor(tabs[nextIndex]);
+      });
+    });
+  })();
+
+</script>
+  <script src="/assets/pms-lnb.js?v=20260930-2"></script>
+  <script src="/assets/pms-intake-wizard.js?v=20260921-2"></script>
+</body>
+</html>
