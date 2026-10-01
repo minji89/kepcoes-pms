@@ -208,13 +208,13 @@
     var projectTabs = document.querySelector(".tabs");
     if (!projectTabs) return;
 
+    var pagePath = window.location.pathname;
     var contractForm = getCurrentProjectContractForm();
-    if (!contractForm) return;
+    if (!contractForm && pagePath !== normalPath && pagePath !== epcPath) return;
 
-    var isEpc = /^EPC/i.test(contractForm);
+    var isEpc = contractForm ? /^EPC/i.test(contractForm) : pagePath === epcPath;
     var activePath = isEpc ? epcPath : normalPath;
     var hiddenPath = isEpc ? normalPath : epcPath;
-    var pagePath = window.location.pathname;
 
     if (pagePath === hiddenPath) {
       window.location.replace(activePath + window.location.search + window.location.hash);
