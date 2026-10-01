@@ -231,7 +231,7 @@
       tab.textContent = "\uD22C\uC790";
     });
 
-    if (pagePath === "/pms-project-detail.html" && projectNo === "2026-05001") {
+    if ((pagePath === "/pms-project-detail.html" || pagePath === "/pms-project-promotion.html") && projectNo === "2026-05001") {
       projectTabs.querySelectorAll('a[href^="' + normalPath + '"]').forEach(function (tab) {
         tab.remove();
       });
