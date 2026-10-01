@@ -251,9 +251,20 @@
       projectTabs.querySelectorAll('a[href^="' + epcPath + '"]').forEach(function (tab) {
         tab.remove();
       });
-      projectTabs.querySelectorAll('a[href^="' + normalPath + '"]').forEach(function (tab) {
+      var escoInvestmentTab = projectTabs.querySelector('a[href^="' + normalPath + '"]');
+      if (!escoInvestmentTab) {
+        escoInvestmentTab = document.createElement("a");
+        escoInvestmentTab.className = "tab";
+        escoInvestmentTab.setAttribute("role", "tab");
+        projectTabs.appendChild(escoInvestmentTab);
+        escoInvestmentTab.href = "https://02kepcoes.vercel.app/pms-project-investment.html";
+        escoInvestmentTab.textContent = "투자";
+        escoInvestmentTab.setAttribute("data-esco-investment-tab", "true");
+      }
+      projectTabs.querySelectorAll('a[href^="' + normalPath + '"], a[data-esco-investment-tab="true"]').forEach(function (tab) {
         tab.href = "https://02kepcoes.vercel.app/pms-project-investment.html";
         tab.textContent = "투자";
+        tab.setAttribute("data-esco-investment-tab", "true");
       });
     }
 
