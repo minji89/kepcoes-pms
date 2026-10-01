@@ -290,7 +290,7 @@
       });
     }
 
-    if (pagePath === "/pms-project-detail-epc.html") {
+    if (pagePath === "/pms-project-detail-epc.html" || (pagePath === "/pms-project-promotion.html" && projectNo === "2026-05001")) {
       var investmentTabs = Array.prototype.filter.call(projectTabs.querySelectorAll("a.tab"), function (tab) {
         return tab.textContent.trim() === "투자";
       });
