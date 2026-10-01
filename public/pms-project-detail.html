@@ -780,6 +780,14 @@
     var data;
     try { data = JSON.parse(raw); } catch (err) { return; }
     if (!data) return;
+    var projectNo = new URLSearchParams(window.location.search).get("projectNo");
+    if (projectNo === "2026-05001") {
+      data.contractForm = "EPC계약";
+      data.channel = "EPC사";
+    } else if (projectNo === "2026-05002") {
+      data.contractForm = "ESCO계약";
+      data.channel = "온라인";
+    }
 
     // 단일 값 텍스트 주입
     function setText(id, value) {
