@@ -231,6 +231,16 @@
       tab.textContent = "\uD22C\uC790";
     });
 
+    if (pagePath === "/pms-project-detail.html" && projectNo === "2026-05001") {
+      projectTabs.querySelectorAll('a[href^="' + normalPath + '"]').forEach(function (tab) {
+        tab.remove();
+      });
+      projectTabs.querySelectorAll('a[href^="' + epcPath + '"]').forEach(function (tab) {
+        tab.href = "https://02kepcoes.vercel.app/pms-project-investment-epc.html";
+        tab.textContent = "투자";
+      });
+    }
+
     if (pagePath === "/pms-project-detail.html" && new URLSearchParams(window.location.search).get("projectNo") === "2026-05002") {
       projectTabs.querySelectorAll('a[href^="' + normalPath + '"]').forEach(function (tab) {
         tab.href = "https://02kepcoes.vercel.app/pms-project-investment.html";
