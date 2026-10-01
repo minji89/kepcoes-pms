@@ -1181,6 +1181,10 @@
     });
 
     renderLnbUtilities(nav);
+    var srmLink = document.querySelector('.lnb-utility-link[href="https://srm.kepco.net/"]');
+    if (srmLink) {
+      srmLink.href = 'https://leehee4343.github.io/kepcoes-srm-prototype/modules/01_%ED%98%91%EB%A0%A5%EC%97%85%EC%B2%B4%EC%B0%BD%EA%B5%AC_%EB%A1%9C%EA%B7%B8%EC%9D%B8%EC%A0%84/SRMLogin.html';
+    }
 
     if (path === "/pms-business-settlement.html") {
       var excelButton = document.querySelector(".excel");
