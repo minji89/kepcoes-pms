@@ -385,8 +385,8 @@
                   <td id="dName"></td>
                   <th scope="row">추정가격(소요예산)</th>
                   <td class="num" id="dEstimate"></td>
-                  <th scope="row"></th>
-                  <td></td>
+                  <th scope="row">발주 구분</th>
+                  <td id="dOrderType"></td>
                 </tr>
                 <tr>
                   <th scope="row">계약 상대자</th>
@@ -591,6 +591,7 @@
   setText("dMethod", data.method);
   setText("dName", data.name);
   setText("dEstimate", won(data.estimate));
+  setText("dOrderType", data.orderType || "PMS");
   setText("dSignedAt", data.signedAt);
   setText("dPartner", data.partner);
   setText("dBasis", data.basis);
