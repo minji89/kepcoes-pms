@@ -4,7 +4,7 @@
     "사업 접수":[{label:"신규 프로젝트 등록",href:"/pms-new-project.html"},{label:"추진단계 프로젝트 현황",href:"/pms-promotion-status.html"}],
     "프로젝트 관리":[{label:"프로젝트 현황",href:"/pms-project-status.html"}],
     "계약 관리":[{label:"수주계약 현황",href:"/pms-contract-status.html"},{label:"발주계약 현황",href:"/pms-order-contract-status.html"}],
-    "자금 관리":[{label:"상환 계획",href:"/pms-fund-interest.html"},{label:"상환 현황",href:"/pms-fund-repayment.html"},{label:"계획대비 실적 현황",href:"/pms-fund-plan-performance.html"},{label:"투자금 지급현황",href:"/pms-investment-payments.html"}],
+    "자금 관리":[{label:"상환 계획",href:"/pms-fund-interest.html"},{label:"상환 현황",href:"/pms-fund-repayment.html"},{label:"미수채권 사업",href:"/pms-fund-unpaid.html"},{label:"계획대비 실적현황",href:"/pms-fund-plan-performance.html"},{label:"투자비 지급현황",href:"/pms-investment-payments.html"}],
     "사업 결산":[{label:"사업결산",href:"/pms-business-settlement.html?view=list"}],
     "마이페이지":[{label:"내 프로젝트 현황",href:"/pms-my-projects.html"},{label:"데이터 수정요청",href:"/pms-data-change-requests.html"},{label:"내 정보 수정",href:"/pms-my-profile.html"}],
     "출장 관리":[{label:"출장 현황",href:"/pms-business-trip-status.html"},{label:"출장 정산내역",href:"/pms-business-trip-settlements.html"}],

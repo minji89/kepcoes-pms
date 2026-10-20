@@ -20,8 +20,9 @@
     자금관리: [
       { label: "상환 계획", href: "/pms-fund-interest.html" },
       { label: "상환 현황", href: "/pms-fund-repayment.html" },
-      { label: "계획대비 실적 현황", href: "/pms-fund-plan-performance.html" },
-      { label: "투자금 지급현황", href: "/pms-investment-payments.html" },
+      { label: "미수채권 사업", href: "/pms-fund-unpaid.html" },
+      { label: "계획대비 실적현황", href: "/pms-fund-plan-performance.html" },
+      { label: "투자비 지급현황", href: "/pms-investment-payments.html" },
     ],
   };
 
@@ -73,8 +74,9 @@
   MENU["\uC790\uAE08\uAD00\uB9AC"] = [
     { label: "\uC0C1\uD658 \uACC4\uD68D", href: "/pms-fund-interest.html" },
     { label: "\uC0C1\uD658 \uD604\uD669", href: "/pms-fund-repayment.html" },
-    { label: "계획대비 실적 현황", href: "/pms-fund-plan-performance.html" },
-    { label: "\uD22C\uC790\uAE08 \uC9C0\uAE09\uD604\uD669", href: "/pms-investment-payments.html" },
+    { label: "미수채권 사업", href: "/pms-fund-unpaid.html" },
+    { label: "계획대비 실적현황", href: "/pms-fund-plan-performance.html" },
+    { label: "투자비 지급현황", href: "/pms-investment-payments.html" },
   ];
 
   var ACTIVE_BY_PATH = {
@@ -94,7 +96,8 @@
     "/pms-contract-status.html": "수주계약 현황",
     "/pms-fund-interest.html": "상환 계획",
     "/pms-fund-repayment.html": "상환 현황",
-    "/pms-fund-plan-performance.html": "계획대비 실적 현황",
+    "/pms-fund-unpaid.html": "미수채권 사업",
+    "/pms-fund-plan-performance.html": "계획대비 실적현황",
   };
 
   ACTIVE_BY_PATH["/pms-business-settlement.html"] = "\uC0AC\uC5C5 \uACB0\uC0B0";
@@ -115,7 +118,7 @@
   ACTIVE_BY_PATH["/pms-menu-access-status.html"] = "\uBA54\uB274\uBCC4 \uC811\uC18D\uD604\uD669";
   ACTIVE_BY_PATH["/pms-epc-management.html"] = "EPC\uC0AC \uAD00\uB9AC";
   ACTIVE_BY_PATH["/pms-epc-detail.html"] = "EPC\uC0AC \uAD00\uB9AC";
-  ACTIVE_BY_PATH["/pms-investment-payments.html"] = "\uD22C\uC790\uAE08 \uC9C0\uAE09\uD604\uD669";
+  ACTIVE_BY_PATH["/pms-investment-payments.html"] = "투자비 지급현황";
   ACTIVE_BY_PATH["/pms-business-trip-status.html"] = "\uCD9C\uC7A5 \uD604\uD669";
   ACTIVE_BY_PATH["/pms-business-trip-settlements.html"] = "\uCD9C\uC7A5 \uC815\uC0B0\uB0B4\uC5ED";
   ACTIVE_BY_PATH["/pms-trip-rate-settings.html"] = "\uCD9C\uC7A5 \uB2E8\uAC00 \uBC0F \uAE30\uC900 \uC124\uC815";
@@ -330,7 +333,7 @@
       a.className = "subnav-item";
       a.href = child.href;
 
-      var isActive = child.label === activeLabel;
+      var isActive = child.label === activeLabel || normalize(child.label) === normalize(activeLabel);
       if (isActive) {
         a.classList.add("active");
         a.setAttribute("aria-current", "page");
@@ -1223,7 +1226,7 @@
       }
 
       var hasActiveChild = children.some(function (child) {
-        return child.label === scopedActiveLabel;
+        return child.label === scopedActiveLabel || normalize(child.label) === normalize(scopedActiveLabel);
       });
 
       li.appendChild(buildSubnav(children, scopedActiveLabel));
