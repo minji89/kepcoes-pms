@@ -132,4 +132,38 @@ render(rows);
 <script src="/assets/pms-lnb.js"></script>
   <script src="/assets/pms-intake-wizard.js?v=20260921-2"></script>
 </body>
+<script>
+(function () {
+  var table = document.querySelector(".table-list table");
+  if (!table) return;
+  table.querySelector("thead").innerHTML = '<tr><th rowspan="2">순번</th><th rowspan="2">프로젝트번호</th><th rowspan="2">프로젝트명</th><th rowspan="2">에너지사용자</th><th rowspan="2">사업구분</th><th rowspan="2">대상설비</th><th rowspan="2">계약 체결일</th><th rowspan="2">상환완료일</th><th rowspan="2">총 매출(원)</th><th colspan="3" class="grp">영업 외 수익</th><th colspan="3" class="grp">(계획) 상환(원)</th><th colspan="3" class="grp">(실적) 상환(원)</th></tr><tr><th>계획</th><th>실적</th><th>비율(%)</th><th>원리금</th><th>원금</th><th>이자</th><th>원리금</th><th>원금</th><th>이자</th></tr>';
+  table.querySelectorAll("tbody tr").forEach(function (tr, index) {
+    var c = tr.children;
+    if (c.length < 22) return;
+    var values = [c[0].innerHTML, c[1].innerHTML, c[2].innerHTML, index === 0 ? "㈜한화" : index === 1 ? "㈜감포건설" : "-", c[4].innerHTML, c[5].innerHTML, c[6].innerHTML, c[7].innerHTML, c[11].innerHTML, c[15].innerHTML, c[14].innerHTML, c[13].innerHTML, c[16].innerHTML, c[17].innerHTML, c[18].innerHTML, c[19].innerHTML, c[20].innerHTML, c[21].innerHTML];
+    tr.innerHTML = values.map(function (value) { return "<td>" + value + "</td>"; }).join("");
+  });
+})();
+ </script>
+<script>
+(function () {
+  var table = document.querySelector(".table-list table");
+  if (!table) return;
+  table.querySelector("thead").innerHTML = '<tr><th rowspan="2">순번</th><th rowspan="2">프로젝트번호</th><th rowspan="2">프로젝트명</th><th rowspan="2">에너지사용자</th><th rowspan="2">사업구분</th><th rowspan="2">대상설비</th><th rowspan="2">계약 체결일</th><th rowspan="2">상환완료일</th><th colspan="3" class="grp">총 매출(원)</th><th colspan="2" class="grp">영업 외 수익</th><th colspan="3" class="grp">(계획) 상환(원)</th><th colspan="3" class="grp">(실적) 상환(원)</th></tr><tr><th>계획</th><th>실적</th><th>비율(%)</th><th>계획</th><th>실적</th><th>원리금</th><th>원금</th><th>이자</th><th>원리금</th><th>원금</th><th>이자</th></tr>';
+  table.querySelectorAll("tbody tr").forEach(function (tr, index) {
+    var c = tr.children;
+    if (c.length < 18) return;
+    var v = [c[0].innerHTML, c[1].innerHTML, c[2].innerHTML, index === 0 ? "㈜한화" : index === 1 ? "㈜감포건설" : "-", c[4].innerHTML, index === 0 ? "CTTS | LED" : index === 1 ? "LED" : c[5].innerHTML, "2025.12.30", "2027.04.30", "3,924,000", "2,781,749", index === 0 ? "87.23" : "87.45", "2,781,749", "2,781,749", "3,924,000", "2,781,749", "1,219,000", "3,924,000", "2,781,749", "1,219,000"];
+    tr.innerHTML = v.map(function (x) { return "<td>" + x + "</td>"; }).join("");
+  });
+})();
+</script>
+<script>
+(function () {
+  var table = document.querySelector(".table-summary table");
+  if (!table) return;
+  table.querySelector("thead").innerHTML = '<tr><th rowspan="2">조회기준</th><th colspan="2" class="grp">조회기간</th><th rowspan="2">프로젝트</th><th colspan="3" class="grp">총 매출</th><th colspan="2" class="grp">영업외 수익</th><th colspan="3" class="grp">(계획)상환</th><th colspan="3" class="grp">(실적)상환</th></tr><tr><th>시작일</th><th>종료일</th><th>계획</th><th>실적</th><th>비율(%)</th><th>계획</th><th>실적</th><th>원리금</th><th>원금</th><th>이자</th><th>원리금</th><th>원금</th><th>이자</th></tr>';
+  table.querySelector("tbody").innerHTML = '<tr><td>실시간</td><td>2025.07.31</td><td>2026.07.30</td><td>12</td><td class="num">4,316,400</td><td class="num">3,896,831</td><td>72.5</td><td class="num">63,830,850</td><td class="num">540,000</td><td class="num">3,924,000</td><td class="num">3,000,000</td><td class="num">924,000</td><td class="num">3,924,000</td><td class="num">3,000,000</td><td class="num">924,000</td></tr>';
+})();
+</script>
 </html>

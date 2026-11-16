@@ -1319,6 +1319,19 @@
     }
   }
 
+  if (window.location.pathname === "/pms-investment-payments.html") {
+    var paymentTable = document.querySelector(".master");
+    if (paymentTable) {
+      paymentTable.querySelector("thead").innerHTML = '<tr><th>순번</th><th>계약 체결일</th><th>프로젝트번호</th><th>프로젝트명</th><th>에너지사용자</th><th>EPC사</th><th>대상설비</th><th>계약유형</th><th>지급회차</th><th>지급구분</th><th>지급비율(%)</th><th>공급가액(원)</th><th>부가세(원)</th><th>합계(원)</th><th>지급누적액(원)</th><th>지급누적비율(%)</th><th>세금계산서 발행일</th><th>지급일</th><th>사업담당자</th></tr>';
+      paymentTable.querySelectorAll("tbody tr").forEach(function (tr) {
+        var c = tr.children;
+        if (c.length < 19) return;
+        var v = [c[0].innerHTML, c[1].innerHTML, c[2].innerHTML, c[3].innerHTML, c[4].innerHTML, c[5].innerHTML, c[7].innerHTML, c[6].innerHTML, c[8].innerHTML, c[9].innerHTML, c[10].innerHTML, c[11].innerHTML, c[12].innerHTML, c[13].innerHTML, c[14].innerHTML, c[15].innerHTML, c[16].innerHTML, c[17].innerHTML, c[18].innerHTML];
+        tr.innerHTML = v.map(function (x) { return "<td>" + x + "</td>"; }).join("");
+      });
+    }
+  }
+
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", initLnb);
   } else {
