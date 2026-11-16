@@ -370,9 +370,24 @@
     var sidebar = nav.closest(".sidebar");
     if (!sidebar) return;
 
-    sidebar.querySelectorAll(".sidebar-foot, .guide-foot, .lnb-utility-links").forEach(function (element) {
+    sidebar.querySelectorAll(".sidebar-foot, .guide-foot, .lnb-public-nav, .lnb-utility-links").forEach(function (element) {
       element.remove();
     });
+
+    var publicNav = document.createElement("nav");
+    publicNav.className = "lnb-public-nav";
+    publicNav.setAttribute("aria-label", "일반 사용자 메뉴");
+    publicNav.innerHTML =
+      '<a class="lnb-public-nav-item" href="/pms-notice-management.html">공지사항</a>' +
+      '<a class="lnb-public-nav-item" href="/pms-resource-management.html">양식 등 자료실</a>';
+    var currentPath = window.location.pathname;
+    publicNav.querySelectorAll(".lnb-public-nav-item").forEach(function (link) {
+      if (link.getAttribute("href") === currentPath) {
+        link.classList.add("active");
+        link.setAttribute("aria-current", "page");
+      }
+    });
+    nav.parentElement.appendChild(publicNav);
 
     var utilities = document.createElement("div");
     utilities.className = "lnb-utility-links";
@@ -392,7 +407,10 @@
       var style = document.createElement("style");
       style.id = "pmsLnbUtilityStyle";
       style.textContent =
-        '.sidebar .lnb-utility-links{display:grid;gap:8px;margin:8px 14px 18px;padding-top:8px;border-top:1px solid #e5e9f0}' +
+        '.sidebar .lnb-public-nav{display:grid;gap:2px;margin:2px 14px 8px;padding:8px 0;border-top:1px solid #e5e9f0;border-bottom:1px solid #e5e9f0}' +
+        '.sidebar .lnb-public-nav-item{display:block;padding:9px 14px;border-radius:7px;color:#40516a;font-size:14px;font-weight:600;line-height:1.5;text-decoration:none}' +
+        '.sidebar .lnb-public-nav-item:hover,.sidebar .lnb-public-nav-item.active{background:#e5efff;color:#1769e8;font-weight:700}' +
+        '.sidebar .lnb-utility-links{display:grid;gap:8px;margin:8px 14px 18px}' +
         '.sidebar .lnb-favorites{display:grid;gap:3px;padding:7px 8px 8px;border:1px solid #d9e4f3;border-radius:7px;background:#f5f8fd}' +
         '.sidebar .lnb-favorites-title{display:block;margin-bottom:2px;color:#1d5fbf;font-size:11px;font-weight:700}' +
         '.sidebar .lnb-favorites-list{display:grid;gap:1px}' +
@@ -1188,6 +1206,12 @@
 
     var path = pagePath;
     var activeLabel = ACTIVE_BY_PATH[path] || "";
+    var isPublicCommonPage = path === "/pms-notice-management.html" ||
+      path === "/pms-notice-view.html" ||
+      path === "/pms-notice-form.html" ||
+      path === "/pms-resource-management.html" ||
+      path === "/pms-resource-view.html" ||
+      path === "/pms-resource-form.html";
     var view = new URLSearchParams(window.location.search).get("view");
     if (path === "/pms-project-status.html" && view === "mine") {
       activeLabel = "\uB0B4 \uD504\uB85C\uC81D\uD2B8 \uD604\uD669";
@@ -1216,6 +1240,9 @@
       if (existing) existing.remove();
 
       var scopedActiveLabel = activeLabel;
+      if (isPublicCommonPage && normalize(labelOf(navItem)) === normalize("공통관리")) {
+        scopedActiveLabel = "";
+      }
       if (path === "/pms-fund-plan-performance.html") {
         var openedFromStatistics = new URLSearchParams(window.location.search).get("menu") === "statistics";
         var currentMenuLabel = labelOf(navItem);
@@ -1261,6 +1288,16 @@
         navItem.removeAttribute("aria-current");
       }
     });
+
+    if (isPublicCommonPage) {
+      Array.prototype.forEach.call(nav.children, function (li) {
+        var item = li.querySelector(":scope > .nav-item");
+        if (!item || normalize(labelOf(item)) !== normalize("공통관리")) return;
+        item.classList.remove("active");
+        item.removeAttribute("aria-current");
+        li.classList.remove("is-open");
+      });
+    }
 
     renderLnbUtilities(nav);
     if (localStorage.getItem("pmsUserRole") === "user" || localStorage.getItem("pmsUserRole") === "1" || localStorage.getItem("pmsSavedId") === "1") {

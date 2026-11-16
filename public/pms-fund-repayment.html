@@ -201,6 +201,7 @@
   .btn-primary { background: var(--navy); color: #fff; border: 1px solid var(--navy); }
   .btn-outline { background: var(--surface); color: #475569; border: 1px solid #dbe1ea; }
   .btn-excel { background: var(--green); color: #fff; border: 1px solid var(--green); }
+  .btn-reminder { background: #3f3f46; color: #fff; border: 1px solid #3f3f46; }
 
   /* ---------- Result overview ---------- */
   .overview { padding: 20px 22px; }
@@ -284,6 +285,7 @@
   .proj-link { color: var(--brand); text-decoration: underline; }
   /* 상환상태 : 미상환 건은 배경으로 강조합니다. */
   tbody td.st-unpaid { background: var(--warn-bg); color: var(--warn-text); font-weight: 700; }
+  tbody td.st-claim { color: #dc2626; font-weight: 700; }
   tbody td.st-done { color: var(--muted); }
   .table-detail { margin-top: 14px; }
   .table-detail table { width: max-content; min-width: 1180px; }
@@ -482,9 +484,9 @@
           <div class="srow">
             <span class="srow-label">조회기간</span>
             <label class="sr-only" for="period-type">기간 기준</label>
-            <select class="ctrl wide" id="period-type">
-              <option>계약일자</option>
+              <select class="ctrl wide" id="period-type">
               <option>상환개시일</option>
+              <option>계약일자</option>
               <option>상환종료일</option>
               <option>최근입금일</option>
             </select>
@@ -512,12 +514,12 @@
               <select class="ctrl" id="f-biz"><option>전체</option><option>산업체</option><option>건축물</option><option>공장</option><option>신산업</option></select>
             </span>
             <span class="field">
-              <label class="field-name" for="f-state">상환 상태</label>
-              <select class="ctrl" id="f-state"><option>전체</option><option>정상</option><option>미상환</option><option>종료</option></select>
-            </span>
-            <span class="field">
               <label class="field-name" for="f-equip">대상 설비</label>
               <select class="ctrl" id="f-equip"><option>전체</option><option>CTTS</option><option>LED</option><option>인버터</option><option>태양광</option></select>
+            </span>
+            <span class="field">
+              <label class="field-name" for="f-state">상환 상태</label>
+              <select class="ctrl" id="f-state"><option>전체</option><option>정상</option><option>미상환</option><option>종료</option><option>미수채권</option></select>
             </span>
           </div>
 
@@ -544,7 +546,7 @@
         <div class="overview-grid">
           <article class="overview-item"><h4>사업구분</h4><div class="chart-body"><div class="donut" id="biz-chart" role="img"><div class="donut-center"><strong>0</strong><span>조회 건수</span></div></div><div class="chart-legend" id="biz-legend"></div></div></article>
           <article class="overview-item"><h4>상환상태</h4><div class="chart-body"><div class="donut" id="state-chart" role="img"><div class="donut-center"><strong>0</strong><span>조회 건수</span></div></div><div class="chart-legend" id="state-legend"></div></div></article>
-          <article class="overview-item"><h4>납기 구분</h4><div class="chart-body"><div class="donut" id="term-chart" role="img"><div class="donut-center"><strong>0</strong><span>조회 건수</span></div></div><div class="chart-legend" id="term-legend"></div></div></article>
+          <article class="overview-item"><h4>상환조건</h4><div class="chart-body"><div class="donut" id="term-chart" role="img"><div class="donut-center"><strong>0</strong><span>조회 건수</span></div></div><div class="chart-legend" id="term-legend"></div></div></article>
         </div>
       </section>
 
@@ -552,8 +554,7 @@
       <div class="result-bar">
         <p class="result-count" id="result-count">조회 결과 : 24건</p>
         <div class="result-right">
-          <label class="sr-only" for="page-size">페이지당 표시 개수</label>
-          <select class="ctrl" id="page-size"><option>10개</option><option>30개</option><option>50개</option></select>
+          <button class="btn btn-reminder" id="reminder-btn" type="button">미상환 독촉 알림 발송</button>
           <button class="btn btn-excel" type="button">다운로드(Excel)</button>
         </div>
       </div>
@@ -688,7 +689,7 @@
      unpaid  : 미상환누적액(원)
      잔여상환액 = total - paid, 회수율 = paid / total * 100 로 계산합니다.        */
   var rows = [
-    { no: 24, pno: "2026_0610", biz: "산업체", date: "2025.12.10", name: "전기공사공제조합 본부사옥 LED 조명 교체 사업", user: "㈜한화", rounds: 16, cur: 7, unpaidCnt: 0, state: "미상환", term: "월별", invoiceDate: "2026.12.15", deposited: "○", installment: 3924000, currentPaid: 2000000, total: 24000000000, paid: 10500000000, unpaid: 0, start: "2026.12.15", end: "2029.12.15", last: "2027.01.13" },
+    { no: 24, pno: "2026_0610", biz: "산업체", equip: "CTTS | LED", date: "2025.12.10", name: "전기공사공제조합 본부사옥 LED 조명 교체 사업", user: "㈜한화", rounds: 16, cur: 5, unpaidCnt: 3, state: "미수채권", term: "월별", invoiceDate: "2026.12.15", deposited: "○", installment: 3924000, currentPaid: 2000000, total: 24000000, paid: 10500000, unpaid: 0, rest: 13500000, rate: 43.75, start: "2026.12.15", end: "2029.12.15", last: "2027.01.13", guarantee: "○ (발급)" },
     { no: 23, pno: "2026_0645", biz: "산업체", date: "2025.12.10", name: "GE-4 에너지효율화(ID Fan VVVF 설치) 사업", user: "㈜감포건설", rounds: 24, cur: 11, unpaidCnt: 3, state: "정상", term: "월별", invoiceDate: "2026.12.15", deposited: "-", installment: 0, currentPaid: 0, total: 1200000000, paid: 100500000, unpaid: 404950000, start: "2026.12.15", end: "2029.12.15", last: "2027.03.10" },
     { no: 22, pno: "2026_0342", biz: "산업체", date: "2025.12.10", name: "㈜엘엠에이티 에너지효율화(공정설비 개선) 사업", user: "㈜해련", rounds: 12, cur: 12, unpaidCnt: 0, state: "종료", term: "월별", total: 1800000000, paid: 1800000000, unpaid: 0, start: "2026.12.15", end: "2027.12.15", last: "2027.12.15" },
     { no: 21, pno: "2026_0318", biz: "건축물", date: "2025.11.28", name: "천안 선영 오피스텔 고효율 조명 교체 사업", user: "㈜선영", rounds: 20, cur: 9, unpaidCnt: 0, state: "정상", term: "월별", total: 3200000000, paid: 1440000000, unpaid: 0, start: "2026.11.01", end: "2029.10.31", last: "2027.02.01" },
@@ -713,7 +714,7 @@
   }
 
   var businessGroups = ["산업체", "건축물", "공장", "신산업"];
-  var repaymentStates = ["정상", "미상환", "종료"];
+  var repaymentStates = ["상환 진행 중", "상환 완료", "미상환", "미수채권"];
   var paymentTerms = ["월별", "분기별", "반기별", "일시납"];
   var equipmentTypes = ["CTTS", "LED", "인버터", "태양광"];
   var palette = ["#2563eb", "#14b8a6", "#f59e0b", "#8b5cf6", "#ef4444"];
@@ -729,32 +730,51 @@
     rows.push(copy);
   }
   rows.forEach(function (row, index) {
-    row.biz = businessGroups[index % businessGroups.length];
-    row.state = repaymentStates[index % repaymentStates.length];
-    row.term = paymentTerms[index % paymentTerms.length];
-    row.equip = equipmentTypes[index % equipmentTypes.length];
+    if (row.state === "정상") row.state = "상환 진행 중";
+    if (row.state === "종료") row.state = "상환 완료";
+    row.equip = row.equip || equipmentTypes[index % equipmentTypes.length];
+    row.guarantee = row.guarantee || (index % 2 === 0 ? "○ (발급)" : "X (미발급)");
   });
+
+  /* SB 기준의 상환현황 컬럼 구조 */
+  var listHead = document.querySelector(".table-list thead");
+  listHead.innerHTML = '<tr>' +
+    '<th rowspan="2">선택</th><th rowspan="2">순번</th><th rowspan="2">프로젝트번호</th><th rowspan="2">프로젝트명</th>' +
+    '<th rowspan="2">에너지사용자</th><th rowspan="2">사업구분</th><th rowspan="2">대상설비</th><th rowspan="2">계약 체결일</th>' +
+    '<th rowspan="2">상환상태</th><th rowspan="2">상환조건</th><th colspan="4" class="grp">회차 현황</th>' +
+    '<th colspan="4" class="grp">현재회차</th><th colspan="4" class="grp">금액</th>' +
+    '<th rowspan="2">상환율(%)</th><th rowspan="2">상환개시일</th><th rowspan="2">상환완료일</th><th rowspan="2">최근입금일</th><th rowspan="2">지급보증보험 발급 여부</th></tr>' +
+    '<tr><th>총회차</th><th>현재회차</th><th>잔여회차</th><th>미상환 회차</th>' +
+    '<th>회차 세금계산서 발행일</th><th>현재 회차 입금여부</th><th>회차별 입금액(원)</th><th>회차 내 입금금액</th>' +
+    '<th>총상환금액(원)</th><th>상환누적액(원)</th><th>미상환누적액(원)</th><th>잔여상환액(원)</th></tr>';
+
+  var summaryHead = document.querySelector(".table-sum thead");
+  summaryHead.innerHTML = '<tr><th rowspan="2">조회기준</th><th colspan="2" class="grp">조회기간</th>' +
+    '<th colspan="6" class="grp">상환상태</th><th rowspan="2">대상설비</th><th rowspan="2">총 상환금액(원)</th>' +
+    '<th rowspan="2">총 상환누적액(원)</th><th rowspan="2">평균 상환율(%)</th><th rowspan="2">총 잔여상환금액(원)</th></tr>' +
+    '<tr><th>시작일</th><th>종료일</th><th>총 프로젝트</th><th>상환 진행 중</th><th>상환 완료</th><th>유보</th><th>미상환</th><th>미수채권</th></tr>';
 
   /* ---------- 목록·개요 렌더링 ---------- */
   var body = document.getElementById("repayBody");
 
   function renderRows(list) {
-    var size = parseInt(document.getElementById("page-size").value, 10) || 10;
+    var size = 10;
     body.innerHTML = "";
     list.slice(0, size).forEach(function (row) {
-      var rest = row.total - row.paid;
-      var rate = (row.paid / row.total) * 100;
+      var rest = row.rest != null ? row.rest : row.total - row.paid;
+      var rate = row.rate != null ? row.rate : (row.paid / row.total) * 100;
       var done = row.state === "종료";
-      var stateCls = row.state === "미상환" ? "st-unpaid" : (done ? "st-done" : "");
+      var stateCls = row.state === "미수채권" ? "st-claim" : (row.state === "미상환" ? "st-unpaid" : (done ? "st-done" : ""));
       var tr = document.createElement("tr");
       tr.innerHTML =
+      '<td><input type="checkbox" aria-label="' + row.no + '번 선택"></td>' +
       "<td>" + row.no + "</td>" +
       '<td><a class="proj-link" href="/pms-project-repayment.html">' + row.pno + "</a></td>" +
+      '<td><a class="proj-link" href="/pms-project-repayment.html">' + row.name + "</a></td>" +
+      "<td>" + row.user + "</td>" +
       "<td>" + row.biz + "</td>" +
       "<td>" + (row.equip || "CTTS | LED") + "</td>" +
       "<td>" + row.date + "</td>" +
-      '<td><a class="proj-link" href="/pms-project-repayment.html">' + row.name + "</a></td>" +
-      "<td>" + row.user + "</td>" +
       '<td class="' + stateCls + '">' + row.state + "</td>" +
       "<td>" + row.term + "</td>" +
       "<td>" + round(row.rounds) + "</td>" +
@@ -772,10 +792,11 @@
       '<td class="num">' + rate.toFixed(2) + "</td>" +
       "<td>" + row.start + "</td>" +
       "<td>" + row.end + "</td>" +
-        "<td>" + row.last + "</td>";
+      "<td>" + row.last + "</td>" +
+      "<td>" + (row.guarantee || "-") + "</td>";
       body.appendChild(tr);
     });
-    if (!list.length) body.innerHTML = '<tr><td colspan="25" style="padding:42px">조회 조건에 해당하는 상환 프로젝트가 없습니다.</td></tr>';
+    if (!list.length) body.innerHTML = '<tr><td colspan="27" style="padding:42px">조회 조건에 해당하는 상환 프로젝트가 없습니다.</td></tr>';
   }
 
   function renderDonut(chartId, legendId, list, key, order) {
@@ -834,20 +855,25 @@
   }
 
   function renderSummary(list) {
-    var cells = document.querySelector(".table-sum tbody tr").children;
+    var summaryBody = document.querySelector(".table-sum tbody");
+    summaryBody.innerHTML = '<tr>' + new Array(14).fill('<td></td>').join('') + '</tr>';
+    var cells = summaryBody.querySelector("tr").children;
     var totalAmount = list.reduce(function (sum, row) { return sum + row.total; }, 0);
     var paidAmount = list.reduce(function (sum, row) { return sum + row.paid; }, 0);
     cells[0].textContent = document.getElementById("base-type").value;
     cells[1].textContent = document.getElementById("date-from").value;
     cells[2].textContent = document.getElementById("date-to").value;
     cells[3].textContent = won(list.length);
-    cells[4].textContent = won(list.filter(function (row) { return row.state === "미상환"; }).length);
-    cells[5].textContent = won(list.filter(function (row) { return row.state === "정상"; }).length);
-    cells[6].textContent = won(list.filter(function (row) { return row.state === "종료"; }).length);
-    cells[7].textContent = won(totalAmount);
-    cells[8].textContent = won(paidAmount);
-    cells[9].textContent = totalAmount ? (paidAmount / totalAmount * 100).toFixed(2) : "0.00";
-    cells[10].textContent = won(totalAmount - paidAmount);
+    cells[4].textContent = won(list.filter(function (row) { return row.state === "상환 진행 중"; }).length);
+    cells[5].textContent = won(list.filter(function (row) { return row.state === "상환 완료"; }).length);
+    cells[6].textContent = won(list.filter(function (row) { return row.state === "유보"; }).length);
+    cells[7].textContent = won(list.filter(function (row) { return row.state === "미상환"; }).length);
+    cells[8].textContent = won(list.filter(function (row) { return row.state === "미수채권"; }).length);
+    cells[9].textContent = document.getElementById("f-equip").value;
+    cells[10].textContent = won(totalAmount);
+    cells[11].textContent = won(paidAmount);
+    cells[12].textContent = totalAmount ? (paidAmount / totalAmount * 100).toFixed(0) : "0";
+    cells[13].textContent = won(totalAmount - paidAmount);
   }
 
   function render() {
@@ -868,7 +894,7 @@
     document.getElementById("date-to").value = "2026.06.30";
     render();
   });
-  document.getElementById("page-size").addEventListener("change", render);
+  document.getElementById("reminder-btn").addEventListener("click", function () { alert("미상환 독촉 알림 발송 대상이 선택되었습니다."); });
   document.getElementById("f-keyword").addEventListener("keydown", function (event) { if (event.key === "Enter") render(); });
   render();
 
