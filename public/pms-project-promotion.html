@@ -2375,5 +2375,8 @@
 </script>
   <script src="/assets/pms-lnb.js?v=20260930-2"></script>
   <script src="/assets/pms-intake-wizard.js?v=20260921-2"></script>
+<script>
+  (function(){var repay=document.getElementById('repay-end');if(!repay||document.getElementById('payment-guarantee-row'))return;var row=repay.closest('.frow'),newRow=document.createElement('div');newRow.className='frow';newRow.id='payment-guarantee-row';newRow.innerHTML='<div class="fkey"><label>지급보증보험 발급 여부</label> <span class="req" aria-hidden="true">*</span></div><div class="fval"><label><input type="radio" name="paymentGuarantee" checked> 발급 필요</label><label style="margin-left:16px"><input type="radio" name="paymentGuarantee"> 발급 필요 없음</label></div>';row.parentNode.insertBefore(newRow,row.nextSibling)})();
+</script>
 </body>
 </html>
