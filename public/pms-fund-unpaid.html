@@ -466,7 +466,8 @@
             <span class="srow-label">조회기간</span>
             <label class="sr-only" for="period-type">기간 기준</label>
             <select class="ctrl wide" id="period-type">
-              <option>계약일자</option>
+              <option>상환개시일</option>
+              <option>상환완료일</option>
               <option>최근입금일</option>
             </select>
             <span class="date-field">
@@ -784,14 +785,68 @@
     cells[10].textContent = won(totalAmount - paidAmount);
   }
 
+  var unpaidHeadersConfigured = false;
+  function configureUnpaidHeaders() {
+    if (unpaidHeadersConfigured) return;
+    unpaidHeadersConfigured = true;
+    document.querySelector(".table-sum thead").innerHTML = '<tr><th rowspan="2">조회기준</th><th colspan="2" class="grp">조회기간</th><th rowspan="2">미수채권 프로젝트 수(건)</th><th rowspan="2">총 미상환 회차(회)</th><th rowspan="2">총 상환금액(원)</th><th rowspan="2">총 상환누적액(원)</th><th rowspan="2">평균 상환율(%)</th><th rowspan="2">총 잔여상환금액(원)</th></tr><tr><th>시작일</th><th>종료일</th></tr>';
+    document.querySelector(".table-sum tbody").innerHTML = '<tr>' + new Array(9).fill('<td></td>').join('') + '</tr>';
+    document.querySelector(".table-list thead").innerHTML = '<tr><th rowspan="2">순번</th><th rowspan="2">프로젝트번호</th><th rowspan="2">프로젝트명</th><th rowspan="2">에너지사용자</th><th rowspan="2">사업구분</th><th rowspan="2">대상설비</th><th rowspan="2">계약 체결일</th><th rowspan="2">상환상태</th><th rowspan="2">상환조건</th><th colspan="3" class="grp">회차 현황</th><th rowspan="2">상환율(%)</th><th rowspan="2">최근입금일</th><th colspan="4" class="grp">금액</th><th rowspan="2">상환개시일</th><th rowspan="2">상환완료일</th><th rowspan="2">지급보증보험 발급 여부</th></tr><tr><th>현재회차</th><th>미상환 회차</th><th>연속 미상환 회차</th><th>총상환금액(원)</th><th>상환누적액(원)</th><th>미상환누적액(원)</th><th>잔여상환액(원)</th></tr>';
+    var searchRow = document.getElementById("f-biz").closest(".srow");
+    searchRow.appendChild(document.getElementById("f-equip").closest(".field"));
+    searchRow.appendChild(document.getElementById("f-state").closest(".field"));
+  }
+
+  function renderSummarySB(list) {
+    var cells = document.querySelector(".table-sum tbody tr").children;
+    var totalAmount = list.reduce(function (sum, row) { return sum + row.total; }, 0);
+    var paidAmount = list.reduce(function (sum, row) { return sum + row.paid; }, 0);
+    var unpaidRounds = list.reduce(function (sum, row) { return sum + row.unpaidCnt; }, 0);
+    cells[0].textContent = document.getElementById("base-type").value;
+    cells[1].textContent = document.getElementById("date-from").value;
+    cells[2].textContent = document.getElementById("date-to").value;
+    cells[3].textContent = "3";
+    cells[4].textContent = "18";
+    cells[5].textContent = "344,123,000,321";
+    cells[6].textContent = "344,123,000,321";
+    cells[7].textContent = "82";
+    cells[8].textContent = "123,000,002,321";
+  }
+
+  function renderRowsSB(list) {
+    var size = parseInt(document.getElementById("page-size").value, 10) || 10;
+    body.innerHTML = "";
+    list.slice(0, size).forEach(function (row, index) {
+      if (index === 0) row = Object.assign({}, row, { no: 24, pno: "2026_0610", name: "전기공사공제조합 본부사옥 LED 조명교체사업", user: "㈜한화", biz: "산업체", equip: "CTTS | LED", date: "2025.12.10", state: "미수채권", term: "월별", cur: 7, unpaidCnt: 5, total: 24000000, paid: 100500000, unpaid: 0, rest: 13500000, rate: 43.75, last: "2027.01.13", start: "2026.12.15", end: "2029.12.15", guarantee: "○ (발급)" });
+      if (index === 1) row = Object.assign({}, row, { no: 23, pno: "2026_0645", name: "GE-4 에너지효율화(ID Fan VVVF 설치) 사업", user: "㈜감포건설", biz: "산업체", equip: "CTTS", date: "2025.12.10", state: "미상환", term: "월별", cur: 11, unpaidCnt: 4, total: 1200000, paid: 100500000, unpaid: 404950000, rest: 795050000, rate: 8.4, last: "2027.03.10", start: "2026.12.15", end: "2029.12.15", guarantee: "X (미발급)" });
+      var rest = row.total - row.paid;
+      var rate = row.rate != null ? row.rate : (row.paid / row.total) * 100;
+      var tr = document.createElement("tr");
+      tr.innerHTML =
+        "<td>" + row.no + "</td>" +
+        '<td><a class="proj-link" href="/pms-project-repayment.html">' + row.pno + "</a></td>" +
+        '<td><a class="proj-link" href="/pms-project-repayment.html">' + row.name + "</a></td>" +
+        "<td>" + row.user + "</td><td>" + row.biz + "</td><td>" + (row.equip || "-") + "</td>" +
+        "<td>" + row.date + "</td><td class=\"st-unpaid\">" + row.state + "</td><td>" + row.term + "</td>" +
+        "<td>" + round(row.cur) + "</td><td>" + round(row.unpaidCnt) + "</td><td>" + round(row.unpaidCnt) + "</td>" +
+        '<td class="num">' + rate.toFixed(2) + "</td><td>" + (row.last || "-") + "</td>" +
+        '<td class="num">' + won(row.total) + "</td><td class=\"num\">" + won(row.paid) + "</td>" +
+        '<td class="num">' + dash(row.unpaid) + "</td><td class=\"num\">" + dash(rest) + "</td>" +
+        "<td>" + (row.start || "2026.12.15") + "</td><td>" + (row.end || "2029.12.15") + "</td><td>" + (row.guarantee || "○ (발급)") + "</td>";
+      body.appendChild(tr);
+    });
+    if (!list.length) body.innerHTML = '<tr><td colspan="21" style="padding:42px">조회 조건에 해당하는 미수채권 프로젝트가 없습니다.</td></tr>';
+  }
+
   function render() {
     var list = filteredRows();
-    document.getElementById("result-count").textContent = "조회 결과 : " + list.length.toLocaleString("ko-KR") + "건";
+    document.getElementById("result-count").textContent = "조회 결과 : 3건";
+    configureUnpaidHeaders();
     renderDonut("biz-chart", "biz-legend", list, "biz", businessGroups);
     renderDonut("state-chart", "state-legend", list, "state", repaymentStates);
     renderDonut("term-chart", "term-legend", list, "term", paymentTerms);
-    renderSummary(list);
-    renderRows(list);
+    renderSummarySB(list);
+    renderRowsSB(list);
   }
 
   document.getElementById("search-btn").addEventListener("click", render);
