@@ -285,6 +285,7 @@
   .proj-link { color: var(--brand); text-decoration: underline; }
   /* 상환상태 : 미상환 건은 배경으로 강조합니다. */
   tbody td.st-unpaid { background: var(--warn-bg); color: var(--warn-text); font-weight: 700; }
+  .claim-state { color: #dc2626 !important; font-weight: 700; }
   tbody td.st-claim { color: #dc2626; font-weight: 700; }
   tbody td.st-done { color: var(--muted); }
   .table-detail { margin-top: 14px; }
@@ -519,7 +520,7 @@
             </span>
             <span class="field">
               <label class="field-name" for="f-state">상환 상태</label>
-              <select class="ctrl" id="f-state"><option>전체</option><option>정상</option><option>미상환</option><option>종료</option><option>미수채권</option></select>
+              <select class="ctrl" id="f-state"><option>전체</option><option>상환 진행 중</option><option>상환 완료</option><option>미상환</option><option>미수채권</option><option>중도상환</option></select>
             </span>
           </div>
 
@@ -554,7 +555,7 @@
       <div class="result-bar">
         <p class="result-count" id="result-count">조회 결과 : 24건</p>
         <div class="result-right">
-          <button class="btn btn-reminder" id="reminder-btn" type="button">미상환 독촉 알림 발송</button>
+          <button class="btn btn-reminder" id="reminder-btn" type="button">알림 발송</button>
           <button class="btn btn-excel" type="button">다운로드(Excel)</button>
         </div>
       </div>
@@ -714,7 +715,7 @@
   }
 
   var businessGroups = ["산업체", "건축물", "공장", "신산업"];
-  var repaymentStates = ["상환 진행 중", "상환 완료", "미상환", "미수채권"];
+  var repaymentStates = ["상환 진행 중", "상환 완료", "미상환", "미수채권", "중도상환"];
   var paymentTerms = ["월별", "분기별", "반기별", "일시납"];
   var equipmentTypes = ["CTTS", "LED", "인버터", "태양광"];
   var palette = ["#2563eb", "#14b8a6", "#f59e0b", "#8b5cf6", "#ef4444"];
@@ -734,6 +735,7 @@
     if (row.state === "종료") row.state = "상환 완료";
     row.equip = row.equip || equipmentTypes[index % equipmentTypes.length];
     row.guarantee = row.guarantee || (index % 2 === 0 ? "○ (발급)" : "X (미발급)");
+    if (index === 2) row.state = "중도상환";
   });
 
   /* SB 기준의 상환현황 컬럼 구조 */
@@ -750,9 +752,9 @@
 
   var summaryHead = document.querySelector(".table-sum thead");
   summaryHead.innerHTML = '<tr><th rowspan="2">조회기준</th><th colspan="2" class="grp">조회기간</th>' +
-    '<th colspan="6" class="grp">상환상태</th><th rowspan="2">대상설비</th><th rowspan="2">총 상환금액(원)</th>' +
+    '<th colspan="7" class="grp">상환상태</th><th rowspan="2">대상설비</th><th rowspan="2">총 상환금액(원)</th>' +
     '<th rowspan="2">총 상환누적액(원)</th><th rowspan="2">평균 상환율(%)</th><th rowspan="2">총 잔여상환금액(원)</th></tr>' +
-    '<tr><th>시작일</th><th>종료일</th><th>총 프로젝트</th><th>상환 진행 중</th><th>상환 완료</th><th>유보</th><th>미상환</th><th>미수채권</th></tr>';
+    '<tr><th>시작일</th><th>종료일</th><th>총 프로젝트</th><th>상환 진행 중</th><th>상환 완료</th><th>유보</th><th>미상환</th><th class="claim-state">미수채권</th><th>중도상환</th></tr>';
 
   /* ---------- 목록·개요 렌더링 ---------- */
   var body = document.getElementById("repayBody");
@@ -810,9 +812,14 @@
       return item.label + " " + Math.round(item.count / total * 100) + "% / " + item.count + "건";
     }).join(", "));
     var legend = document.getElementById(legendId);
+    function colorFor(label, index) {
+      if (label === "미수채권") return "#ef4444";
+      if (label === "중도상환") return "#8b5cf6";
+      return palette[index % palette.length];
+    }
     legend.innerHTML = counts.length ? counts.map(function (item, index) {
       var percent = total ? Math.round(item.count / total * 100) : 0;
-      return '<div class="legend-row"><i class="legend-dot" style="--legend-color:' + palette[index % palette.length] + '"></i><span class="legend-label">' + item.label + '</span><span class="legend-value" data-percent="' + percent + '" data-count="' + item.count + '">0% / 0건</span></div>';
+      return '<div class="legend-row' + (item.label === "미수채권" ? ' claim-state' : '') + '"><i class="legend-dot" style="--legend-color:' + colorFor(item.label, index) + '"></i><span class="legend-label">' + item.label + '</span><span class="legend-value" data-percent="' + percent + '" data-count="' + item.count + '">0% / 0건</span></div>';
     }).join("") : '<div class="legend-row"><span class="legend-label">조회 결과 없음</span><span class="legend-value">0% / 0건</span></div>';
     var countElement = chart.querySelector("strong");
     var valueElements = legend.querySelectorAll("[data-percent]");
@@ -824,7 +831,7 @@
       var stops = counts.map(function (item, index) {
         var start = cursor * eased;
         cursor += total ? item.count / total * 100 : 0;
-        return palette[index % palette.length] + " " + start.toFixed(2) + "% " + (cursor * eased).toFixed(2) + "%";
+        return colorFor(item.label, index) + " " + start.toFixed(2) + "% " + (cursor * eased).toFixed(2) + "%";
       });
       if (total && cursor * eased < 100) stops.push("#e2e8f0 " + (cursor * eased).toFixed(2) + "% 100%");
       chart.style.setProperty("--chart", total ? "conic-gradient(" + stops.join(",") + ")" : "#e2e8f0");
@@ -856,7 +863,7 @@
 
   function renderSummary(list) {
     var summaryBody = document.querySelector(".table-sum tbody");
-    summaryBody.innerHTML = '<tr>' + new Array(14).fill('<td></td>').join('') + '</tr>';
+    summaryBody.innerHTML = '<tr>' + new Array(15).fill('<td></td>').join('') + '</tr>';
     var cells = summaryBody.querySelector("tr").children;
     var totalAmount = list.reduce(function (sum, row) { return sum + row.total; }, 0);
     var paidAmount = list.reduce(function (sum, row) { return sum + row.paid; }, 0);
@@ -869,11 +876,12 @@
     cells[6].textContent = won(list.filter(function (row) { return row.state === "유보"; }).length);
     cells[7].textContent = won(list.filter(function (row) { return row.state === "미상환"; }).length);
     cells[8].textContent = won(list.filter(function (row) { return row.state === "미수채권"; }).length);
-    cells[9].textContent = document.getElementById("f-equip").value;
-    cells[10].textContent = won(totalAmount);
-    cells[11].textContent = won(paidAmount);
-    cells[12].textContent = totalAmount ? (paidAmount / totalAmount * 100).toFixed(0) : "0";
-    cells[13].textContent = won(totalAmount - paidAmount);
+    cells[9].textContent = won(list.filter(function (row) { return row.state === "중도상환"; }).length);
+    cells[10].textContent = document.getElementById("f-equip").value;
+    cells[11].textContent = won(totalAmount);
+    cells[12].textContent = won(paidAmount);
+    cells[13].textContent = totalAmount ? (paidAmount / totalAmount * 100).toFixed(0) : "0";
+    cells[14].textContent = won(totalAmount - paidAmount);
   }
 
   function render() {
@@ -894,7 +902,7 @@
     document.getElementById("date-to").value = "2026.06.30";
     render();
   });
-  document.getElementById("reminder-btn").addEventListener("click", function () { alert("미상환 독촉 알림 발송 대상이 선택되었습니다."); });
+  document.getElementById("reminder-btn").addEventListener("click", function () { alert("알림 발송 대상이 선택되었습니다."); });
   document.getElementById("f-keyword").addEventListener("keydown", function (event) { if (event.key === "Enter") render(); });
   render();
 
