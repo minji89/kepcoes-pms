@@ -554,7 +554,9 @@
             <span class="spacer"></span>
             <div class="acts">
               <button class="btn btn-dark" type="button" data-act="notes">중도 상환</button>
-              <button class="btn btn-dark" type="button" data-act="reminder">미상환 독촉 알림 발송</button>
+              <button class="btn btn-dark" type="button" data-act="reminder" data-notice-type="unpaid">미상환 알림 발송</button>
+              <button class="btn btn-dark" type="button" data-act="reminder" data-notice-type="claim">미수채권 알림 발송</button>
+              <button class="btn btn-dark" type="button" data-act="reminder" data-notice-type="complete">상환 완료 알림 발송</button>
               <button class="btn btn-dark" type="button" data-act="add">스케줄 수정 +</button>
             </div>
           </div>
@@ -1108,8 +1110,19 @@
     showToast("상환정보를 Excel로 내려받습니다.");
   });
 
-  document.querySelector('[data-act="reminder"]').addEventListener("click", function () {
-    openModal("reminderOverlay");
+  document.querySelectorAll('[data-act="reminder"]').forEach(function (button) {
+    button.addEventListener("click", function () {
+      var type = button.dataset.noticeType || "unpaid";
+      var title = type === "claim" ? "미수채권 알림 발송" : type === "complete" ? "상환 완료 알림 발송" : "미상환 알림 발송";
+      document.getElementById("reminderTitle").textContent = title;
+      document.querySelector(".reminder-preview").innerHTML =
+        "<h4>발송 내용 미리보기</h4>" +
+        "<p>[켑코이에스] " + title + "</p>" +
+        "<p>㈜선영 담당자님, 켑코이에스(주)입니다.</p>" +
+        "<p>귀사와 체결한 에너지 절약 사업의 상환 내역을 안내드립니다. 아래 내용을 확인해 주세요.</p>" +
+        "<p>▶ 프로젝트명: 천안 (주) 선영 LED 에너지효율화사업<br>▶ 상환회차: 2회차<br>▶ 안내금액: 20,000,000원<br>▶ 상환담당자: 홍길동 (02-0000-0000)</p>";
+      openModal("reminderOverlay");
+    });
   });
   document.getElementById("reminderSend").addEventListener("click", function () {
     closeModal(document.getElementById("reminderOverlay"));
@@ -1128,12 +1141,12 @@
     if (summaryLabels[index]) label.textContent = summaryLabels[index];
   });
   var scheduleActions = document.querySelector("#scheduleTitle").closest(".sec-head").querySelector(".acts");
-  var reminderButton = scheduleActions.querySelector('[data-act="reminder"]');
   var notesButton = scheduleActions.querySelector('[data-act="notes"]');
-  if (reminderButton && notesButton) {
-    reminderButton.textContent = "미상환 독촉 알림 발송";
+  var reminderButtons = scheduleActions.querySelectorAll('[data-act="reminder"]');
+  if (notesButton && reminderButtons.length) {
+    reminderButtons[0].textContent = "미상환 알림 발송";
     notesButton.textContent = "중도상환";
-    scheduleActions.insertBefore(reminderButton, notesButton);
+    reminderButtons.forEach(function (button) { scheduleActions.insertBefore(button, notesButton); });
   }
   document.querySelector(".schedule-table caption").textContent = "상환 스케줄";
   var statusLabel = Array.from(document.querySelectorAll(".kv.summary .k")).find(function (label) { return label.textContent.trim() === "상태"; });
