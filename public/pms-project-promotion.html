@@ -212,6 +212,7 @@
 
   .ftable { border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
   .frow { display: flex; align-items: stretch; border-bottom: 1px solid var(--border); }
+  .frow[hidden] { display: none !important; }
   .frow[data-esco-only][hidden] { display: none !important; }
   .frow:last-child { border-bottom: 0; }
   .fkey {
@@ -952,14 +953,14 @@
                       <label style="margin-left:16px"><input type="radio" name="paymentGuarantee" value="미발급"> 미발급</label>
                     </div>
                   </div>
-                  <div class="frow" id="unissued-reason-row" hidden>
+                  <div class="frow" id="unissued-reason-row" style="display:none;" hidden>
                     <div class="fkey"><label for="unissued-reason">미발급 사유</label> <span class="req" aria-hidden="true">*</span></div>
                     <div class="fval wide">
                       <input id="unissued-reason" type="text" placeholder="미발급 사유를 입력해 주세요." />
                     </div>
                   </div>
-                  <div class="frow" id="collateral-row" hidden>
-                    <div class="fkey"><label>대체담보</label></div>
+                  <div class="frow" id="collateral-row" style="display:none;" hidden>
+                    <div class="fkey"><label>대체담보</label> <span class="req" aria-hidden="true">*</span></div>
                     <div class="fval stack">
                       <div id="collateralList" class="collateral-list">
                         <div class="collateral-item">
@@ -2257,13 +2258,26 @@
     var contractBtn = document.querySelector('[data-act="go-contract"]');
     if (contractBtn) contractBtn.addEventListener("click", goContract);
     nextBtn.addEventListener("click", function () {
-      // 세부정보 탭(index 1)에서 지급보증보험이 '미발급'일 때 미발급 사유 필수 검증
+      // 세부정보 탭(index 1)에서 지급보증보험이 '미발급'일 때 미발급 사유 및 대체담보 필수 검증
       if (current === 1) {
         var pg = document.querySelector('input[name="paymentGuarantee"]:checked');
-        var reason = document.getElementById("unissued-reason");
-        if (pg && pg.value === "미발급" && reason && !reason.value.trim()) {
-          showAlert("지급보증보험 미발급 사유를 입력해 주세요.", reason);
-          return;
+        if (pg && pg.value === "미발급") {
+          var reason = document.getElementById("unissued-reason");
+          if (reason && !reason.value.trim()) {
+            showAlert("지급보증보험 미발급 사유를 입력해 주세요.", reason);
+            return;
+          }
+
+          var colInputs = document.querySelectorAll("#collateralList .collateral-input");
+          var hasValidCollateral = false;
+          colInputs.forEach(function (inp) {
+            if (inp.value.trim()) hasValidCollateral = true;
+          });
+          if (!hasValidCollateral) {
+            var firstCol = colInputs[0] || null;
+            showAlert("대체담보를 최소 1개 이상 입력해 주세요.", firstCol);
+            return;
+          }
         }
       }
 
@@ -2472,29 +2486,44 @@
 
   // 지급보증보험 발급 여부 및 미발급 사유 / 대체담보 연동
   (function setupPaymentGuarantee() {
-    var pgRadios = document.querySelectorAll('input[name="paymentGuarantee"]');
     var reasonRow = document.getElementById("unissued-reason-row");
     var collateralRow = document.getElementById("collateral-row");
     var collateralList = document.getElementById("collateralList");
 
-    if (!pgRadios.length || !reasonRow || !collateralRow || !collateralList) return;
+    if (!reasonRow || !collateralRow || !collateralList) return;
 
     function toggleGuaranteeRows() {
       var selected = document.querySelector('input[name="paymentGuarantee"]:checked');
-      var isUnissued = selected && selected.value === "미발급";
+      var isUnissued = !!(selected && selected.value === "미발급");
+
       reasonRow.hidden = !isUnissued;
       collateralRow.hidden = !isUnissued;
+      reasonRow.style.display = isUnissued ? "flex" : "none";
+      collateralRow.style.display = isUnissued ? "flex" : "none";
+
       var reasonInput = document.getElementById("unissued-reason");
       if (reasonInput) {
         reasonInput.required = isUnissued;
+      }
+      var firstCollateral = collateralList.querySelector(".collateral-input");
+      if (firstCollateral) {
+        firstCollateral.required = isUnissued;
       }
       if (typeof persistPromotionReview === "function") {
         persistPromotionReview();
       }
     }
 
+    var pgRadios = document.querySelectorAll('input[name="paymentGuarantee"]');
     pgRadios.forEach(function (radio) {
       radio.addEventListener("change", toggleGuaranteeRows);
+      radio.addEventListener("click", toggleGuaranteeRows);
+    });
+
+    document.addEventListener("change", function (e) {
+      if (e.target && e.target.name === "paymentGuarantee") {
+        toggleGuaranteeRows();
+      }
     });
 
     function createCollateralItem() {
