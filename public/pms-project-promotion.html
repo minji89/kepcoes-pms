@@ -463,6 +463,13 @@
   .ratio-group[hidden] { display: none; }
   .inline-label { font-size: 14px; color: #334155; white-space: nowrap; }
 
+  /* 대체담보 입력 필드 */
+  .collateral-list { display: grid; gap: 8px; width: 100%; }
+  .collateral-item { display: flex; align-items: center; gap: 8px; width: 100%; }
+  .collateral-item input[type="text"] { flex: 1; min-width: 0; max-width: none; }
+  .collateral-btns { display: flex; align-items: center; gap: 6px; flex: none; }
+  .collateral-btns .btn.sm { padding: 8px 12px; font-size: 13px; min-width: auto; }
+
   /* ===== 사업심의 : 앞 단계 정보를 수정 불가 형태로 취합 ===== */
   .review { display: grid; gap: 22px; }
   .review-group { display: grid; gap: 12px; }
@@ -941,8 +948,28 @@
                   <div class="frow" id="payment-guarantee-row">
                     <div class="fkey"><label>지급보증보험 발급 여부</label> <span class="req" aria-hidden="true">*</span></div>
                     <div class="fval">
-                      <label><input type="radio" name="paymentGuarantee" checked> 발급 필요</label>
-                      <label style="margin-left:16px"><input type="radio" name="paymentGuarantee"> 발급 필요 없음</label>
+                      <label><input type="radio" name="paymentGuarantee" value="발급" checked> 발급</label>
+                      <label style="margin-left:16px"><input type="radio" name="paymentGuarantee" value="미발급"> 미발급</label>
+                    </div>
+                  </div>
+                  <div class="frow" id="unissued-reason-row" hidden>
+                    <div class="fkey"><label for="unissued-reason">미발급 사유</label> <span class="req" aria-hidden="true">*</span></div>
+                    <div class="fval wide">
+                      <input id="unissued-reason" type="text" placeholder="미발급 사유를 입력해 주세요." />
+                    </div>
+                  </div>
+                  <div class="frow" id="collateral-row" hidden>
+                    <div class="fkey"><label>대체담보</label></div>
+                    <div class="fval stack">
+                      <div id="collateralList" class="collateral-list">
+                        <div class="collateral-item">
+                          <input type="text" class="collateral-input" placeholder="대체담보를 입력해 주세요." />
+                          <div class="collateral-btns">
+                            <button type="button" class="btn sm collateral-add-btn">추가</button>
+                            <button type="button" class="btn sm collateral-del-btn">삭제</button>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -1968,6 +1995,47 @@
         grp.replaceWith(line);
       });
 
+      // 지급보증보험 발급 여부 및 미발급 연계 항목 심의 화면 표기
+      var pgRadioFval = clone.querySelector("#payment-guarantee-row .fval");
+      if (pgRadioFval) {
+        var checkedRadio = document.querySelector('input[name="paymentGuarantee"]:checked');
+        var isUnissued = checkedRadio && checkedRadio.value === "미발급";
+        var roSpan = document.createElement("span");
+        roSpan.className = "ro";
+        roSpan.textContent = isUnissued ? "미발급" : "발급";
+        pgRadioFval.textContent = "";
+        pgRadioFval.appendChild(roSpan);
+
+        if (!isUnissued) {
+          var rReason = clone.querySelector("#unissued-reason-row");
+          if (rReason) rReason.remove();
+          var rCollateral = clone.querySelector("#collateral-row");
+          if (rCollateral) rCollateral.remove();
+        } else {
+          var colStack = clone.querySelector("#collateral-row .fval");
+          if (colStack) {
+            var cVals = [];
+            document.querySelectorAll("#collateralList .collateral-input").forEach(function (inp) {
+              if (inp.value.trim()) cVals.push(inp.value.trim());
+            });
+            var cList = document.createElement("div");
+            cList.className = "ro ro-list";
+            if (!cVals.length) {
+              cList.classList.add("empty");
+              cList.textContent = "-";
+            } else {
+              cVals.forEach(function (v) {
+                var r = document.createElement("span");
+                r.textContent = v;
+                cList.appendChild(r);
+              });
+            }
+            colStack.textContent = "";
+            colStack.appendChild(cList);
+          }
+        }
+      }
+
       // EPC사(협력회사) 등록 목록은 값 목록으로 표기합니다.
       clone.querySelectorAll(".fval.stack").forEach(function (stack) {
         var values = [];
@@ -2189,6 +2257,16 @@
     var contractBtn = document.querySelector('[data-act="go-contract"]');
     if (contractBtn) contractBtn.addEventListener("click", goContract);
     nextBtn.addEventListener("click", function () {
+      // 세부정보 탭(index 1)에서 지급보증보험이 '미발급'일 때 미발급 사유 필수 검증
+      if (current === 1) {
+        var pg = document.querySelector('input[name="paymentGuarantee"]:checked');
+        var reason = document.getElementById("unissued-reason");
+        if (pg && pg.value === "미발급" && reason && !reason.value.trim()) {
+          showAlert("지급보증보험 미발급 사유를 입력해 주세요.", reason);
+          return;
+        }
+      }
+
       // 다음 단계의 비활성 상태를 해제한 뒤 이동합니다.
       var next = steps[current + 1];
       if (next) {
@@ -2201,6 +2279,18 @@
     if (editBtn) editBtn.addEventListener("click", function () {
       showToast("현재 탭의 정보가 수정되었습니다.");
     });
+
+    // URL 파라미터(?step=세부정보 또는 ?tab=1) 지원
+    try {
+      var stepParam = new URLSearchParams(window.location.search).get("step") || new URLSearchParams(window.location.search).get("tab");
+      if (stepParam) {
+        var idx = isNaN(parseInt(stepParam, 10)) ? indexOfStep(stepParam) : parseInt(stepParam, 10);
+        if (idx >= 0 && idx < steps.length) {
+          steps[idx].classList.remove("locked");
+          select(idx);
+        }
+      }
+    } catch (e) {}
   })();
 
   // 하단 액션바 플로팅 상태 (스크롤 중 화면 하단에 고정되어 있을 때만 그림자 표시)
@@ -2379,6 +2469,76 @@
       btn.classList.add("on");
     });
   });
+
+  // 지급보증보험 발급 여부 및 미발급 사유 / 대체담보 연동
+  (function setupPaymentGuarantee() {
+    var pgRadios = document.querySelectorAll('input[name="paymentGuarantee"]');
+    var reasonRow = document.getElementById("unissued-reason-row");
+    var collateralRow = document.getElementById("collateral-row");
+    var collateralList = document.getElementById("collateralList");
+
+    if (!pgRadios.length || !reasonRow || !collateralRow || !collateralList) return;
+
+    function toggleGuaranteeRows() {
+      var selected = document.querySelector('input[name="paymentGuarantee"]:checked');
+      var isUnissued = selected && selected.value === "미발급";
+      reasonRow.hidden = !isUnissued;
+      collateralRow.hidden = !isUnissued;
+      var reasonInput = document.getElementById("unissued-reason");
+      if (reasonInput) {
+        reasonInput.required = isUnissued;
+      }
+      if (typeof persistPromotionReview === "function") {
+        persistPromotionReview();
+      }
+    }
+
+    pgRadios.forEach(function (radio) {
+      radio.addEventListener("change", toggleGuaranteeRows);
+    });
+
+    function createCollateralItem() {
+      var item = document.createElement("div");
+      item.className = "collateral-item";
+      item.innerHTML =
+        '<input type="text" class="collateral-input" placeholder="대체담보를 입력해 주세요." />' +
+        '<div class="collateral-btns">' +
+          '<button type="button" class="btn sm collateral-add-btn">추가</button>' +
+          '<button type="button" class="btn sm collateral-del-btn">삭제</button>' +
+        '</div>';
+      return item;
+    }
+
+    collateralList.addEventListener("click", function (e) {
+      var addBtn = e.target.closest(".collateral-add-btn");
+      var delBtn = e.target.closest(".collateral-del-btn");
+
+      if (addBtn) {
+        var currentItem = addBtn.closest(".collateral-item");
+        var newItem = createCollateralItem();
+        if (currentItem && currentItem.nextSibling) {
+          collateralList.insertBefore(newItem, currentItem.nextSibling);
+        } else {
+          collateralList.appendChild(newItem);
+        }
+        var input = newItem.querySelector("input");
+        if (input) input.focus();
+        if (typeof persistPromotionReview === "function") persistPromotionReview();
+      } else if (delBtn) {
+        var items = collateralList.querySelectorAll(".collateral-item");
+        var itemToDelete = delBtn.closest(".collateral-item");
+        if (items.length > 1) {
+          itemToDelete.remove();
+        } else {
+          var singleInput = itemToDelete.querySelector("input");
+          if (singleInput) singleInput.value = "";
+        }
+        if (typeof persistPromotionReview === "function") persistPromotionReview();
+      }
+    });
+
+    toggleGuaranteeRows();
+  })();
 </script>
   <script src="/assets/pms-lnb.js?v=20260930-2"></script>
   <script src="/assets/pms-intake-wizard.js?v=20260921-2"></script>
