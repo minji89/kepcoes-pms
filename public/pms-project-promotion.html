@@ -733,10 +733,10 @@
         <div style="padding: 22px 24px 26px; display: grid; gap: 18px;">
           <div class="steps" role="tablist" aria-label="추진 단계 선택">
             <button class="step on" type="button" role="tab" aria-selected="true">기본 정보</button>
-          <button class="step locked" type="button" role="tab" aria-selected="false" aria-disabled="true">세부 정보</button>
-          <button class="step locked" type="button" role="tab" aria-selected="false" aria-disabled="true">협력업체 정보</button>
-          <button class="step locked" type="button" role="tab" aria-selected="false" aria-disabled="true">사업심의</button>
-          <button class="step locked" type="button" role="tab" aria-selected="false" aria-disabled="true">사업시행</button>
+            <button class="step" type="button" role="tab" aria-selected="false">세부 정보</button>
+            <button class="step" type="button" role="tab" aria-selected="false">협력업체 정보</button>
+            <button class="step" type="button" role="tab" aria-selected="false">사업심의</button>
+            <button class="step" type="button" role="tab" aria-selected="false">사업시행</button>
           </div>
 
           <!-- ===== 1) 기본 정보 ===== -->
@@ -2222,10 +2222,12 @@
         select(i);
       });
     });
-    // 단계 이름으로 index 찾기
+    // 단계 이름으로 index 찾기 (공백 무시 지원)
     function indexOfStep(label) {
+      if (!label) return -1;
+      var target = String(label).replace(/\s+/g, "").toLowerCase();
       for (var i = 0; i < steps.length; i++) {
-        if (steps[i].textContent.trim() === label) return i;
+        if (steps[i].textContent.replace(/\s+/g, "").toLowerCase() === target) return i;
       }
       return -1;
     }
@@ -2294,9 +2296,10 @@
       showToast("현재 탭의 정보가 수정되었습니다.");
     });
 
-    // URL 파라미터(?step=세부정보 또는 ?tab=1) 지원
+    // URL 파라미터(?step=세부정보 또는 ?tab=1 또는 #detail) 지원
     try {
-      var stepParam = new URLSearchParams(window.location.search).get("step") || new URLSearchParams(window.location.search).get("tab");
+      var searchParams = new URLSearchParams(window.location.search);
+      var stepParam = searchParams.get("step") || searchParams.get("tab") || window.location.hash.replace("#", "");
       if (stepParam) {
         var idx = isNaN(parseInt(stepParam, 10)) ? indexOfStep(stepParam) : parseInt(stepParam, 10);
         if (idx >= 0 && idx < steps.length) {
@@ -2518,11 +2521,23 @@
     pgRadios.forEach(function (radio) {
       radio.addEventListener("change", toggleGuaranteeRows);
       radio.addEventListener("click", toggleGuaranteeRows);
+      var lbl = radio.closest("label");
+      if (lbl) {
+        lbl.addEventListener("click", function () {
+          setTimeout(toggleGuaranteeRows, 10);
+        });
+      }
     });
 
     document.addEventListener("change", function (e) {
       if (e.target && e.target.name === "paymentGuarantee") {
         toggleGuaranteeRows();
+      }
+    });
+
+    document.addEventListener("click", function (e) {
+      if (e.target && (e.target.name === "paymentGuarantee" || (e.target.closest && e.target.closest("label") && e.target.closest("label").querySelector('input[name="paymentGuarantee"]')))) {
+        setTimeout(toggleGuaranteeRows, 10);
       }
     });
 
