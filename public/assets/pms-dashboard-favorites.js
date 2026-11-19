@@ -1,6 +1,7 @@
 (function(){
   "use strict";
   var menus={
+    "대시보드":[{label:"대시보드",href:"/pms-dashboard.html"},{label:"공지사항",href:"/pms-notice-management.html"},{label:"양식 등 자료실",href:"/pms-resource-management.html"}],
     "사업 접수":[{label:"신규 프로젝트 등록",href:"/pms-new-project.html"},{label:"추진단계 프로젝트 현황",href:"/pms-promotion-status.html"}],
     "프로젝트 관리":[{label:"프로젝트 현황",href:"/pms-project-status.html"}],
     "계약 관리":[{label:"수주계약 현황",href:"/pms-contract-status.html"},{label:"발주계약 현황",href:"/pms-order-contract-status.html"}],

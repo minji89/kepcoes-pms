@@ -8,6 +8,11 @@
 
   /* 1depth 라벨(공백 제거 기준) → 2depth 목록 */
   var MENU = {
+    대시보드: [
+      { label: "대시보드", href: "/pms-dashboard.html" },
+      { label: "공지사항", href: "/pms-notice-management.html" },
+      { label: "양식 등 자료실", href: "/pms-resource-management.html" },
+    ],
     사업접수: [
       { label: "신규 프로젝트 등록", href: "/pms-new-project.html" },
       { label: "추진단계 프로젝트 현황", href: "/pms-promotion-status.html" },
@@ -122,12 +127,13 @@
   ACTIVE_BY_PATH["/pms-business-trip-status.html"] = "\uCD9C\uC7A5 \uD604\uD669";
   ACTIVE_BY_PATH["/pms-business-trip-settlements.html"] = "\uCD9C\uC7A5 \uC815\uC0B0\uB0B4\uC5ED";
   ACTIVE_BY_PATH["/pms-trip-rate-settings.html"] = "\uCD9C\uC7A5 \uB2E8\uAC00 \uBC0F \uAE30\uC900 \uC124\uC815";
-  ACTIVE_BY_PATH["/pms-notice-management.html"] = "\uACF5\uC9C0\uC0AC\uD56D \uAD00\uB9AC";
-  ACTIVE_BY_PATH["/pms-notice-view.html"] = "\uACF5\uC9C0\uC0AC\uD56D \uAD00\uB9AC";
-  ACTIVE_BY_PATH["/pms-notice-form.html"] = "\uACF5\uC9C0\uC0AC\uD56D \uAD00\uB9AC";
-  ACTIVE_BY_PATH["/pms-resource-management.html"] = "\uC591\uC2DD \uB4F1 \uC790\uB8CC\uC2E4 \uAD00\uB9AC";
-  ACTIVE_BY_PATH["/pms-resource-view.html"] = "\uC591\uC2DD \uB4F1 \uC790\uB8CC\uC2E4 \uAD00\uB9AC";
-  ACTIVE_BY_PATH["/pms-resource-form.html"] = "\uC591\uC2DD \uB4F1 \uC790\uB8CC\uC2E4 \uAD00\uB9AC";
+  ACTIVE_BY_PATH["/pms-dashboard.html"] = "대시보드";
+  ACTIVE_BY_PATH["/pms-notice-management.html"] = "공지사항";
+  ACTIVE_BY_PATH["/pms-notice-view.html"] = "공지사항";
+  ACTIVE_BY_PATH["/pms-notice-form.html"] = "공지사항";
+  ACTIVE_BY_PATH["/pms-resource-management.html"] = "양식 등 자료실";
+  ACTIVE_BY_PATH["/pms-resource-view.html"] = "양식 등 자료실";
+  ACTIVE_BY_PATH["/pms-resource-form.html"] = "양식 등 자료실";
 
   function normalize(text) {
     return (text || "").replace(/\s+/g, "");
@@ -354,6 +360,7 @@
 
   function renderCanonicalNav(nav) {
     nav.innerHTML =
+      '<li><a class="nav-item" href="/pms-dashboard.html"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/></svg>대시보드<span class="chev" aria-hidden="true"></span></a></li>' +
       '<li><a class="nav-item" href="/pms-new-project.html"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 21V5a1 1 0 0 1 1-1h7a1 1 0 0 1 1 1v16"/><path d="M13 10h6a1 1 0 0 1 1 1v10"/><path d="M7 8h3M7 12h3M7 16h3"/></svg>\uC0AC\uC5C5 \uC811\uC218<span class="chev" aria-hidden="true"></span></a></li>' +
       '<li><a class="nav-item" href="/pms-project-status.html"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h6a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Z"/></svg>\uD504\uB85C\uC81D\uD2B8 \uAD00\uB9AC<span class="chev" aria-hidden="true"></span></a></li>' +
       '<li><a class="nav-item" href="/pms-contract-status.html"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h9l5 5v11H5z"/><path d="M9 13h6M9 17h4"/></svg>\uACC4\uC57D \uAD00\uB9AC<span class="chev" aria-hidden="true"></span></a></li>' +
@@ -374,21 +381,6 @@
       element.remove();
     });
 
-    var publicNav = document.createElement("nav");
-    publicNav.className = "lnb-public-nav";
-    publicNav.setAttribute("aria-label", "일반 사용자 메뉴");
-    publicNav.innerHTML =
-      '<a class="lnb-public-nav-item" href="/pms-notice-management.html">공지사항</a>' +
-      '<a class="lnb-public-nav-item" href="/pms-resource-management.html">양식 등 자료실</a>';
-    var currentPath = window.location.pathname;
-    publicNav.querySelectorAll(".lnb-public-nav-item").forEach(function (link) {
-      if (link.getAttribute("href") === currentPath) {
-        link.classList.add("active");
-        link.setAttribute("aria-current", "page");
-      }
-    });
-    nav.parentElement.appendChild(publicNav);
-
     var utilities = document.createElement("div");
     utilities.className = "lnb-utility-links";
     utilities.innerHTML =
@@ -407,9 +399,6 @@
       var style = document.createElement("style");
       style.id = "pmsLnbUtilityStyle";
       style.textContent =
-        '.sidebar .lnb-public-nav{display:grid;gap:2px;margin:2px 14px 8px;padding:8px 0;border-top:1px solid #e5e9f0;border-bottom:1px solid #e5e9f0}' +
-        '.sidebar .lnb-public-nav-item{display:block;padding:9px 14px;border-radius:7px;color:#40516a;font-size:14px;font-weight:600;line-height:1.5;text-decoration:none}' +
-        '.sidebar .lnb-public-nav-item:hover,.sidebar .lnb-public-nav-item.active{background:#e5efff;color:#1769e8;font-weight:700}' +
         '.sidebar .lnb-utility-links{display:grid;gap:8px;margin:8px 14px 18px}' +
         '.sidebar .lnb-favorites{display:grid;gap:3px;padding:7px 8px 8px;border:1px solid #d9e4f3;border-radius:7px;background:#f5f8fd}' +
         '.sidebar .lnb-favorites-title{display:block;margin-bottom:2px;color:#1d5fbf;font-size:11px;font-weight:700}' +
@@ -1206,12 +1195,6 @@
 
     var path = pagePath;
     var activeLabel = ACTIVE_BY_PATH[path] || "";
-    var isPublicCommonPage = path === "/pms-notice-management.html" ||
-      path === "/pms-notice-view.html" ||
-      path === "/pms-notice-form.html" ||
-      path === "/pms-resource-management.html" ||
-      path === "/pms-resource-view.html" ||
-      path === "/pms-resource-form.html";
     var view = new URLSearchParams(window.location.search).get("view");
     if (path === "/pms-project-status.html" && view === "mine") {
       activeLabel = "\uB0B4 \uD504\uB85C\uC81D\uD2B8 \uD604\uD669";
@@ -1240,9 +1223,6 @@
       if (existing) existing.remove();
 
       var scopedActiveLabel = activeLabel;
-      if (isPublicCommonPage && normalize(labelOf(navItem)) === normalize("공통관리")) {
-        scopedActiveLabel = "";
-      }
       if (path === "/pms-fund-plan-performance.html") {
         var openedFromStatistics = new URLSearchParams(window.location.search).get("menu") === "statistics";
         var currentMenuLabel = labelOf(navItem);
@@ -1288,16 +1268,6 @@
         navItem.removeAttribute("aria-current");
       }
     });
-
-    if (isPublicCommonPage) {
-      Array.prototype.forEach.call(nav.children, function (li) {
-        var item = li.querySelector(":scope > .nav-item");
-        if (!item || normalize(labelOf(item)) !== normalize("공통관리")) return;
-        item.classList.remove("active");
-        item.removeAttribute("aria-current");
-        li.classList.remove("is-open");
-      });
-    }
 
     renderLnbUtilities(nav);
     if (localStorage.getItem("pmsUserRole") === "user" || localStorage.getItem("pmsUserRole") === "1" || localStorage.getItem("pmsSavedId") === "1") {
