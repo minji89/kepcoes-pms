@@ -970,7 +970,7 @@
   function addAttachmentClose(){var layer=document.getElementById('projectAttachmentLayer');if(!layer||layer.querySelector('.attachment-layer-close'))return;var close=document.createElement('button');close.type='button';close.className='attachment-layer-close';close.setAttribute('aria-label','닫기');close.title='닫기';close.textContent='×';close.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();layer.remove()});layer.appendChild(close)}
   if(attachmentBtn){attachmentBtn.addEventListener('click',addAttachmentClose,true);attachmentBtn.addEventListener('mouseenter',addAttachmentClose,true)}
   var attachmentObserver=new MutationObserver(function(){addAttachmentClose()});attachmentObserver.observe(actions,{childList:true});
-  var managerTitle=document.querySelector('#managerPopover h4');if(managerTitle)managerTitle.textContent='담당자 변경';
+  var managerTitle=document.querySelector('#managerPopover h4');if(managerTitle)managerTitle.textContent='담당자 변경';var managerPop=document.getElementById('managerPopover'),managerRow=managerPop&&managerPop.querySelector('.manager-row'),managerSubmit=managerPop&&managerPop.querySelector('.manager-submit');if(managerRow&&managerSubmit){managerSubmit.parentElement.remove();managerRow.parentNode.insertBefore(managerSubmit,managerRow.nextSibling)}
   function closeOtherPopups(){var attachment=document.getElementById('projectAttachmentLayer');if(attachment)attachment.remove();var attachmentLayer=document.getElementById('attachmentLayer');if(attachmentLayer)attachmentLayer.hidden=true;var dataPop=document.getElementById('dataChangePopover');if(dataPop)dataPop.hidden=true;var managerPop=document.getElementById('managerPopover');if(managerPop)managerPop.hidden=true}
   issueBtn.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();closeOtherPopups();issueLayer.hidden=false}); issueLayer.querySelector('.issue-close').addEventListener('click',function(){issueLayer.hidden=true});
   if(issueList){var issueBody=issueList.querySelector('tbody');if(issueBody)issueBody.innerHTML='<tr class="issue-empty-row"><td colspan="4" class="manager-empty">등록된 주요 이슈사항 이력이 없습니다.</td></tr>';}
@@ -999,9 +999,9 @@
 })();
 </script>
 <style>
-  .manager-popover{box-sizing:border-box!important;position:fixed!important;left:50%!important;right:auto!important;top:460px!important;transform:translateX(-50%)!important;width:min(760px,calc(100vw - 32px))!important;max-width:calc(100vw - 32px)!important;max-height:calc(100vh - 480px)!important;overflow-x:hidden!important;overflow-y:auto!important;padding:20px!important}
+  .manager-popover{box-sizing:border-box!important;position:fixed!important;left:50%!important;right:auto!important;top:460px!important;transform:translateX(-50%)!important;width:min(760px,calc(100vw - 32px))!important;max-width:calc(100vw - 32px)!important;max-height:calc(100vh - 480px)!important;overflow-x:hidden!important;overflow-y:auto!important;padding:0 15px 20px!important}
   .manager-popover .manager-row{grid-template-columns:120px minmax(0,1fr) minmax(0,1fr) 76px;min-width:0;width:100%;box-sizing:border-box}
-  .manager-popover .manager-row input,.manager-popover .manager-row button{min-width:0;max-width:100%;box-sizing:border-box}
+  .manager-popover h4{min-height:44px!important;margin:0!important;padding:0!important;display:flex;align-items:center;font-size:14px!important;font-weight:800!important}.manager-popover .manager-history-title{font-size:14px!important;font-weight:800!important;margin:18px 0 8px!important}.manager-popover .manager-row input,.manager-popover .manager-row button{min-width:0;max-width:100%;box-sizing:border-box}.manager-popover .manager-row + .manager-row{display:none}.manager-popover .manager-actions{display:none}.manager-popover .manager-submit{display:block;margin:12px 0 0 auto}
   .manager-popover .manager-history{width:100%!important;min-width:0!important;table-layout:fixed!important}
 </style>
 </body>
