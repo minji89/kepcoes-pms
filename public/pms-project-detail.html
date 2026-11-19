@@ -1028,5 +1028,17 @@
     .repayment-history-list li span:last-child{text-align:left!important}
     .repayment-history-empty{grid-template-columns:1fr!important}
   </style>
+  <script>
+  (function(){
+    var heads=document.querySelectorAll('.performance-head');
+    for(var i=0;i<heads.length;i++){
+      if(heads[i].textContent.indexOf('상환 예정')===-1)continue;
+      var table=heads[i].parentElement.parentElement.querySelector('.table-scroll table');
+      if(!table)continue;
+      table.innerHTML='<caption class="sr-only">상환 예정 내역</caption><thead><tr><th colspan="6">예정 스케줄</th><th colspan="4">상환 현황</th></tr><tr><th>상환예정일</th><th>세금계산서발행일</th><th>상환금액(원)</th><th>부가세(원)</th><th>지연이자(원)</th><th>회차별 상환총액(원)</th><th>실제 상환일</th><th>상환금액(원)</th><th>잔여액(원)</th><th>상태</th></tr></thead><tbody><tr><td>2026.10.23</td><td>2026.10.15</td><td>46,761,000</td><td>4,676,100</td><td>0</td><td>51,437,100</td><td>2026.10.25</td><td>51,437,100</td><td>-</td><td><span class="pill pill-green">상환완료</span></td></tr><tr><td>2026.11.23</td><td>2026.11.15</td><td>46,761,000</td><td>4,676,100</td><td>0</td><td>51,437,100</td><td></td><td>-</td><td>20,000,000</td><td><span class="pill pill-amber">미상환</span></td></tr><tr><td>2027.01.23</td><td>2027.01.15</td><td>46,761,000</td><td>4,676,100</td><td>0</td><td>51,437,100</td><td></td><td>-</td><td>-</td><td>-</td></tr></tbody>';
+      break;
+    }
+  })();
+  </script>
 </body>
 </html>
