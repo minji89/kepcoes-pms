@@ -22,9 +22,9 @@
     @keyframes directPwPop{from{opacity:0;transform:scale(.95) translateY(10px)}to{opacity:1;transform:scale(1) translateY(0)}}
     .direct-pw-title{margin:0 0 10px;color:#0f172a;font-size:22px;font-weight:700;letter-spacing:-.03em}
     .direct-pw-desc{margin:0 0 20px;padding:14px 16px;border-radius:8px;background:#f8fafc;border:1px solid #e2e8f0;color:#475569;font-size:13px;line-height:1.6;word-break:keep-all}
-    .direct-pw-form{display:grid;gap:16px}
-    .direct-pw-field{display:grid;gap:6px}
-    .direct-pw-label{display:block;color:#334155;font-size:13px;font-weight:600}
+    .direct-pw-form{display:grid;gap:10px}
+    .direct-pw-field{display:grid;gap:8px}
+    .direct-pw-label{display:block;color:#1e293b;font-size:15px;font-weight:700;margin-bottom:2px}
     .direct-pw-input-wrap{position:relative}
     .direct-pw-input{width:100%;height:44px;padding:0 40px 0 13px;border:1px solid #cbd5e1;border-radius:8px;font:inherit;font-size:14px;color:#1e293b;outline:0;box-sizing:border-box}
     .direct-pw-input:focus{border-color:#1d6ff2;box-shadow:0 0 0 3px rgba(29,111,242,.15)}
@@ -79,18 +79,15 @@
       </p>
       <form class="direct-pw-form" id="directPwForm" novalidate>
         <div class="direct-pw-field">
-          <label class="direct-pw-label" for="initialDirectPw">비밀번호 입력</label>
+          <label class="direct-pw-label" for="initialDirectPw">변경할 비밀번호를 입력하세요</label>
           <div class="direct-pw-input-wrap">
-            <input class="direct-pw-input" id="initialDirectPw" type="password" autocomplete="new-password" placeholder="비밀번호를 입력해 주세요" required>
+            <input class="direct-pw-input" id="initialDirectPw" type="password" autocomplete="new-password" placeholder="영문 대/소문자, 숫자 포함 8자리 이상 입력하세요" required>
             <button type="button" class="direct-pw-toggle" data-for="initialDirectPw" aria-label="비밀번호 표시">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z"/><circle cx="12" cy="12" r="2.5"/></svg>
             </button>
           </div>
-        </div>
-        <div class="direct-pw-field">
-          <label class="direct-pw-label" for="confirmDirectPw">비밀번호 확인</label>
           <div class="direct-pw-input-wrap">
-            <input class="direct-pw-input" id="confirmDirectPw" type="password" autocomplete="new-password" placeholder="비밀번호를 한 번 더 입력해 주세요" required>
+            <input class="direct-pw-input" id="confirmDirectPw" type="password" autocomplete="new-password" placeholder="변경할 비밀번호를 한번 더 입력해 주세요" required>
             <button type="button" class="direct-pw-toggle" data-for="confirmDirectPw" aria-label="비밀번호 표시">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z"/><circle cx="12" cy="12" r="2.5"/></svg>
             </button>
@@ -183,13 +180,24 @@
       var confirmVal = confirmInput.value.trim();
 
       if (!pw) {
-        errorEl.textContent = "비밀번호를 입력해 주세요.";
+        errorEl.textContent = "영문 대/소문자, 숫자 포함 8자리 이상 입력하세요.";
+        pwInput.focus();
+        return;
+      }
+
+      /* 규칙: 영문 대/소문자, 숫자 포함 8자리 이상 */
+      var hasLetter = /[a-zA-Z]/.test(pw);
+      var hasNumber = /\d/.test(pw);
+      var isLengthValid = pw.length >= 8;
+
+      if (!hasLetter || !hasNumber || !isLengthValid) {
+        errorEl.textContent = "영문 대/소문자, 숫자 포함 8자리 이상 입력하세요.";
         pwInput.focus();
         return;
       }
 
       if (!confirmVal) {
-        errorEl.textContent = "비밀번호 확인을 입력해 주세요.";
+        errorEl.textContent = "변경할 비밀번호를 한번 더 입력해 주세요.";
         confirmInput.focus();
         return;
       }
