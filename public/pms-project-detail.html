@@ -1046,5 +1046,24 @@
   <script>
     (function(){var heads=document.querySelectorAll('.performance-head');for(var i=0;i<heads.length;i++){if(heads[i].textContent.indexOf('상환 예정')!==-1){var th=heads[i].parentElement.parentElement.querySelector('.table-scroll table thead tr:nth-child(2) th:nth-child(5)');if(th)th.textContent='이자(원)';break}}})();
   </script>
+  <style>
+    /* 오른쪽 상환정보 6개 행을 하나의 공통 2열 Grid로 정렬 */
+    .repayment-info-col:last-child{
+      display:grid!important;
+      grid-template-columns:max-content minmax(0,1fr)!important;
+      column-gap:0!important;
+      align-content:start!important;
+    }
+    .repayment-info-col:last-child .repayment-info-row{display:contents!important}
+    .repayment-info-col:last-child .repayment-info-row dt,
+    .repayment-info-col:last-child .repayment-info-row dd{
+      min-height:38px;
+      box-sizing:border-box;
+      align-content:center;
+      border-bottom:1px dotted #9ca3af;
+    }
+    .repayment-info-col:last-child .repayment-info-row dt{padding-right:12px!important}
+    .repayment-info-col:last-child .repayment-info-row dd{padding-left:13px!important;border-left:1px solid #9ca3af}
+  </style>
 </body>
 </html>
