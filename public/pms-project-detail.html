@@ -1071,5 +1071,8 @@
   <script>
     (function(){var oldLabel='\uc9c0\uc5f0\uc774\uc790(\uc6d0)';var newLabel='\uc774\uc790(\uc6d0)';document.querySelectorAll('.table-scroll table th').forEach(function(th){if(th.textContent.trim()===oldLabel)th.textContent=newLabel})})();
   </script>
+  <script>
+    (function(){function fix(){document.querySelectorAll('.table-scroll table').forEach(function(table){var rows=table.querySelectorAll('thead tr');if(rows.length>1&&rows[1].children.length>=5)rows[1].children[4].textContent='\\uC774\\uC790(\\uC6D0)'})}fix();setTimeout(fix,0)})();
+  </script>
 </body>
 </html>
