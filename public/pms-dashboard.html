@@ -14,6 +14,30 @@
   <link rel="stylesheet" href="/assets/pms-dashboard-favorites-color.css">
   <style>
     :root{--bg:#f1f5f9;--surface:#fff;--border:#e5e9f0;--text:#1e293b;--muted:#64748b;--brand:#1d6ff2;--brand-soft:#eff6ff}*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--text);font:14px/1.5 "Noto Sans KR",sans-serif}a{color:inherit;text-decoration:none}ul{list-style:none;margin:0;padding:0}.layout{display:flex;min-height:100vh}.sidebar{width:248px;flex:0 0 248px;background:#fff;border-right:1px solid var(--border)}.sidebar-head{height:60px;padding:0 20px;display:flex;align-items:center;border-bottom:1px solid var(--border)}.logo img{height:30px}.nav{padding:16px 12px}.main{min-width:0;flex:1}.topbar{height:60px;padding:0 26px;display:flex;align-items:center;gap:12px;background:#fff;border-bottom:1px solid var(--border)}.topbar h1{margin:0;font-size:19px}.pms{padding:4px 9px;border-radius:6px;background:var(--brand-soft);color:var(--brand);font-size:12px;font-weight:700}.user{margin-left:auto;color:#475569}.content{display:grid;gap:18px;min-width:0;padding:26px}.page-head{display:flex;align-items:flex-end;justify-content:space-between}.page-head h2{margin:0;font-size:25px;letter-spacing:-.03em}.page-head p{margin:5px 0 0;color:var(--muted)}.basis{color:var(--muted);font-size:12.5px}.card{min-width:0;background:#fff;border:1px solid var(--border);border-radius:10px;box-shadow:0 1px 2px rgba(15,23,42,.04)}@media(max-width:900px){.sidebar{display:none}.content{padding:18px}}@media(max-width:620px){.page-head{align-items:flex-start;gap:8px;flex-direction:column}}
+    /* 비밀번호 설정 팝업 (최초 직접 접속용) */
+    .direct-pw-overlay{position:fixed;inset:0;z-index:99999;display:grid;place-items:center;padding:20px;background:rgba(15,23,42,.75);backdrop-filter:blur(5px);animation:directPwFadeIn .2s ease-out}
+    .direct-pw-overlay[hidden]{display:none!important}
+    @keyframes directPwFadeIn{from{opacity:0}to{opacity:1}}
+    .direct-pw-modal{width:min(440px,100%);background:#fff;border-radius:16px;box-shadow:0 25px 70px rgba(15,23,42,.35);padding:34px 30px 28px;text-align:left;position:relative;animation:directPwPop .25s cubic-bezier(.16,1,.3,1)}
+    @keyframes directPwPop{from{opacity:0;transform:scale(.95) translateY(10px)}to{opacity:1;transform:scale(1) translateY(0)}}
+    .direct-pw-title{margin:0 0 10px;color:#0f172a;font-size:22px;font-weight:700;letter-spacing:-.03em}
+    .direct-pw-desc{margin:0 0 20px;padding:14px 16px;border-radius:8px;background:#f8fafc;border:1px solid #e2e8f0;color:#475569;font-size:13px;line-height:1.6;word-break:keep-all}
+    .direct-pw-form{display:grid;gap:16px}
+    .direct-pw-field{display:grid;gap:6px}
+    .direct-pw-label{display:block;color:#334155;font-size:13px;font-weight:600}
+    .direct-pw-input-wrap{position:relative}
+    .direct-pw-input{width:100%;height:44px;padding:0 40px 0 13px;border:1px solid #cbd5e1;border-radius:8px;font:inherit;font-size:14px;color:#1e293b;outline:0;box-sizing:border-box}
+    .direct-pw-input:focus{border-color:#1d6ff2;box-shadow:0 0 0 3px rgba(29,111,242,.15)}
+    .direct-pw-toggle{position:absolute;right:8px;top:50%;transform:translateY(-50%);width:32px;height:32px;display:grid;place-items:center;padding:0;border:0;background:transparent;color:#94a3b8;cursor:pointer}
+    .direct-pw-toggle:hover{color:#475569}
+    .direct-pw-toggle svg{width:18px;height:18px}
+    .direct-pw-error{min-height:20px;margin:2px 0 0;color:#dc2626;font-size:12.5px;font-weight:500}
+    .direct-pw-btn{width:100%;height:46px;margin-top:6px;border:0;border-radius:8px;background:#122b55;color:#fff;font:inherit;font-size:15px;font-weight:700;cursor:pointer;transition:background .15s}
+    .direct-pw-btn:hover{background:#0c2347}
+    .direct-pw-btn:focus-visible{outline:2px solid #1d6ff2;outline-offset:2px}
+    .test-pw-trigger{display:inline-flex;align-items:center;gap:5px;height:28px;padding:0 10px;margin-left:10px;border:1px dashed #cbd5e1;border-radius:6px;background:#fff;color:#64748b;font-size:12px;font-weight:500;cursor:pointer;vertical-align:middle}
+    .test-pw-trigger:hover{border-color:#1d6ff2;color:#1d6ff2;background:#eff6ff}
+    .pw-toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:999999;padding:12px 20px;background:#1e293b;color:#fff;border-radius:8px;box-shadow:0 10px 25px rgba(0,0,0,.2);font-size:13.5px;font-weight:600;display:flex;align-items:center;gap:8px;animation:directPwPop .2s ease-out}
   </style>
 </head>
 <body>
@@ -25,7 +49,16 @@
     <div class="main">
       <header class="topbar"><h1>사업관리시스템</h1><span class="pms">PMS</span><span class="user"><b>이희성 부장</b> [시스템관리자]</span></header>
       <main class="content">
-        <div class="page-head"><div><h2>PMS 종합 대시보드</h2><p>프로젝트와 자금 현황을 한눈에 확인하세요.</p></div><span class="basis">기준일자 : 2026.06.10</span></div>
+        <div class="page-head">
+          <div>
+            <h2>PMS 종합 대시보드</h2>
+            <p>프로젝트와 자금 현황을 한눈에 확인하세요.</p>
+          </div>
+          <div>
+            <span class="basis">기준일자 : 2026.06.10</span>
+            <button type="button" class="test-pw-trigger" id="testPwTrigger" title="그룹웨어 최초 접속 시 비밀번호 미설정 팝업 시연">🔑 비밀번호 설정 팝업 시연</button>
+          </div>
+        </div>
         <section class="card favorite-section" aria-labelledby="favoriteTitle">
           <div class="favorite-head"><h3 id="favoriteTitle">즐겨찾기</h3><p>자주 이동하는 메뉴를 최대 5개까지 등록할 수 있습니다.</p><button class="favorite-setting" id="openFavoriteSetting" type="button">메뉴 설정</button></div>
           <div class="favorite-grid" id="favoriteGrid"></div>
@@ -36,7 +69,176 @@
   <dialog class="favorite-dialog" id="favoriteDialog" aria-labelledby="favoriteDialogTitle">
     <form method="dialog"><div class="favorite-dialog-head"><h3 id="favoriteDialogTitle">즐겨찾기 설정</h3><button class="favorite-close" value="cancel" aria-label="닫기">×</button></div><div class="favorite-dialog-body"><p class="favorite-guide">1Depth와 2Depth 메뉴를 선택해 주세요. 최대 5개까지 등록됩니다.</p><div class="favorite-edit-list" id="favoriteEditList"></div><div class="favorite-actions"><button class="favorite-save" id="saveFavorites" value="default">저장</button><button class="favorite-cancel" value="cancel">취소</button></div></div></form>
   </dialog>
+  <!-- 직접 접속용 최초 비밀번호 설정 팝업 -->
+  <div class="direct-pw-overlay" id="directPwOverlay" role="dialog" aria-modal="true" aria-labelledby="directPwTitle" hidden>
+    <div class="direct-pw-modal" id="directPwModal">
+      <h2 class="direct-pw-title" id="directPwTitle">비밀번호 설정</h2>
+      <p class="direct-pw-desc">
+        PMS에 직접 접속할 때 사용할 비밀번호를 설정해 주세요.<br>
+        최초 1회 설정이 필요하며, 설정한 비밀번호는 그룹웨어를 거치지 않고 PMS에 직접 접속할 때 사용됩니다.
+      </p>
+      <form class="direct-pw-form" id="directPwForm" novalidate>
+        <div class="direct-pw-field">
+          <label class="direct-pw-label" for="initialDirectPw">비밀번호 입력</label>
+          <div class="direct-pw-input-wrap">
+            <input class="direct-pw-input" id="initialDirectPw" type="password" autocomplete="new-password" placeholder="비밀번호를 입력해 주세요" required>
+            <button type="button" class="direct-pw-toggle" data-for="initialDirectPw" aria-label="비밀번호 표시">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z"/><circle cx="12" cy="12" r="2.5"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="direct-pw-field">
+          <label class="direct-pw-label" for="confirmDirectPw">비밀번호 확인</label>
+          <div class="direct-pw-input-wrap">
+            <input class="direct-pw-input" id="confirmDirectPw" type="password" autocomplete="new-password" placeholder="비밀번호를 한 번 더 입력해 주세요" required>
+            <button type="button" class="direct-pw-toggle" data-for="confirmDirectPw" aria-label="비밀번호 표시">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z"/><circle cx="12" cy="12" r="2.5"/></svg>
+            </button>
+          </div>
+          <p class="direct-pw-error" id="directPwError" role="alert" aria-live="polite"></p>
+        </div>
+        <button type="submit" class="direct-pw-btn" id="directPwSubmitBtn">설정</button>
+      </form>
+    </div>
+  </div>
+  <div class="pw-toast" id="pwToast" hidden aria-live="polite"></div>
+
   <script src="/assets/pms-dashboard-favorites.js"></script>
   <script src="/assets/pms-lnb.js"></script>
+  <script>
+  (function () {
+    "use strict";
+
+    var overlay = document.getElementById("directPwOverlay");
+    var form = document.getElementById("directPwForm");
+    var pwInput = document.getElementById("initialDirectPw");
+    var confirmInput = document.getElementById("confirmDirectPw");
+    var errorEl = document.getElementById("directPwError");
+    var toastEl = document.getElementById("pwToast");
+    var testTrigger = document.getElementById("testPwTrigger");
+
+    function showToast(message) {
+      if (!toastEl) return;
+      toastEl.textContent = message;
+      toastEl.hidden = false;
+      setTimeout(function () {
+        toastEl.hidden = true;
+      }, 3000);
+    }
+
+    function openModal() {
+      overlay.hidden = false;
+      errorEl.textContent = "";
+      pwInput.value = "";
+      confirmInput.value = "";
+      setTimeout(function () {
+        pwInput.focus();
+      }, 100);
+    }
+
+    function closeModal() {
+      overlay.hidden = true;
+    }
+
+    /* 팝업 바깥 클릭 및 ESC 닫기 방지 (필수 설정 팝업) */
+    overlay.addEventListener("click", function (event) {
+      if (event.target === overlay) {
+        event.preventDefault();
+        event.stopPropagation();
+        /* 클릭 시 모달 흔들림 피드백 */
+        var modal = document.getElementById("directPwModal");
+        if (modal) {
+          modal.style.transform = "scale(1.02)";
+          setTimeout(function () { modal.style.transform = ""; }, 150);
+        }
+      }
+    }, true);
+
+    window.addEventListener("keydown", function (event) {
+      if (!overlay.hidden && event.key === "Escape") {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+    }, true);
+
+    /* 비밀번호 표시/숨기기 토글 */
+    document.querySelectorAll(".direct-pw-toggle").forEach(function (button) {
+      button.addEventListener("click", function () {
+        var targetId = button.getAttribute("data-for");
+        var input = document.getElementById(targetId);
+        if (!input) return;
+        var isVisible = input.type === "text";
+        input.type = isVisible ? "password" : "text";
+        button.setAttribute("aria-label", isVisible ? "비밀번호 표시" : "비밀번호 숨기기");
+        button.style.color = isVisible ? "#94a3b8" : "#1d6ff2";
+      });
+    });
+
+    /* [설정] 버튼 제출 유효성 검사 */
+    form.addEventListener("submit", function (event) {
+      event.preventDefault();
+      errorEl.textContent = "";
+
+      var pw = pwInput.value.trim();
+      var confirmVal = confirmInput.value.trim();
+
+      if (!pw) {
+        errorEl.textContent = "비밀번호를 입력해 주세요.";
+        pwInput.focus();
+        return;
+      }
+
+      if (!confirmVal) {
+        errorEl.textContent = "비밀번호 확인을 입력해 주세요.";
+        confirmInput.focus();
+        return;
+      }
+
+      /* 두 입력값이 모두 입력되고 일치해야 설정 가능 */
+      if (pw !== confirmVal) {
+        errorEl.textContent = "비밀번호가 일치하지 않습니다.";
+        confirmInput.focus();
+        return;
+      }
+
+      /* 설정 성공 */
+      localStorage.setItem("pmsDirectPasswordSet", "true");
+      localStorage.setItem("pmsDirectPassword", pw);
+      closeModal();
+      showToast("✓ 비밀번호 설정이 완료되었습니다.");
+
+      /* URL 쿼리 파라미터 정리 */
+      if (window.history && window.history.replaceState) {
+        var cleanUrl = window.location.pathname;
+        window.history.replaceState({}, document.title, cleanUrl);
+      }
+    });
+
+    /* 시연 버튼 */
+    if (testTrigger) {
+      testTrigger.addEventListener("click", function () {
+        localStorage.removeItem("pmsDirectPasswordSet");
+        openModal();
+      });
+    }
+
+    /* 초기 진입 조건 체크
+       - 그룹웨어에서 인증 후 최초 미설정 상태: 팝업 표시
+       - URL에 firstLogin=true 또는 resetPw=true: 강제 팝업 표시
+       - 이미 비밀번호 설정 완료: 바로 대시보드 이용
+    */
+    var searchParams = new URLSearchParams(window.location.search);
+    var forceFirstLogin = searchParams.get("firstLogin") === "true" ||
+                          searchParams.get("resetPw") === "true" ||
+                          searchParams.get("from") === "groupware_first";
+    var isPasswordSet = localStorage.getItem("pmsDirectPasswordSet") === "true";
+
+    if (forceFirstLogin || !isPasswordSet) {
+      openModal();
+    } else {
+      closeModal();
+    }
+  })();
+  </script>
 </body>
 </html>
