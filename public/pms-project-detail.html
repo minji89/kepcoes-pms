@@ -1074,5 +1074,10 @@
   <script>
     (function(){function fix(){document.querySelectorAll('.table-scroll table').forEach(function(table){var rows=table.querySelectorAll('thead tr');if(rows.length>1&&rows[1].children.length>=5)rows[1].children[4].textContent='\\uC774\\uC790(\\uC6D0)'})}fix();setTimeout(fix,0)})();
   </script>
+  <style>
+    /* 상환 예정 표의 다섯 번째 예정 스케줄 헤더는 항상 '이자(원)'으로 표시 */
+    .table-scroll table:has(>thead>tr:first-child>th[colspan="6"])>thead>tr:nth-child(2)>th:nth-child(5){font-size:0!important}
+    .table-scroll table:has(>thead>tr:first-child>th[colspan="6"])>thead>tr:nth-child(2)>th:nth-child(5)::after{content:"\\C774\\C790(\\C6D0)";font-size:13px!important}
+  </style>
 </body>
 </html>
