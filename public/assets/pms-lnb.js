@@ -916,6 +916,7 @@
         button.setAttribute("aria-pressed", active ? "true" : "false");
       });
       try { sessionStorage.setItem("pms.permissionGroup", String(number)); } catch (err) {}
+      window.dispatchEvent(new CustomEvent("pms:role-changed", { detail: { group: number } }));
     }
 
     permissions.addEventListener("click", function (event) {
@@ -923,6 +924,456 @@
       if (button) selectGroup(Number(button.getAttribute("data-permission-group")));
     });
     selectGroup(selected);
+  }
+
+  /* ============================================================
+     공통 헤더 [알림] 아이콘 및 알림 팝업
+     ============================================================ */
+  var NOTIF_STORAGE_KEY = "pms_notifications_v1";
+  var NOTIF_TTL_MS = 72 * 60 * 60 * 1000; // 72시간 (3일)
+
+  function getDefaultNotifications() {
+    var now = Date.now();
+    return [
+      {
+        id: "notif-1",
+        type: "new_project",
+        category: "신규 등록",
+        targetRole: "all",
+        message: "프로젝트 <strong>2026-05011</strong> 신규 등록이 완료되었습니다.",
+        url: "/pms-project-detail.html?projectNo=2026-05011",
+        createdAt: now - (25 * 60 * 1000), // 25분 전
+        read: false
+      },
+      {
+        id: "notif-2",
+        type: "progress_change",
+        category: "진행단계 변경",
+        targetRole: "all",
+        message: "프로젝트 <strong>2026-06012</strong> 진행단계가 변경되었습니다. <b>추진 → 계약</b>",
+        url: "/pms-project-detail.html?projectNo=2026-06012",
+        createdAt: now - (2 * 60 * 60 * 1000), // 2시간 전
+        read: false
+      },
+      {
+        id: "notif-3-1",
+        type: "manager_change",
+        category: "사업담당자 변경",
+        targetRole: "all",
+        message: "프로젝트 <strong>2026-04108</strong> 사업담당자가 변경되었습니다. <b>김영수 → 이희성</b>",
+        url: "/pms-project-detail.html?projectNo=2026-04108",
+        createdAt: now - (4 * 60 * 60 * 1000), // 4시간 전
+        read: false
+      },
+      {
+        id: "notif-3-2",
+        type: "manager_change",
+        category: "사업담당자 변경",
+        targetRole: "all",
+        message: "프로젝트 <strong>2026-04109</strong> 사업담당자가 변경되었습니다. <b>김영수 → 이희성</b>",
+        url: "/pms-project-detail.html?projectNo=2026-04109",
+        createdAt: now - (4 * 60 * 60 * 1000 + 1000),
+        read: true
+      },
+      {
+        id: "notif-7",
+        type: "change_req_registered",
+        category: "수정 요청 등록",
+        targetRole: "admin", // 관리자만
+        message: "데이터 정보 수정 요청이 등록되었습니다. <b>[계약일자 오류 수정 요청]</b>",
+        url: "/pms-data-change-request-detail.html?id=REQ-2026-003",
+        createdAt: now - (7 * 60 * 60 * 1000), // 7시간 전
+        read: false
+      },
+      {
+        id: "notif-8",
+        type: "change_req_completed",
+        category: "수정 요청 처리",
+        targetRole: "requester", // 해당 요청 등록자만
+        message: "등록하신 데이터 정보 수정 요청이 처리되었습니다. <b>[준공일자 정정 건]</b>",
+        url: "/pms-data-change-request-detail.html?id=REQ-2026-001",
+        createdAt: now - (12 * 60 * 60 * 1000), // 12시간 전
+        read: false
+      },
+      {
+        id: "notif-4",
+        type: "repay_status_change",
+        category: "상환상태 변경",
+        targetRole: "all",
+        message: "프로젝트 <strong>2026-03217</strong> 상환상태가 변경되었습니다. <b>상환 예정 → 상환 진행 중</b>",
+        url: "/pms-project-repayment.html?projectNo=2026-03217",
+        createdAt: now - (19 * 60 * 60 * 1000), // 19시간 전
+        read: false
+      },
+      {
+        id: "notif-5",
+        type: "unpaid_classify",
+        category: "미수채권 분류",
+        targetRole: "all",
+        message: "프로젝트 <strong>2026-02134</strong>의 미수채권 사업 분류가 완료되었습니다.",
+        url: "/pms-project-repayment.html?projectNo=2026-02134",
+        createdAt: now - (27 * 60 * 60 * 1000), // 27시간 전 (어제)
+        read: true
+      },
+      {
+        id: "notif-6",
+        type: "unpaid_release",
+        category: "미수채권 해제",
+        targetRole: "all",
+        message: "프로젝트 <strong>2025-24111</strong>의 미수채권 분류가 해제되었습니다. <b>변경 상태 상환 완료</b>",
+        url: "/pms-project-repayment.html?projectNo=2025-24111",
+        createdAt: now - (48 * 60 * 60 * 1000), // 48시간 전 (2일 전)
+        read: true
+      }
+    ];
+  }
+
+  function getStoredNotifications() {
+    var now = Date.now();
+    var raw = localStorage.getItem(NOTIF_STORAGE_KEY);
+    var list = null;
+    if (raw) {
+      try { list = JSON.parse(raw); } catch (e) {}
+    }
+    if (!list || !Array.isArray(list)) {
+      list = getDefaultNotifications();
+      saveStoredNotifications(list);
+    }
+    /* 발생 후 72시간 경과 알림 자동 삭제 */
+    var beforeLen = list.length;
+    list = list.filter(function (item) {
+      return (now - item.createdAt) <= NOTIF_TTL_MS;
+    });
+    if (list.length !== beforeLen) {
+      saveStoredNotifications(list);
+    }
+    return list;
+  }
+
+  function saveStoredNotifications(list) {
+    try {
+      localStorage.setItem(NOTIF_STORAGE_KEY, JSON.stringify(list));
+    } catch (e) {}
+  }
+
+  function getCurrentUserRole() {
+    var role = localStorage.getItem("pmsUserRole");
+    var perm = sessionStorage.getItem("pms.permissionGroup");
+    if (role === "user") return "user";
+    if (role === "admin") return "admin";
+    if (perm && perm !== "1") return "user";
+    return "admin"; // 기본값 시스템 관리자
+  }
+
+  function formatTimeAgo(timestamp) {
+    var diff = Math.max(0, Date.now() - timestamp);
+    var mins = Math.floor(diff / (60 * 1000));
+    if (mins < 1) return "방금 전";
+    if (mins < 60) return mins + "분 전";
+    var hours = Math.floor(mins / 60);
+    if (hours < 24) return hours + "시간 전";
+    var days = Math.floor(hours / 24);
+    if (days === 1) return "어제";
+    return days + "일 전";
+  }
+
+  function ensureGlobalNotifications(header, user) {
+    if (!header || header.querySelector(".pms-notif-wrap")) return;
+
+    var notifWrap = document.createElement("div");
+    notifWrap.className = "pms-notif-wrap";
+    notifWrap.innerHTML =
+      '<button type="button" class="pms-notif-btn" id="pmsNotifBtn" aria-label="알림 열기" aria-expanded="false" title="알림 확인">' +
+        '<svg class="pms-notif-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+          '<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />' +
+          '<path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />' +
+        '</svg>' +
+        '<span class="pms-notif-badge" id="pmsNotifBadge" hidden>0</span>' +
+      '</button>' +
+      '<div class="pms-notif-popup" id="pmsNotifPopup" role="dialog" aria-label="알림 목록" hidden>' +
+        '<div class="pms-notif-header">' +
+          '<div class="pms-notif-header-title">' +
+            '<strong>알림</strong>' +
+            '<span class="pms-notif-count-badge" id="pmsNotifCountBadge">전체 0건</span>' +
+          '</div>' +
+          '<p class="pms-notif-notice">알림은 발생 시점부터 3일간 표시되며, 이후 자동으로 삭제됩니다.</p>' +
+        '</div>' +
+        '<div class="pms-notif-list" id="pmsNotifList">' +
+        '</div>' +
+        '<div class="pms-notif-footer">' +
+          '<div class="pms-notif-role-bar">' +
+            '<span class="pms-notif-role-tag" id="pmsNotifRoleTag">대상: 관리자 모드</span>' +
+            '<button type="button" class="pms-notif-role-switch" id="pmsNotifRoleSwitch" title="사용자 권한 전환">사용자 전환 ⇄</button>' +
+          '</div>' +
+          '<div class="pms-notif-actions">' +
+            '<button type="button" class="pms-notif-action-btn" id="pmsNotifMarkAllBtn" title="확인된 내역은 남기고 미확인 건만 확인 처리">모두 읽음</button>' +
+            '<button type="button" class="pms-notif-action-btn" id="pmsNotifClearBtn" title="알림 0건 빈 화면 시연">0건 시연</button>' +
+            '<button type="button" class="pms-notif-action-btn" id="pmsNotifResetBtn" title="8개 조건 전체 샘플 복원">샘플 복원</button>' +
+            '<button type="button" class="pms-notif-action-btn primary" id="pmsNotifAddBtn" title="신규 알림 1건 발생">+ 새 알림</button>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+
+    user.parentElement.insertBefore(notifWrap, user);
+
+    var btn = notifWrap.querySelector("#pmsNotifBtn");
+    var popup = notifWrap.querySelector("#pmsNotifPopup");
+    var badge = notifWrap.querySelector("#pmsNotifBadge");
+    var listEl = notifWrap.querySelector("#pmsNotifList");
+    var countBadge = notifWrap.querySelector("#pmsNotifCountBadge");
+    var roleTag = notifWrap.querySelector("#pmsNotifRoleTag");
+    var roleSwitch = notifWrap.querySelector("#pmsNotifRoleSwitch");
+    var markAllBtn = notifWrap.querySelector("#pmsNotifMarkAllBtn");
+    var clearBtn = notifWrap.querySelector("#pmsNotifClearBtn");
+    var resetBtn = notifWrap.querySelector("#pmsNotifResetBtn");
+    var addBtn = notifWrap.querySelector("#pmsNotifAddBtn");
+
+    function getVisibleList() {
+      var all = getStoredNotifications();
+      var role = getCurrentUserRole();
+      return all.filter(function (item) {
+        if (!item.targetRole || item.targetRole === "all") return true;
+        if (item.targetRole === "admin") return role === "admin";
+        if (item.targetRole === "requester") return role === "user";
+        return true;
+      }).sort(function (a, b) {
+        return b.createdAt - a.createdAt; // 최신순
+      });
+    }
+
+    function renderBadge() {
+      var visible = getVisibleList();
+      var unread = visible.filter(function (item) { return !item.read; }).length;
+      if (unread > 0) {
+        badge.textContent = unread > 99 ? "99+" : String(unread);
+        badge.hidden = false;
+      } else {
+        badge.hidden = true;
+      }
+      if (countBadge) {
+        countBadge.textContent = "전체 " + visible.length + "건 (미확인 " + unread + "건)";
+      }
+      if (roleTag) {
+        var role = getCurrentUserRole();
+        roleTag.textContent = role === "admin" ? "대상: 관리자 (이희성)" : "대상: 일반 사용자 (요청 등록자)";
+      }
+    }
+
+    function renderList() {
+      var visible = getVisibleList();
+      renderBadge();
+
+      if (!visible.length) {
+        listEl.innerHTML =
+          '<div class="pms-notif-empty">' +
+            '<div class="pms-notif-empty-icon">' +
+              '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m9 12 2 2 4-4"/></svg>' +
+            '</div>' +
+            '<strong class="pms-notif-empty-title">모두 확인했습니다!</strong>' +
+            '<p class="pms-notif-empty-sub">새 알림이 없습니다.</p>' +
+          '</div>';
+        return;
+      }
+
+      listEl.innerHTML = visible.map(function (item) {
+        var isUnread = !item.read;
+        var dateObj = new Date(item.createdAt);
+        var fullDateStr = dateObj.getFullYear() + "." +
+          String(dateObj.getMonth() + 1).padStart(2, "0") + "." +
+          String(dateObj.getDate()).padStart(2, "0") + " " +
+          String(dateObj.getHours()).padStart(2, "0") + ":" +
+          String(dateObj.getMinutes()).padStart(2, "0");
+
+        return '<div class="pms-notif-item' + (isUnread ? ' is-unread' : '') + '" data-id="' + item.id + '" data-url="' + item.url + '" tabindex="0" role="button">' +
+          '<div class="pms-notif-item-top">' +
+            (isUnread ? '<span class="pms-notif-unread-dot" title="미확인 알림"></span>' : '<span class="pms-notif-read-check">✓</span>') +
+            '<span class="pms-notif-category">' + item.category + '</span>' +
+            '<span class="pms-notif-time" title="' + fullDateStr + '">' + formatTimeAgo(item.createdAt) + '</span>' +
+          '</div>' +
+          '<div class="pms-notif-item-body">' + item.message + '</div>' +
+        '</div>';
+      }).join("");
+    }
+
+    /* 팝업 열기/닫기 */
+    btn.addEventListener("click", function (e) {
+      e.stopPropagation();
+      var willOpen = popup.hidden;
+      popup.hidden = !willOpen;
+      btn.setAttribute("aria-expanded", willOpen ? "true" : "false");
+      btn.classList.toggle("is-active", willOpen);
+      if (willOpen) {
+        renderList();
+      }
+    });
+
+    popup.addEventListener("click", function (e) {
+      e.stopPropagation();
+    });
+
+    document.addEventListener("click", function () {
+      if (!popup.hidden) {
+        popup.hidden = true;
+        btn.setAttribute("aria-expanded", "false");
+        btn.classList.remove("is-active");
+      }
+    });
+
+    window.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && !popup.hidden) {
+        popup.hidden = true;
+        btn.setAttribute("aria-expanded", "false");
+        btn.classList.remove("is-active");
+        btn.focus();
+      }
+    });
+
+    /* 개별 알림 클릭 시: 해당 건만 확인 처리하고 연결된 상세 화면으로 이동 */
+    listEl.addEventListener("click", function (e) {
+      var itemEl = e.target.closest(".pms-notif-item");
+      if (!itemEl) return;
+      var id = itemEl.getAttribute("data-id");
+      var targetUrl = itemEl.getAttribute("data-url");
+
+      var all = getStoredNotifications();
+      all.forEach(function (it) {
+        if (it.id === id) {
+          it.read = true; // 해당 건만 읽음 처리
+        }
+      });
+      saveStoredNotifications(all);
+      renderBadge();
+
+      if (targetUrl) {
+        window.location.href = targetUrl;
+      }
+    });
+
+    listEl.addEventListener("keydown", function (e) {
+      if (e.key === "Enter" || e.key === " ") {
+        var itemEl = e.target.closest(".pms-notif-item");
+        if (itemEl) {
+          e.preventDefault();
+          itemEl.click();
+        }
+      }
+    });
+
+    /* 프로토타입 시연 액션들 */
+    if (markAllBtn) {
+      markAllBtn.addEventListener("click", function () {
+        var all = getStoredNotifications();
+        all.forEach(function (it) { it.read = true; });
+        saveStoredNotifications(all);
+        renderList();
+      });
+    }
+
+    if (clearBtn) {
+      clearBtn.addEventListener("click", function () {
+        saveStoredNotifications([]);
+        renderList();
+      });
+    }
+
+    if (resetBtn) {
+      resetBtn.addEventListener("click", function () {
+        saveStoredNotifications(getDefaultNotifications());
+        renderList();
+      });
+    }
+
+    if (addBtn) {
+      addBtn.addEventListener("click", function () {
+        var all = getStoredNotifications();
+        var randomNum = Math.floor(1000 + Math.random() * 9000);
+        var newItem = {
+          id: "notif-" + Date.now(),
+          type: "progress_change",
+          category: "진행단계 변경",
+          targetRole: "all",
+          message: "프로젝트 <strong>2026-" + randomNum + "</strong> 진행단계가 변경되었습니다. <b>계약 → 시공</b>",
+          url: "/pms-project-detail.html?projectNo=2026-" + randomNum,
+          createdAt: Date.now(),
+          read: false
+        };
+        all.unshift(newItem);
+        saveStoredNotifications(all);
+        renderList();
+      });
+    }
+
+    if (roleSwitch) {
+      roleSwitch.addEventListener("click", function () {
+        var current = getCurrentUserRole();
+        var next = current === "admin" ? "user" : "admin";
+        localStorage.setItem("pmsUserRole", next);
+        renderList();
+      });
+    }
+
+    /* 권한 그룹 변경 및 저장소 이벤트 감지 */
+    window.addEventListener("pms:role-changed", function () {
+      renderBadge();
+    });
+    window.addEventListener("storage", function (e) {
+      if (e.key === NOTIF_STORAGE_KEY || e.key === "pmsUserRole") {
+        renderBadge();
+      }
+    });
+
+    /* 초기 배지 렌더링 */
+    renderBadge();
+
+    /* 공통 스타일 삽입 */
+    if (!document.getElementById("pmsNotificationStyles")) {
+      var notifStyle = document.createElement("style");
+      notifStyle.id = "pmsNotificationStyles";
+      notifStyle.textContent =
+        '.pms-notif-wrap{position:relative;display:inline-flex;align-items:center;margin-left:10px;margin-right:12px;flex:none}' +
+        '.pms-notif-btn{position:relative;display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;padding:0;border:1px solid #dbe4f1;border-radius:9px;background:#fff;color:#475569;cursor:pointer;transition:all .15s}' +
+        '.pms-notif-btn:hover,.pms-notif-btn.is-active{border-color:#1d6ff2;background:#eff6ff;color:#1d6ff2}' +
+        '.pms-notif-icon{width:20px;height:20px}' +
+        '.pms-notif-badge{position:absolute;top:-4px;right:-4px;min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:#dc2626;color:#fff;font-size:11px;font-weight:700;line-height:18px;text-align:center;box-shadow:0 2px 5px rgba(220,38,38,.4);pointer-events:none}' +
+        '.pms-notif-popup{position:absolute;right:0;top:calc(100% + 8px);width:400px;max-width:calc(100vw - 32px);background:#fff;border:1px solid #e2e8f0;border-radius:14px;box-shadow:0 18px 45px rgba(15,23,42,.18);z-index:99999;overflow:hidden;animation:pmsNotifPop .18s ease-out}' +
+        '@keyframes pmsNotifPop{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}' +
+        '.pms-notif-header{padding:16px 18px 12px;background:#f8fafc;border-bottom:1px solid #eef2f7}' +
+        '.pms-notif-header-title{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}' +
+        '.pms-notif-header-title strong{color:#0f172a;font-size:16px;font-weight:700}' +
+        '.pms-notif-count-badge{padding:3px 8px;border-radius:12px;background:#e2e8f0;color:#475569;font-size:11.5px;font-weight:600}' +
+        '.pms-notif-notice{margin:0;color:#64748b;font-size:12px;line-height:1.45;word-break:keep-all}' +
+        '.pms-notif-list{max-height:380px;overflow-y:auto;overscroll-behavior:contain}' +
+        '.pms-notif-item{padding:13px 18px;border-bottom:1px solid #f1f5f9;cursor:pointer;transition:background .12s;text-align:left;position:relative}' +
+        '.pms-notif-item:hover{background:#f8fafc}' +
+        '.pms-notif-item.is-unread{background:#f0f7ff}' +
+        '.pms-notif-item.is-unread:hover{background:#e5f0fe}' +
+        '.pms-notif-item-top{display:flex;align-items:center;gap:6px;margin-bottom:5px;font-size:11.5px}' +
+        '.pms-notif-unread-dot{width:7px;height:7px;border-radius:50%;background:#1d6ff2;flex:none}' +
+        '.pms-notif-read-check{color:#94a3b8;font-size:11px;font-weight:700;flex:none}' +
+        '.pms-notif-category{font-weight:700;color:#1e40af;padding:1px 6px;border-radius:4px;background:#dbeafe}' +
+        '.pms-notif-item:not(.is-unread) .pms-notif-category{color:#64748b;background:#f1f5f9}' +
+        '.pms-notif-time{margin-left:auto;color:#94a3b8;font-size:11px}' +
+        '.pms-notif-item-body{color:#334155;font-size:13px;line-height:1.5;word-break:keep-all}' +
+        '.pms-notif-item.is-unread .pms-notif-item-body{color:#0f172a;font-weight:500}' +
+        '.pms-notif-item-body b{color:#1d6ff2;font-weight:700}' +
+        '.pms-notif-item-body strong{color:#0f172a;font-weight:700}' +
+        '.pms-notif-empty{padding:46px 20px;text-align:center;color:#64748b}' +
+        '.pms-notif-empty-icon{display:inline-flex;align-items:center;justify-content:center;width:48px;height:48px;margin-bottom:12px;border-radius:50%;background:#f1f5f9;color:#94a3b8}' +
+        '.pms-notif-empty-icon svg{width:26px;height:26px}' +
+        '.pms-notif-empty-title{display:block;margin-bottom:4px;color:#1e293b;font-size:15px;font-weight:700}' +
+        '.pms-notif-empty-sub{margin:0;font-size:13px;color:#94a3b8}' +
+        '.pms-notif-footer{padding:10px 14px;background:#f8fafc;border-top:1px solid #eef2f7}' +
+        '.pms-notif-role-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;padding-bottom:6px;border-bottom:1px dashed #e2e8f0;font-size:11.5px}' +
+        '.pms-notif-role-tag{color:#475569;font-weight:600}' +
+        '.pms-notif-role-switch{border:0;background:transparent;color:#1d6ff2;font-size:11.5px;font-weight:600;cursor:pointer;padding:0}' +
+        '.pms-notif-role-switch:hover{text-decoration:underline}' +
+        '.pms-notif-actions{display:flex;gap:5px;justify-content:flex-end}' +
+        '.pms-notif-action-btn{height:26px;padding:0 8px;border:1px solid #cbd5e1;border-radius:4px;background:#fff;color:#475569;font-size:11.5px;font-weight:500;cursor:pointer;white-space:nowrap}' +
+        '.pms-notif-action-btn:hover{background:#f1f5f9;color:#1e293b;border-color:#94a3b8}' +
+        '.pms-notif-action-btn.primary{background:#1d6ff2;border-color:#1d6ff2;color:#fff}' +
+        '.pms-notif-action-btn.primary:hover{background:#175cd3}';
+      document.head.appendChild(notifStyle);
+    }
   }
 
   /* 모든 PMS 화면의 사용자 정보 우측에 공통 로그아웃을 구성합니다. */
@@ -956,6 +1407,7 @@
     }
 
     ensureGlobalPermissionGroups(header, user);
+    ensureGlobalNotifications(header, user);
 
     var logout = header.querySelector(".logout, .pms-logout");
     if (!logout) {
