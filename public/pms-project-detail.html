@@ -1068,5 +1068,8 @@
   <script>
     (function(){var heads=document.querySelectorAll('.performance-head');for(var i=0;i<heads.length;i++){var table=heads[i].parentElement.parentElement.querySelector('.table-scroll table');if(!table)continue;var cells=table.querySelectorAll('thead tr:nth-child(2) th');if(cells.length===10)cells[4].textContent='\uc774\uc790(\uc6d0)';}})();
   </script>
+  <script>
+    (function(){var oldLabel='\uc9c0\uc5f0\uc774\uc790(\uc6d0)';var newLabel='\uc774\uc790(\uc6d0)';document.querySelectorAll('.table-scroll table th').forEach(function(th){if(th.textContent.trim()===oldLabel)th.textContent=newLabel})})();
+  </script>
 </body>
 </html>
