@@ -983,7 +983,7 @@
   var list=document.querySelector('.home-issue-layer .work-history-list'), body=document.getElementById('workHistoryListBody'), register=document.getElementById('workHistoryRegister');
   if(!list||!body)return;
   var key='pms.projectIssueHistory';
-  function read(){try{return JSON.parse(sessionStorage.getItem(key)||'[]')}catch(e){return[]}}
+  function read(){var fallback=[{date:'2026.11.19',content:'프로젝트 주요 이슈사항을 등록했습니다.',file:''}];try{var saved=JSON.parse(sessionStorage.getItem(key)||'null');return Array.isArray(saved)&&saved.length?saved:fallback}catch(e){return fallback}}
   function write(){var rows=[];body.querySelectorAll('tr').forEach(function(tr){if(tr.classList.contains('issue-empty-row'))return;var cells=tr.querySelectorAll('td');if(cells.length>=3)rows.push({date:cells[0].textContent,content:cells[1].textContent,file:cells[2].textContent});});try{sessionStorage.setItem(key,JSON.stringify(rows))}catch(e){}}
   function render(){var rows=read();body.innerHTML='';rows.forEach(function(row){var tr=document.createElement('tr');tr.innerHTML='<td>'+row.date+'</td><td>'+row.content+'</td><td>'+(row.file?'<span class="history-file">'+row.file+'</span>':'')+'</td><td><button class="history-delete" type="button">삭제</button></td>';body.appendChild(tr)});list.hidden=!rows.length}
   render();
