@@ -944,6 +944,7 @@
   document.body.appendChild(issueLayer); issueForm.hidden=false; issueList.hidden=true; issueLayer.querySelector('.issue-form-host').appendChild(issueForm); issueLayer.querySelector('.issue-list-host').appendChild(issueList);
   var attachmentBtn=document.getElementById('projectAttachmentAdd');if(attachmentBtn)actions.insertBefore(issueBtn,attachmentBtn);
   if(attachmentBtn){attachmentBtn.addEventListener('click',function(){issueLayer.hidden=true},true);attachmentBtn.addEventListener('mouseenter',function(){issueLayer.hidden=true},true)}
+  var dataBtn=document.getElementById('dataChangeRequest');if(dataBtn){dataBtn.addEventListener('click',function(){issueLayer.hidden=true},true);dataBtn.addEventListener('mouseenter',function(){issueLayer.hidden=true},true)}
   function closeOtherPopups(){var attachment=document.getElementById('projectAttachmentLayer');if(attachment)attachment.remove();var attachmentLayer=document.getElementById('attachmentLayer');if(attachmentLayer)attachmentLayer.hidden=true;var dataPop=document.getElementById('dataChangePopover');if(dataPop)dataPop.hidden=true;var managerPop=document.getElementById('managerPopover');if(managerPop)managerPop.hidden=true}
   issueBtn.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();closeOtherPopups();issueLayer.hidden=false}); issueLayer.querySelector('.issue-close').addEventListener('click',function(){issueLayer.hidden=true});
   if(issueList){var issueBody=issueList.querySelector('tbody');if(issueBody)issueBody.innerHTML='';}
