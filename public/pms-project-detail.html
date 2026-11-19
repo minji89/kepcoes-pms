@@ -346,6 +346,7 @@
   .change-row label,.attachment-upload strong{font-size:13px}.change-row input,.change-row select,.change-detail{font-size:13px}
   .home-issue-layer .work-history-card,.home-issue-layer .work-history-list{border:0;border-radius:0;margin-top:0}.home-issue-layer .work-history-body{padding:16px;min-height:150px}.home-issue-layer .attachment-upload{padding:12px 16px}.home-issue-layer .register-btn,.manager-submit,.change-submit{background:#666}
   .home-issue-layer .work-history-card>.home-section-head{display:none}
+  .repayment-history{margin-top:6px!important}
   .home-issue-layer .history-table th:nth-child(1),.home-issue-layer .history-table td:nth-child(1){width:18%}.home-issue-layer .history-table th:nth-child(2),.home-issue-layer .history-table td:nth-child(2){width:46%}.home-issue-layer .history-table th:nth-child(3),.home-issue-layer .history-table td:nth-child(3){width:21%}.home-issue-layer .history-table th:nth-child(4),.home-issue-layer .history-table td:nth-child(4){width:15%}
   #dataChangeRequest + #issueOpen{margin-left:2px}
   .home-issue-layer .work-history-list{padding-bottom:16px}.home-issue-layer .work-history-list>.home-section-head h3{font-size:14px!important;font-weight:800}
@@ -985,6 +986,7 @@
   var trigger=document.getElementById('managerTrigger'), pop=document.getElementById('managerPopover');
   if(trigger&&pop){var submit=pop.querySelector('.manager-submit'), rows=pop.querySelectorAll('.manager-row');if(rows[1])rows[1].style.display='none';if(submit)submit.addEventListener('click',function(){var input=rows[0]&&rows[0].querySelector('input');if(input&&input.value){trigger.firstChild.textContent=input.value+' ';pop.hidden=true}})}
 })();
+(function(){var repayment=document.querySelector('.repayment-info');if(!repayment)return;var cols=repayment.querySelectorAll('.repayment-info-col');if(cols.length<2)return;var left=cols[0],right=cols[1];function move(label,target){var rows=repayment.querySelectorAll('.repayment-info-row');for(var i=0;i<rows.length;i++){if(rows[i].querySelector('dt')&&rows[i].querySelector('dt').textContent.indexOf(label)!==-1){target.appendChild(rows[i]);return}}}move('상태',left);move('미발급 사유',left);move('지급보증보험',right);move('대체 담보',right)})();
 </script>
 <script>
 (function(){
