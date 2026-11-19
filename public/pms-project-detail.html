@@ -754,7 +754,7 @@
                 <th scope="col">상환액(원)</th>
                 <th scope="col">부가세(원)</th>
                 <th scope="col">회차별 상환총액(원)</th>
-                <th scope="col">지연이자(원)</th>
+                <th scope="col">이자(원)</th>
                 <th scope="col">실제 상환일</th>
                 <th scope="col">상환액</th>
                 <th scope="col">잔여액(원)</th>
@@ -1042,6 +1042,9 @@
       break;
     }
   })();
+  </script>
+  <script>
+    (function(){var heads=document.querySelectorAll('.performance-head');for(var i=0;i<heads.length;i++){if(heads[i].textContent.indexOf('상환 예정')!==-1){var th=heads[i].parentElement.parentElement.querySelector('.table-scroll table thead tr:nth-child(2) th:nth-child(5)');if(th)th.textContent='이자(원)';break}}})();
   </script>
 </body>
 </html>
