@@ -983,7 +983,7 @@
   if(managerLabel&&contractLabel){var parent=managerLabel.parentNode;parent.insertBefore(contractLabel,managerLabel);parent.insertBefore(contractValue,managerLabel);}
   var issueTitle=document.getElementById('workHistoryTitle'), issueListTitle=document.getElementById('workHistoryListTitle');if(issueTitle){issueTitle.textContent='프로젝트 주요 이슈사항';if(issueTitle.parentElement)issueTitle.parentElement.style.display='none'}if(issueListTitle)issueListTitle.textContent='프로젝트 주요 이슈사항 이력 내역';
   var repayment=document.querySelector('.repayment-info');
-  if(repayment){var col=repayment.querySelector('.repayment-info-col:last-child'), insurance='미발급';[['지급보증보험 발급 여부',insurance]].forEach(function(row){var d=document.createElement('div');d.className='repayment-info-row';d.innerHTML='<dt>'+row[0]+'</dt><dd>'+row[1]+'</dd>';col.appendChild(d)});if(insurance==='미발급'){var reason=document.createElement('div');reason.className='repayment-info-row';reason.innerHTML='<dt>미발급 사유</dt><dd>미발급 사유입니다.</dd>';col.appendChild(reason);var d=document.createElement('div');d.className='repayment-info-row';d.innerHTML='<dt>대체 담보</dt><dd>부동산 근저당권, 지급보증서</dd>';col.appendChild(d)}var hist=document.createElement('div');hist.className='repayment-history';hist.innerHTML='<dt>미수채권 이력</dt><ul class="repayment-history-list"><li><span>2026.09.15 분류</span><span class="status-clear">2026.10.20 해제</span></li><li><span>2026.07.01 분류</span><span class="status-clear">2026.08.12 해제</span></li></ul>';repayment.appendChild(hist)}
+  if(repayment){var col=repayment.querySelector('.repayment-info-col:last-child'), insurance='미발급';[['지급보증보험 발급 여부',insurance]].forEach(function(row){var d=document.createElement('div');d.className='repayment-info-row';d.innerHTML='<dt>'+row[0]+'</dt><dd>'+row[1]+'</dd>';col.appendChild(d)});if(insurance==='미발급'){var reason=document.createElement('div');reason.className='repayment-info-row';reason.innerHTML='<dt>미발급 사유</dt><dd>미발급 사유입니다.</dd>';col.appendChild(reason);var d=document.createElement('div');d.className='repayment-info-row';d.innerHTML='<dt>대체 담보</dt><dd>부동산 근저당권, 지급보증서</dd>';col.appendChild(d)}var historyEvents=[{date:'2026.10.20',text:'미수채권 해제',type:'clear'},{date:'2026.09.15',text:'미수채권으로 분류',type:'classify'},{date:'2026.08.12',text:'미수채권 해제',type:'clear'},{date:'2026.07.01',text:'미수채권으로 분류',type:'classify'}].sort(function(a,b){return b.date.localeCompare(a.date)});var hist=document.createElement('div');hist.className='repayment-history';hist.innerHTML='<dt>미수채권 이력</dt><ul class="repayment-history-list">'+(historyEvents.length?historyEvents.map(function(item){return '<li><span>'+item.date+'</span><span class="'+(item.type==='clear'?'status-clear':'status-unpaid')+'">'+item.text+'</span></li>'}).join(''):'<li class="repayment-history-empty">미수채권 이력이 없습니다.</li>')+'</ul>';repayment.appendChild(hist)}
   var trigger=document.getElementById('managerTrigger'), pop=document.getElementById('managerPopover');
   if(trigger&&pop){var submit=pop.querySelector('.manager-submit'), rows=pop.querySelectorAll('.manager-row');if(rows[1])rows[1].style.display='none';if(submit)submit.addEventListener('click',function(){var input=rows[0]&&rows[0].querySelector('input');if(input&&input.value){trigger.firstChild.textContent=input.value+' ';pop.hidden=true}})}
 })();
@@ -1020,6 +1020,13 @@
     .repayment-info-col:last-child .repayment-info-row{
       grid-template-columns:205px minmax(0,1fr)!important;
     }
+    .repayment-history-list li{
+      grid-template-columns:150px minmax(0,1fr)!important;
+      justify-content:start!important;
+      text-align:left!important;
+    }
+    .repayment-history-list li span:last-child{text-align:left!important}
+    .repayment-history-empty{grid-template-columns:1fr!important}
   </style>
 </body>
 </html>
