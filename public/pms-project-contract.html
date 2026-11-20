@@ -1954,5 +1954,17 @@
     place('epcDiscountRate','2','3','6');place('firstTaxInvoiceDate','4','5','6');place('repaymentStartDate','2','3','7');place('repaymentEndDate','4','5','7');place('repaymentManager','2','3','8');place('paymentGuaranteeCertificate','4','5','8');
   })();
   </script>
+  <script>
+  (function(){
+    var input=document.getElementById('pos-warranty');
+    if(!input)return;
+    var value=input.closest('.v'), label=value&&value.previousElementSibling;
+    if(!value||!label)return;
+    label.innerHTML='하자이행 기간(개월) <span class="req">*</span>';
+    label.style.gridColumn='3 / span 4';
+    label.style.whiteSpace='nowrap';
+    value.style.gridColumn='7 / span 1';
+  })();
+  </script>
 </body>
 </html>
