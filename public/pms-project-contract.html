@@ -327,6 +327,9 @@
   .grid .file-list:has(.file-empty) { display: none; }
   .grid .template-file-list { display: inline-flex!important; min-width: 150px; margin-left: 8px; }
   .grid .v:has(.template-file-list) { display:flex; align-items:center; gap:8px; }
+  .energy-user-label[for="paymentGuaranteeCertificate"]{white-space:nowrap}
+  .certificate-field{grid-column:2 / -1;display:flex!important;align-items:center;gap:8px;min-width:0}
+  .certificate-field .file-list{display:inline-flex!important;align-items:center;min-width:150px}
   .file-chip {
     display: inline-flex; align-items: center; gap: 6px; max-width: 240px;
     padding: 3px 3px 3px 10px; background: var(--field);
@@ -769,7 +772,7 @@
               <label class="energy-user-label" for="repaymentManager">상환 담당자</label>
               <div class="energy-user-field"><input class="manager" id="repaymentManager" type="text" value="김미영" readonly><button class="btn btn-dark btn-sm" id="repaymentManagerLookup" type="button">조회</button></div>
               <label class="energy-user-label" for="paymentGuaranteeCertificate">지급이행보증보험 증권 <span class="req" id="paymentGuaranteeRequired">*</span></label>
-              <div class="energy-user-field certificate-field"><input class="file-native" type="file" id="paymentGuaranteeCertificate" accept=".pdf,.jpg,.jpeg,.png"><button class="btn btn-dark btn-sm" type="button" data-pick="paymentGuaranteeCertificate">파일 선택</button><span class="file-empty" id="paymentGuaranteeEmpty">선택된 파일 없음</span><div class="file-list" data-list="paymentGuaranteeCertificate"></div></div>
+              <div class="energy-user-field certificate-field"><input class="file-native" type="file" id="paymentGuaranteeCertificate" accept=".pdf,.jpg,.jpeg,.png"><button class="btn btn-dark btn-sm" type="button" data-pick="paymentGuaranteeCertificate">파일 선택</button><div class="file-list" data-list="paymentGuaranteeCertificate"><span class="file-empty">선택된 파일 없음</span></div></div>
             </div>
           </section>
 
@@ -1902,8 +1905,8 @@
 </script>
   <script>
   (function(){
-    var certInput=document.getElementById('paymentGuaranteeCertificate'), certButton=document.querySelector('[data-pick="paymentGuaranteeCertificate"]'), certEmpty=document.getElementById('paymentGuaranteeEmpty');
-    if(certInput&&certButton){certButton.addEventListener('click',function(){certInput.click()});certInput.addEventListener('change',function(){if(certInput.files&&certInput.files.length){certEmpty.textContent=certInput.files[0].name;certEmpty.className='file-chip'}})}
+    var certInput=document.getElementById('paymentGuaranteeCertificate'), certButton=document.querySelector('[data-pick="paymentGuaranteeCertificate"]'), certList=document.querySelector('[data-list="paymentGuaranteeCertificate"]');
+    if(certInput&&certButton){certButton.addEventListener('click',function(){certInput.click()});certInput.addEventListener('change',function(){if(certInput.files&&certInput.files.length){certList.innerHTML='<span class="file-chip"><span class="name">'+certInput.files[0].name+'</span></span>'}})}
     var basic=document.querySelector('[data-change-pane="basic"]'), energy=document.getElementById('changeEnergyUser');
     if(energy){energy.readOnly=true;energy.setAttribute('aria-readonly','true')}
     if(basic){var grid=basic.querySelector('.change-grid');if(grid){grid.insertAdjacentHTML('beforeend','<span class="change-label">지급보증보험 발급 여부</span><div class="change-field"><input value="발급" readonly aria-readonly="true"></div>')}}
