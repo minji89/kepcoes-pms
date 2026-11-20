@@ -1081,13 +1081,16 @@
   </style>
   <style>
     /* 미수채권 이력 영역이 추가되어도 상환정보 오른쪽 두 번째 열을 고정 지정 */
-    .repayment-info-col:nth-of-type(2){display:grid!important;grid-template-columns:max-content minmax(0,1fr)!important;column-gap:0!important;align-content:start!important}
-    .repayment-info-col:nth-of-type(2) .repayment-info-row{display:contents!important}
+    .repayment-info-col:nth-of-type(2){display:block!important}
+    .repayment-info-col:nth-of-type(2) .repayment-info-row{display:grid!important;grid-template-columns:195px minmax(0,1fr)!important;column-gap:0!important}
     .repayment-info-col:nth-of-type(2) .repayment-info-row dt,.repayment-info-col:nth-of-type(2) .repayment-info-row dd{min-height:38px;box-sizing:border-box;align-content:center;border-bottom:1px dotted #9ca3af}
     .repayment-info-col:nth-of-type(2) .repayment-info-row dt{padding-right:12px!important}
     .repayment-info-col:nth-of-type(2) .repayment-info-row dd{padding-left:13px!important;border-left:1px solid #9ca3af}
     .table-scroll table thead tr:nth-child(2) th:nth-child(5){font-size:0!important}
     .table-scroll table thead tr:nth-child(2) th:nth-child(5)::after{content:"\\C774\\C790(\\C6D0)";font-size:13px!important}
+  </style>
+  <style>
+    .table-scroll table thead tr:nth-child(2) th:nth-child(5)::after{content:'이자(원)'!important;font-size:13px!important}
   </style>
 </body>
 </html>
