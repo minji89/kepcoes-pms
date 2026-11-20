@@ -1923,5 +1923,15 @@
     document.addEventListener('click',function(e){var target=e.target.closest('[data-act="conclude"]');if(target&&issued==='발급'&&input&&!input.files.length){e.preventDefault();e.stopImmediatePropagation();showToast('지급이행보증보험 증권을 첨부해 주세요.')}},true);
   })();
   </script>
+  <script>
+  (function(){
+    var grid=document.querySelector('.energy-user-grid');if(!grid)return;
+    var ids=['epcDiscountRate','firstTaxInvoiceDate','repaymentStartDate','repaymentEndDate','repaymentManager','paymentGuaranteeCertificate'];
+    var pairs=ids.map(function(id){var input=document.getElementById(id);if(!input)return null;var field=input.closest('.energy-user-field');var label=grid.querySelector('label[for="'+id+'"]');return label&&field?{label:label,field:field}:null}).filter(Boolean);
+    pairs.forEach(function(pair){pair.label.remove();pair.field.remove()});
+    var blank=grid.querySelector('.energy-user-label[aria-hidden="true"]');if(blank){var blankField=blank.nextElementSibling;blank.remove();if(blankField)blankField.remove()}
+    pairs.forEach(function(pair){grid.appendChild(pair.label);grid.appendChild(pair.field)});
+  })();
+  </script>
 </body>
 </html>
