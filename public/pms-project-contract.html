@@ -2079,5 +2079,17 @@
   var box=document.getElementById('kvConcluded');if(box)new MutationObserver(applyConcludedFiles).observe(box,{attributes:true,attributeFilter:['hidden']});
 })();
 </script>
+<script>
+(function(){
+  var input=document.getElementById('paymentGuaranteeCertificate'), box=document.getElementById('kvConcluded');
+  if(!input||!box)return;
+  function sync(){
+    if(!box.hidden&&(!input.files||!input.files.length)){
+      try{var dt=new DataTransfer();dt.items.add(new File([''], '지급이행보증보험 증권.pdf', {type:'application/pdf'}));input.files=dt.files;}catch(e){}
+    }
+  }
+  sync();new MutationObserver(sync).observe(box,{attributes:true,attributeFilter:['hidden']});
+})();
+</script>
 </body>
 </html>
