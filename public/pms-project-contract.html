@@ -970,7 +970,7 @@
   /* 첨부 : [찾기] 버튼 + 파일 칩 목록 */
   function fileField(key, label) {
     return '<input class="file-native" type="file" id="' + key + '" />' +
-      '<button class="btn btn-dark btn-sm" type="button" data-pick="' + key + '">찾기</button>' +
+      '<button class="btn btn-dark btn-sm" type="button" data-pick="' + key + '">파일 선택</button>' +
       '<span class="sr-only">' + label + "</span>" +
       '<div class="file-list" data-list="' + key + '"></div>';
   }
@@ -1059,8 +1059,8 @@
 
     // 하자보수 기간(개월)
     html +=
-      '<div class="k" style="grid-column: span 2;">하자보수 기간(개월)</div>' +
-      '<div class="v" style="grid-column: span 4;">' + numField(p + "-warranty", "하자보수 기간(개월)") + "</div>" +
+      '<div class="k">하자보수 기간(개월)</div>' +
+      '<div class="v">' + numField(p + "-warranty", "하자보수 기간(개월)") + "</div>" +
       "</div>";
 
     return html;
@@ -1913,6 +1913,14 @@
     var contract=document.querySelector('[data-change-pane="contract"]');
     if(contract&&!contract.querySelector('[data-change-renewal-bond]')){var files=contract.querySelector('.change-contract-files');if(files){files.insertAdjacentHTML('beforeend','<div class="change-contract-file-row"><div class="change-contract-file-label">기존 증권(최초 계약)</div><div class="change-contract-file-control"><span class="file-chip"><span class="name">최초 지급이행보증보험 증권.pdf</span></span></div></div><div class="change-contract-file-row" data-change-renewal-bond><label class="change-contract-file-label" for="change-payment-guarantee">갱신 증권(1차 변경)</label><div class="change-contract-file-control"><input class="file-native" id="change-payment-guarantee" type="file" accept=".pdf,.jpg,.jpeg,.png"><button class="btn btn-dark" type="button" data-change-payment-pick>파일 선택</button><span class="file-empty" data-change-payment-empty>선택된 파일 없음</span></div></div>')}}
     var renewal=document.getElementById('change-payment-guarantee'), renewalButton=document.querySelector('[data-change-payment-pick]'), renewalEmpty=document.querySelector('[data-change-payment-empty]');if(renewal&&renewalButton){renewalButton.addEventListener('click',function(){renewal.click()});renewal.addEventListener('change',function(){if(renewal.files&&renewal.files.length){renewalEmpty.textContent=renewal.files[0].name;renewalEmpty.className='file-chip'}})}
+  })();
+  </script>
+  <script>
+  (function(){
+    var issued='발급', input=document.getElementById('paymentGuaranteeCertificate'), required=document.getElementById('paymentGuaranteeRequired');
+    if(required)required.hidden=issued!=='발급';
+    if(input)input.required=issued==='발급';
+    document.addEventListener('click',function(e){var target=e.target.closest('[data-act="conclude"]');if(target&&issued==='발급'&&input&&!input.files.length){e.preventDefault();e.stopImmediatePropagation();showToast('지급이행보증보험 증권을 첨부해 주세요.')}},true);
   })();
   </script>
 </body>
