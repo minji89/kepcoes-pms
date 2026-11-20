@@ -182,7 +182,7 @@
     padding: 9px 14px; display: flex; align-items: center; gap: 4px;
   }
   /* 체결 후 표 : 항목명 열을 넓혀 협력업체명을 함께 표기합니다. */
-  .kv.wide { grid-template-columns: 300px minmax(0, 1fr); }
+  .kv.wide { grid-template-columns: 269px minmax(0, 1fr); }
   .kv[hidden], .card[hidden] { display: none; }
   .kv .k-sub { margin-left: auto; padding-left: 12px; color: #475569; }
   .kv .v {
@@ -326,6 +326,8 @@
   /* 입력 그리드 안에서는 미첨부 안내를 숨겨 [찾기] 버튼만 노출합니다. */
   .grid .file-list:has(.file-empty) { display: none; }
   .grid .template-file-list { display: inline-flex!important; min-width: 150px; margin-left: 8px; }
+  .template-file-label{justify-content:flex-start!important;gap:8px!important}
+  .template-file-label .template-download-btn{margin-left:auto}
   .grid .v:has(.template-file-list) { display:flex; align-items:center; gap:8px; }
   .energy-user-label[for="paymentGuaranteeCertificate"]{grid-column:2;white-space:nowrap}
   .certificate-field{grid-column:3 / -1;display:flex!important;align-items:center;gap:8px;min-width:0}
@@ -708,19 +710,17 @@
               <div class="file-list" data-list="project-doc"></div>
             </div>
 
-            <div class="k" id="repaymentScheduleLabel">상환 스케줄 <span class="req">*</span></div>
+            <div class="k template-file-label" id="repaymentScheduleLabel">상환 스케줄 <span class="req">*</span><button class="btn btn-line btn-sm template-download-btn" type="button" data-template-download="repayment-schedule">양식 다운로드</button></div>
             <div class="v" id="repaymentScheduleRow">
               <input class="file-native" type="file" id="repayment-schedule" accept=".pdf,.xls,.xlsx,.csv" />
-              <button class="btn btn-line btn-sm template-download-btn" style="display:inline-flex!important;visibility:visible!important" type="button" data-template-download="repayment-schedule">양식 다운로드</button>
               <button class="btn btn-dark btn-sm" type="button" data-pick="repayment-schedule">파일 선택</button>
               <span class="sr-only">상환 스케줄 첨부</span>
               <div class="file-list template-file-list" data-list="repayment-schedule"></div>
             </div>
 
-            <div class="k" id="salesPlanLabel" hidden>매출 계획표 <span class="req">*</span></div>
+            <div class="k template-file-label" id="salesPlanLabel" hidden>매출 계획표 <span class="req">*</span><button class="btn btn-line btn-sm template-download-btn" type="button" data-template-download="sales-plan">양식 다운로드</button></div>
             <div class="v" id="salesPlanRow" hidden>
               <input class="file-native" type="file" id="sales-plan" accept=".pdf,.xls,.xlsx,.csv" />
-              <button class="btn btn-line btn-sm template-download-btn" style="display:inline-flex!important;visibility:visible!important" type="button" data-template-download="sales-plan">양식 다운로드</button>
               <button class="btn btn-dark btn-sm" type="button" data-pick="sales-plan">파일 선택</button>
               <span class="sr-only">매출 계획표 첨부</span>
               <div class="file-list template-file-list" data-list="sales-plan"></div>
