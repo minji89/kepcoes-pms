@@ -2666,4 +2666,48 @@ document.addEventListener('DOMContentLoaded',R);document.addEventListener('click
 <script>
 (function(){function fix(){var m=document.getElementById('changeModal');if(!m)return;m.querySelectorAll('[data-change-pane="contract"] .change-contract-grid .change-label').forEach(function(e){if(e.textContent.indexOf('BD84')>-1||e.textContent.indexOf('\uAD6C')>-1&&e.textContent.indexOf('\uBD84')<0)e.textContent=String.fromCharCode(44396,48516)+' *';});}document.addEventListener('click',function(e){if(e.target.closest('[data-change-tab="contract"]'))setTimeout(fix,150);});document.addEventListener('DOMContentLoaded',function(){setTimeout(fix,150);});})();
 </script>
+<style>
+  #changeModal .change-epc-insurance-panel{display:grid;grid-template-columns:150px 150px minmax(0,1fr);margin-top:12px;border:1px solid var(--border);overflow:hidden;background:#fff}
+  #changeModal .change-epc-insurance-panel>*{min-width:0;border-right:1px solid var(--border)}
+  #changeModal .change-epc-insurance-panel .change-insurance-vendor,#changeModal .change-epc-insurance-panel .change-insurance-title{grid-row:1;display:flex;align-items:center;justify-content:center;padding:8px 10px;background:#eef2f6;font-weight:700}
+  #changeModal .change-epc-insurance-panel .change-insurance-body{grid-column:3;display:block}
+  #changeModal .change-epc-insurance-panel .change-insurance-row{display:grid;grid-template-columns:125px minmax(0,1fr) 125px minmax(0,1fr);min-height:88px;border-bottom:1px solid var(--border)}
+  #changeModal .change-epc-insurance-panel .change-insurance-row>*{padding:8px 10px;border-right:1px solid var(--border);display:flex;align-items:center;gap:8px;min-width:0}
+  #changeModal .change-epc-insurance-panel .change-insurance-type{grid-column:1;background:#f8fafc;font-weight:700;justify-content:center}
+  #changeModal .change-epc-insurance-panel .change-insurance-fields{grid-column:2 / 5;display:grid;grid-template-columns:90px minmax(0,1fr) 90px minmax(0,1fr);padding:0}
+  #changeModal .change-epc-insurance-panel .change-insurance-fields>*{padding:8px 10px;border-right:1px solid var(--border);display:flex;align-items:center;gap:8px;min-width:0}
+  #changeModal .change-epc-insurance-panel input[type=date],#changeModal .change-epc-insurance-panel input[type=text]{width:100%;min-width:0}
+  #changeModal .change-epc-insurance-panel input[type=file]{display:none}
+  #changeModal .change-epc-insurance-panel .change-insurance-file{flex-wrap:wrap}
+  #changeModal .change-epc-insurance-panel .change-insurance-file span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  #changeModal .change-epc-insurance-panel .change-insurance-duration{display:grid;grid-template-columns:125px 90px minmax(140px,1fr);min-height:48px;background:#eef2f6}
+  #changeModal .change-epc-insurance-panel .change-insurance-duration>*{padding:8px 10px;border-right:1px solid var(--border);display:flex;align-items:center;gap:8px}
+  #changeModal .change-epc-insurance-panel .change-insurance-duration input{width:120px}
+</style>
+<script>
+(function(){
+  function addInsurance(){
+    var modal=document.getElementById('changeModal');
+    var pane=modal&&modal.querySelector('[data-change-pane="contract"]');
+    var grid=pane&&pane.querySelector('.change-contract-grid');
+    if(!grid||pane.querySelector('.change-epc-insurance-panel'))return;
+    var panel=document.createElement('div');
+    panel.className='change-epc-insurance-panel';
+    panel.innerHTML='<div class="change-insurance-vendor">\u323C\uD3EC\uC2A4\uBB34\uC5ED</div><div class="change-insurance-title">\uBCF4\uD5D8\uC99D\uAD8C</div><div class="change-insurance-body">'+[
+      ['\uACC4\uC57D \uC774\uD589','change-ins-contract'],
+      ['\uC120\uAE08 \uBCF4\uC99D','change-ins-advance'],
+      ['\uD558\uC790 \uBCF4\uC99D','change-ins-defect']
+    ].map(function(row){return '<div class="change-insurance-row"><div class="change-insurance-type">'+row[0]+'</div><div class="change-insurance-fields"><div>\uBC1C\uD589\uC77C\uC790</div><div><input type="date" value="2026-07-30"></div><div>\uBCF4\uC99D\uB960(%)</div><div><input type="text" value=""></div><div>\uAE30\uAC04</div><div><input type="date" value="2026-07-30"><span>~</span><input type="date" value="2026-07-30"></div><div>\uBCF4\uD5D8\uC99D\uAD8C</div><div class="change-insurance-file"><input id="'+row[1]+'" type="file" accept=".pdf,.hwp,.hwpx,.doc,.docx"><button class="btn btn-dark btn-sm" type="button" data-insurance-file="'+row[1]+'">\uCC3E\uAE30</button><span>\uC120\uD0DD\uB41C \uD30C\uC77C \uC5C6\uC74C</span></div></div></div>';}).join('')+'<div class="change-insurance-duration"><div>\uD558\uC790\uC774\uD589 \uAE30\uAC04(\uAC1C\uC6D4) <span class="change-required">*</span></div><div><input type="text" value=""></div><div>\uAC1C\uC6D4</div></div></div>';
+    grid.insertAdjacentElement('afterend',panel);
+    panel.querySelectorAll('[data-insurance-file]').forEach(function(btn){
+      var input=document.getElementById(btn.getAttribute('data-insurance-file'));
+      var label=btn.parentElement.querySelector('span');
+      btn.addEventListener('click',function(){input.click();});
+      input.addEventListener('change',function(){if(input.files&&input.files[0])label.textContent=input.files[0].name;});
+    });
+  }
+  document.addEventListener('click',function(e){if(e.target.closest('[data-change-tab="contract"]'))setTimeout(addInsurance,220);});
+  document.addEventListener('DOMContentLoaded',function(){setTimeout(addInsurance,220);});
+})();
+</script>
 </html>
