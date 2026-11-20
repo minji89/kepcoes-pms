@@ -1970,5 +1970,15 @@
   .grid.bonds .v:has(input[id$="-warranty"]) { grid-column: 5 / span 1 !important; }
   .grid.bonds .k:has(+ .v input[id$="-warranty"]) { grid-column: 3 / span 2 !important; white-space: nowrap !important; }
 </style>
+<script>
+(function(){
+  document.querySelectorAll('.grid.bonds input[id$="-warranty"]').forEach(function(input){
+    var cell=input.parentElement;
+    if(cell)cell.style.gridColumn='5 / span 1';
+    var label=cell&&cell.previousElementSibling;
+    if(label){label.style.gridColumn='3 / span 2';label.style.whiteSpace='nowrap';}
+  });
+})();
+</script>
 </body>
 </html>
