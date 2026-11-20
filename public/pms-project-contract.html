@@ -768,6 +768,8 @@
               <div class="energy-user-field"><input id="repaymentEndDate" type="date" value="2026-07-30" required></div>
               <label class="energy-user-label" for="repaymentManager">상환 담당자</label>
               <div class="energy-user-field"><input class="manager" id="repaymentManager" type="text" value="김미영" readonly><button class="btn btn-dark btn-sm" id="repaymentManagerLookup" type="button">조회</button></div>
+              <label class="energy-user-label" for="paymentGuaranteeCertificate">지급이행보증보험 증권 <span class="req" id="paymentGuaranteeRequired">*</span></label>
+              <div class="energy-user-field certificate-field"><input class="file-native" type="file" id="paymentGuaranteeCertificate" accept=".pdf,.jpg,.jpeg,.png"><button class="btn btn-dark btn-sm" type="button" data-pick="paymentGuaranteeCertificate">파일 선택</button><span class="file-empty" id="paymentGuaranteeEmpty">선택된 파일 없음</span><div class="file-list" data-list="paymentGuaranteeCertificate"></div></div>
             </div>
           </section>
 
@@ -935,7 +937,6 @@
   /* 보험증권 보증 구분 */
   var bondTypes = [
     { id: "perf", label: "계약 이행" },
-    { id: "pay", label: "지급 이행" },
     { id: "adv", label: "선금 보증" },
     { id: "def", label: "하자 보증" },
   ];
@@ -1899,5 +1900,17 @@
     document.querySelectorAll('[data-template-download]').forEach(function(button){button.addEventListener('click',function(){var item=templates[button.getAttribute('data-template-download')];if(!item)return;var blob=new Blob(['\\uFEFF'+item.content],{type:'text/csv;charset=utf-8'});var url=URL.createObjectURL(blob);var link=document.createElement('a');link.href=url;link.download=item.name;link.click();setTimeout(function(){URL.revokeObjectURL(url)},1000)})});
   })();
 </script>
+  <script>
+  (function(){
+    var certInput=document.getElementById('paymentGuaranteeCertificate'), certButton=document.querySelector('[data-pick="paymentGuaranteeCertificate"]'), certEmpty=document.getElementById('paymentGuaranteeEmpty');
+    if(certInput&&certButton){certButton.addEventListener('click',function(){certInput.click()});certInput.addEventListener('change',function(){if(certInput.files&&certInput.files.length){certEmpty.textContent=certInput.files[0].name;certEmpty.className='file-chip'}})}
+    var basic=document.querySelector('[data-change-pane="basic"]'), energy=document.getElementById('changeEnergyUser');
+    if(energy){energy.readOnly=true;energy.setAttribute('aria-readonly','true')}
+    if(basic){var grid=basic.querySelector('.change-grid');if(grid){grid.insertAdjacentHTML('beforeend','<span class="change-label">지급보증보험 발급 여부</span><div class="change-field"><input value="발급" readonly aria-readonly="true"></div>')}}
+    var contract=document.querySelector('[data-change-pane="contract"]');
+    if(contract&&!contract.querySelector('[data-change-renewal-bond]')){var files=contract.querySelector('.change-contract-files');if(files){files.insertAdjacentHTML('beforeend','<div class="change-contract-file-row"><div class="change-contract-file-label">기존 증권(최초 계약)</div><div class="change-contract-file-control"><span class="file-chip"><span class="name">최초 지급이행보증보험 증권.pdf</span></span></div></div><div class="change-contract-file-row" data-change-renewal-bond><label class="change-contract-file-label" for="change-payment-guarantee">갱신 증권(1차 변경)</label><div class="change-contract-file-control"><input class="file-native" id="change-payment-guarantee" type="file" accept=".pdf,.jpg,.jpeg,.png"><button class="btn btn-dark" type="button" data-change-payment-pick>파일 선택</button><span class="file-empty" data-change-payment-empty>선택된 파일 없음</span></div></div>')}}
+    var renewal=document.getElementById('change-payment-guarantee'), renewalButton=document.querySelector('[data-change-payment-pick]'), renewalEmpty=document.querySelector('[data-change-payment-empty]');if(renewal&&renewalButton){renewalButton.addEventListener('click',function(){renewal.click()});renewal.addEventListener('change',function(){if(renewal.files&&renewal.files.length){renewalEmpty.textContent=renewal.files[0].name;renewalEmpty.className='file-chip'}})}
+  })();
+  </script>
 </body>
 </html>
