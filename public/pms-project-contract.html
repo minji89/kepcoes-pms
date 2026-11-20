@@ -2036,5 +2036,23 @@
   pairs[6][0].textContent='계약일';
 })();
 </script>
+<script>
+(function(){
+  var box=document.getElementById('kvConcluded'); if(!box)return;
+  var pairs=[]; for(var i=0;i<box.children.length;i+=2)pairs.push([box.children[i],box.children[i+1]]);
+  if(pairs.length<15)return;
+  var certificate=pairs[7]; pairs.splice(7,1); pairs.push(certificate);
+  var labels=['프로젝트 번호','프로젝트명','프로젝트 계약서','상환 스케줄','매출 계획표','계약번호','계약일','총 사업금액(VAT별도/원)','투자금액(VAT별도/원)','IRR(%)','착공일자','준공(예상일자)','상환개시일','상환완료일','지급이행보증보험 증권'];
+  var values=['2026_06_12','천안 (주)선영 LED 에너지효율화사업','(주)선영 사업추진 계획안.pdf','선영 상환 스케줄.xlsx','선영 매출 계획표.xlsx','2026_06_12','2026.07.30','220,000,000','180,000,000','16','2026.12.20','2027.01.20','2027.02.19','2029.01.19','지급이행보증보험 증권.pdf'];
+  while(box.firstElementChild)box.firstElementChild.remove();
+  pairs.forEach(function(pair,index){
+    var label=pair[0], value=pair[1]; label.className='k'; value.className='v'; label.textContent=labels[index];
+    if(index===2||index===3||index===4||index===14){
+      value.innerHTML=''; var link=document.createElement('a'); link.href='data:text/plain;charset=utf-8,'+encodeURIComponent(values[index]); link.download=values[index]; link.textContent=values[index]; link.className='file-download-link'; value.appendChild(link);
+    }else value.textContent=values[index];
+    box.appendChild(label);box.appendChild(value);
+  });
+})();
+</script>
 </body>
 </html>
