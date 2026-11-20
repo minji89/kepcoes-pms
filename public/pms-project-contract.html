@@ -2104,7 +2104,7 @@
     if(full){
       var source=full.querySelector('.change-basic-columns'), grids=source?source.querySelectorAll('.change-grid'):[];
       if(source&&grids.length>=2){
-        var map=['changeEnergyUser','changeAddress','changeUserManager','changeUserTel','changeProjectManager','changeTeam'], labels=['에너지 사용자명','사용자 소재지','에너지 사용자 담당자','에너지 사용자 담당자 연락처','사업 담당자','담당부서'], grid=document.createElement('div');grid.className='change-grid';
+        var map=['changeEnergyUser','changeAddress','changeUserManager','changeUserTel','changeProjectManager','changeTeam'], labels=['에너지 사용자명','사용자 소재지','에너지 사용자 담당자','에너지 사용자 담당자 연락처','사업 담당자','담당부서'], grid=document.createElement('div');grid.className='change-grid change-user-grid';
         map.forEach(function(id,index){var input=document.getElementById(id),label=source.querySelector('label[for="'+id+'"]'),field=input&&input.parentElement;if(label&&field){label.textContent=labels[index];grid.appendChild(label);grid.appendChild(field);}});
         var manager=document.getElementById('changeProjectManager');if(manager&&manager.parentElement&&!manager.parentElement.querySelector('[data-manager-lookup]')){var b=document.createElement('button');b.type='button';b.className='btn btn-dark btn-sm';b.textContent='조회';b.setAttribute('data-manager-lookup','');manager.parentElement.appendChild(b);}
         source.innerHTML='';var section=document.createElement('div');section.className='change-basic-section';section.appendChild(grid);source.appendChild(section);
@@ -2113,5 +2113,6 @@
   }
 })();
 </script>
+.change-user-grid { grid-template-columns: 130px minmax(0,1fr) 130px minmax(0,1fr) !important; }
 </body>
 </html>
