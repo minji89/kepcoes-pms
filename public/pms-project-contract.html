@@ -1983,5 +1983,27 @@
   });
 })();
 </script>
+<script>
+(function(){
+  var modal=document.getElementById('changeModal'); if(!modal)return;
+  var detail=modal.querySelector('[data-change-pane="detail"]');
+  if(detail){
+    var grid=detail.querySelector('.change-basic-section .change-grid');
+    if(grid&&!grid.querySelector('[data-change-issued]')){
+      grid.insertAdjacentHTML('afterbegin','<span class="change-label" data-change-issued>지급보증보험 발급 여부</span><div class="change-field"><input value="발급" readonly aria-readonly="true"></div><span class="change-label">미발급 사유</span><div class="change-field"><input value="-" readonly aria-readonly="true"></div><span class="change-label">대체담보</span><div class="change-field"><input value="-" readonly aria-readonly="true"></div>');
+    }
+  }
+  var contract=modal.querySelector('[data-change-pane="contract"]');
+  if(contract&&!contract.querySelector('[data-change-user-certificate]')){
+    var title=contract.querySelector('.change-pane-title');
+    if(title)title.insertAdjacentHTML('beforebegin','<section class="change-contract-files" data-change-user-certificate><h4 class="change-pane-title">에너지 사용자 정보</h4><div class="change-contract-file-row"><span class="change-contract-file-label">에너지 사용자명</span><div class="change-contract-file-control"><input value="(주)선영" readonly></div></div><div class="change-contract-file-row"><span class="change-contract-file-label">지급이행보증보험 증권</span><div class="change-contract-file-control"><input class="file-native" id="change-renewal-payment" type="file" accept=".pdf,.jpg,.jpeg,.png"><button class="btn btn-dark" type="button" data-renewal-pick>파일 선택</button><span class="file-empty">기존 증권 확인 / 갱신 증권 첨부</span></div></div></section>');
+    var pick=contract.querySelector('[data-renewal-pick]'), file=contract.querySelector('#change-renewal-payment');
+    if(pick&&file)pick.addEventListener('click',function(){file.click()});
+  }
+  modal.querySelectorAll('[for="changeUserTel"]').forEach(function(el){el.textContent='에너지 사용자 담당자 연락처'});
+  modal.querySelectorAll('[for="changeEnergyUser"]').forEach(function(el){el.textContent='에너지 사용자명'});
+  modal.querySelectorAll('[for="changeWarrantyRate"]').forEach(function(el){el.textContent='하자이행 보증율(%)'});
+})();
+</script>
 </body>
 </html>
