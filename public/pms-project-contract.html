@@ -325,6 +325,8 @@
   .file-list .file-empty { font-size: 12.5px; color: #94a3b8; }
   /* 입력 그리드 안에서는 미첨부 안내를 숨겨 [찾기] 버튼만 노출합니다. */
   .grid .file-list:has(.file-empty) { display: none; }
+  .grid .template-file-list { display: inline-flex!important; min-width: 150px; margin-left: 8px; }
+  .grid .v:has(.template-file-list) { display:flex; align-items:center; gap:8px; }
   .file-chip {
     display: inline-flex; align-items: center; gap: 6px; max-width: 240px;
     padding: 3px 3px 3px 10px; background: var(--field);
@@ -706,19 +708,19 @@
             <div class="k" id="repaymentScheduleLabel">상환 스케줄 <span class="req">*</span></div>
             <div class="v" id="repaymentScheduleRow">
               <input class="file-native" type="file" id="repayment-schedule" accept=".pdf,.xls,.xlsx,.csv" />
-              <button class="btn btn-dark btn-sm" type="button" data-pick="repayment-schedule">찾기</button>
-              <button class="btn btn-line btn-sm template-download-btn" style="display:inline-flex!important;visibility:visible!important;margin-left:8px" type="button" data-template-download="repayment-schedule">양식 다운로드</button>
+              <button class="btn btn-line btn-sm template-download-btn" style="display:inline-flex!important;visibility:visible!important" type="button" data-template-download="repayment-schedule">양식 다운로드</button>
+              <button class="btn btn-dark btn-sm" type="button" data-pick="repayment-schedule">파일 선택</button>
               <span class="sr-only">상환 스케줄 첨부</span>
-              <div class="file-list" data-list="repayment-schedule"></div>
+              <div class="file-list template-file-list" data-list="repayment-schedule"></div>
             </div>
 
             <div class="k" id="salesPlanLabel" hidden>매출 계획표 <span class="req">*</span></div>
             <div class="v" id="salesPlanRow" hidden>
               <input class="file-native" type="file" id="sales-plan" accept=".pdf,.xls,.xlsx,.csv" />
-              <button class="btn btn-dark btn-sm" type="button" data-pick="sales-plan">찾기</button>
-              <button class="btn btn-line btn-sm template-download-btn" style="display:inline-flex!important;visibility:visible!important;margin-left:8px" type="button" data-template-download="sales-plan">양식 다운로드</button>
+              <button class="btn btn-line btn-sm template-download-btn" style="display:inline-flex!important;visibility:visible!important" type="button" data-template-download="sales-plan">양식 다운로드</button>
+              <button class="btn btn-dark btn-sm" type="button" data-pick="sales-plan">파일 선택</button>
               <span class="sr-only">매출 계획표 첨부</span>
-              <div class="file-list" data-list="sales-plan"></div>
+              <div class="file-list template-file-list" data-list="sales-plan"></div>
             </div>
           </div>
 
