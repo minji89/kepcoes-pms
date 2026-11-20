@@ -1947,5 +1947,12 @@
     pairs.forEach(function(pair){grid.appendChild(pair.label);grid.appendChild(pair.field)});
   })();
   </script>
+  <script>
+  (function(){
+    var grid=document.querySelector('.energy-user-grid');if(!grid)return;
+    function place(id,labelCol,valueCol,row){var label=grid.querySelector('label[for="'+id+'"]'),input=document.getElementById(id),field=input&&input.closest('.energy-user-field');if(label){label.style.gridColumn=labelCol;label.style.gridRow=row}if(field){field.style.gridColumn=valueCol;field.style.gridRow=row}}
+    place('epcDiscountRate','2','3','6');place('firstTaxInvoiceDate','4','5','6');place('repaymentStartDate','2','3','7');place('repaymentEndDate','4','5','7');place('repaymentManager','2','3','8');place('paymentGuaranteeCertificate','4','5','8');
+  })();
+  </script>
 </body>
 </html>
