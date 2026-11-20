@@ -814,7 +814,7 @@
       ["총액", "", sums.rate, sums.contract, sums.supply, sums.vat, sums.total, ""].forEach(function (cell, i) {
         var td = document.createElement("td");
         if (i >= 2 && i <= 6) td.className = "num";
-        td.textContent = typeof cell === "number" ? formatted(cell) : cell;
+        td.textContent = i === 3 ? "" : (typeof cell === "number" ? formatted(cell) : cell);
         totalRow.appendChild(td);
       });
       body.appendChild(totalRow);
@@ -1201,4 +1201,108 @@
   <script src="/assets/pms-lnb.js?v=20260930-2"></script>
   <script src="/assets/pms-intake-wizard.js?v=20260921-2"></script>
 </body>
+<script>
+(function(){
+ function reorder(){var m=document.getElementById('targetModal'),g=m&&m.querySelector('.target-grid');if(!g||g.getAttribute('data-order-fixed'))return;var n=g.children;if(n.length<8)return;var a=[n[0],n[1],n[4],n[5],n[6],n[7],n[2],n[3]];a.forEach(function(x){g.appendChild(x);});g.setAttribute('data-order-fixed','1');}
+ document.addEventListener('click',function(e){if(e.target.closest('[data-modal-open="targetModal"]')||e.target.closest('#addVendorBtn')||e.target.textContent.indexOf('EPC')>-1)setTimeout(reorder,80);});
+ document.addEventListener('DOMContentLoaded',function(){setTimeout(reorder,80);});
+})();
+</script>
+<script>
+(function(){
+ function fix(){var m=document.getElementById('targetModal'),g=m&&m.querySelector('.target-grid');if(!g)return;var title=m.querySelector('.form-section-title');if(title)title.textContent='\uC9C0\uAE09\uB300\uC0C1 \uACC4\uC57D \uC870\uAC74';function pair(id){var l=g.querySelector('label[for="'+id+'"]');var c=document.getElementById(id);return l&&c?[l,c.parentElement]:null;}function add(p){if(p){g.appendChild(p[0]);g.appendChild(p[1]);}}
+  var no=pair('targetProjectNo'),name=pair('targetProjectName'),vendor=pair('targetVendor'),date=pair('contractDate'),kind=pair('targetKind'),pay=pair('payMethod'),amount=pair('contractAmount'),supply=pair('supplyAmount'),vat=pair('vatAmount'),total=pair('totalAmount'),start=pair('workStart'),end=pair('workEnd');
+  var wide=g.querySelector('.field-control-wide'), wideLabel=wide&&wide.previousElementSibling;if(wide)wide.classList.remove('field-control-wide');g.innerHTML='';[no,name,vendor].forEach(add);var blankLabel=document.createElement('div'),blankCell=document.createElement('div');blankLabel.className='field-label';blankCell.className='field-control';g.appendChild(blankLabel);g.appendChild(blankCell);[date,start,kind,end,amount,pay,supply,vat,total].forEach(add);if(wideLabel&&wide){g.appendChild(wideLabel);g.appendChild(wide);}
+  [['contractAmount','amount'],['payMethod','pay'],['supplyAmount','supply'],['vatAmount','vat'],['totalAmount','total']].forEach(function(x){var p=pair(x[0]);if(p){p[0].classList.add('pay-field-'+x[1]);p[1].classList.add('pay-field-'+x[1]);}});if(wideLabel&&wide){wideLabel.classList.add('pay-field-contract');wide.classList.add('pay-field-contract');}var tp=pair('totalAmount');if(tp){tp[0].classList.add('pay-field-total');tp[1].classList.add('pay-field-total');}
+  g.setAttribute('data-order-final','1');
+ }
+ document.addEventListener('click',function(e){if(e.target.closest('[data-act="add-vendor"]')||e.target.closest('#addVendorBtn')||String(e.target.textContent||'').indexOf('EPC')>-1)setTimeout(fix,100);});document.addEventListener('DOMContentLoaded',function(){setTimeout(fix,100);});
+})();
+</script>
+<style>
+#targetModal .target-grid .pay-field-pay{grid-row:span 2;min-height:96px!important;height:96px!important;box-sizing:border-box}
+#targetModal .target-grid .pay-field-pay.field-label{display:flex!important;align-self:stretch!important;background:#f1f5f9!important}
+#targetModal .target-grid .pay-field-pay.field-control{display:block!important;align-self:stretch!important;padding-top:8px!important;background:#fff!important}
+#targetModal .target-grid .pay-field-pay.field-label{white-space:nowrap}
+#targetModal .target-grid .pay-field-supply,#targetModal .target-grid .pay-field-vat{min-height:48px!important}
+#targetModal .target-grid label[for="payMethod"]{grid-row:span 2!important;min-height:96px!important;height:96px!important;align-self:stretch!important;background:#f1f5f9!important}
+#targetModal .target-grid label[for="payMethod"] + .field-control{grid-row:span 2!important;min-height:96px!important;height:96px!important;align-self:stretch!important;background:#fff!important}
+#targetModal .target-grid{grid-auto-rows:minmax(48px,auto)}
+#targetModal .target-grid .pay-field-total.field-label{grid-column:1!important}
+#targetModal .target-grid .pay-field-total.field-control{grid-column:2!important}
+#targetModal .target-grid .pay-field-contract.field-label{grid-column:3!important}
+#targetModal .target-grid .pay-field-contract.field-control{grid-column:4!important}
+#targetModal .target-grid .pay-field-contract.field-label{grid-row:7!important}
+#targetModal .target-grid .pay-field-contract.field-control{grid-row:7!important}
+#targetModal .target-grid .pay-field-contract{border-top:1px solid #cbd5e1!important;border-bottom:1px solid #cbd5e1!important}
+#targetModal .target-grid .pay-field-contract.field-label{border-left:1px solid #cbd5e1!important}
+</style>
+<script>
+(function(){
+ function fix(){var m=document.getElementById('targetModal'),l=m&&m.querySelector('label[for="payMethod"]'),c=l&&l.nextElementSibling;if(!l||!c||c.getAttribute('data-pay-fixed'))return;l.setAttribute('data-pay-fixed','1');l.textContent='\uACF5\uC0AC\uAE08\uC561\uC9C0\uAE09\uBE44\uC728(%) *';c.setAttribute('data-pay-fixed','1');c.innerHTML='<div class="pay-top"><select id="payMethod"><option>\uBD84\uD560\uC9C0\uAE09</option><option>\uC77C\uC2DC\uC9C0\uAE09</option></select><span>\uC9C0\uAE09 \uBE44\uC728\uC740 100%\uAC00 \uB418\uC5B4\uC57C \uD569\uB2C8\uB2E4.</span></div><div class="pay-bottom"><label>\uC120\uAE08 <input value="33"></label><label>\uAE30\uC131\uAE08 <input value="33"></label><label>\uC900\uACF5\uAE08 <input value="34"></label></div>';}
+ document.addEventListener('click',function(e){if(e.target.closest('[data-act="add-vendor"]'))setTimeout(fix,120);});document.addEventListener('DOMContentLoaded',function(){setTimeout(fix,120);});
+})();
+</script>
+<style>#targetModal .target-grid [data-pay-fixed]{min-height:70px!important;height:70px!important;display:block!important;box-sizing:border-box;padding:7px 10px!important}#targetModal .pay-top{display:flex;align-items:center;gap:10px;height:28px;margin-bottom:5px}#targetModal .pay-top select{width:115px}#targetModal .pay-top span{font-size:12px;color:#64748b;white-space:nowrap}#targetModal .pay-bottom{display:flex;gap:12px;align-items:center;height:28px}#targetModal .pay-bottom label{display:flex;align-items:center;gap:5px;white-space:nowrap;font-size:12px}#targetModal .pay-bottom input{width:58px;height:25px;box-sizing:border-box}</style>
+<script>
+(function(){
+  function enforcePayLayout(){
+    var m=document.getElementById('targetModal');
+    if(!m || m.hidden) return;
+    var l=m.querySelector('label[for="payMethod"]');
+    var c=l && l.nextElementSibling;
+    if(!l || !c) return;
+    l.textContent='\uACF5\uC0AC\uAE08\uC561\uC9C0\uAE09\uBE44\uC728(%) ';
+    var req=document.createElement('span'); req.className='req'; req.textContent='*'; l.appendChild(req);
+    c.setAttribute('data-pay-fixed','1');
+    c.innerHTML='<div class="pay-top"><select id="payMethod" name="payMethod"><option>\uBD84\uD560\uC9C0\uAE09</option><option>\uC77C\uC2DC\uC9C0\uAE09</option></select><span>\uC9C0\uAE09 \uBE44\uC728\uC740 100%\uAC00 \uB418\uC5B4\uC57C \uD569\uB2C8\uB2E4.</span></div><div class="pay-bottom"><label>\uC120\uAE08 <input aria-label="\uC120\uAE08 \uBE44\uC728" value="33"></label><label>\uAE30\uC131\uAE08 <input aria-label="\uAE30\uC131\uAE08 \uBE44\uC728" value="33"></label><label>\uC900\uACF5\uAE08 <input aria-label="\uC900\uACF5\uAE08 \uBE44\uC728" value="34"></label></div>';
+  }
+  document.addEventListener('click',function(e){
+    if(e.target.closest('[data-act="add-vendor"]')||e.target.closest('#addVendorBtn')||String(e.target.textContent||'').indexOf('EPC')>-1){
+      [100,250,500].forEach(function(ms){setTimeout(enforcePayLayout,ms);});
+    }
+  });
+  document.addEventListener('DOMContentLoaded',function(){[300,800].forEach(function(ms){setTimeout(enforcePayLayout,ms);});});
+})();
+</script>
+<script>
+(function(){
+  function keepContractRow(){
+    var m=document.getElementById('targetModal'),g=m&&m.querySelector('.target-grid');
+    if(!m||!g||m.hidden)return;
+    if(!g.querySelector('.pay-field-contract')){
+      var wide=g.querySelector('.field-control-wide');
+      if(wide){
+        var label=wide.previousElementSibling;
+        wide.classList.remove('field-control-wide');
+        if(label){label.classList.add('pay-field-contract');wide.classList.add('pay-field-contract');}
+      } else {
+        var label=document.createElement('label'),cell=document.createElement('div');
+        label.className='field-label pay-field-contract';label.textContent='계약서';
+        cell.className='field-control pay-field-contract';
+        cell.innerHTML='<button class="lookup" type="button">찾기</button><span class="field-hint">계약서 파일을 첨부해 주세요.</span>';
+        g.appendChild(label);g.appendChild(cell);
+      }
+    }
+  }
+  document.addEventListener('DOMContentLoaded',function(){
+    var m=document.getElementById('targetModal');if(!m)return;
+    new MutationObserver(function(){setTimeout(keepContractRow,0);}).observe(m,{childList:true,subtree:true});
+    setInterval(keepContractRow,300);
+  });
+})();
+</script>
+<script>
+(function(){
+  function removePaymentGuaranteeRow(){
+    var m=document.getElementById('targetModal');if(!m)return;
+    m.querySelectorAll('.insurance-table tbody tr').forEach(function(row){
+      var first=row.querySelector('th');
+      if(first && first.textContent.trim().indexOf('지급 이행')>-1)row.remove();
+    });
+  }
+  document.addEventListener('DOMContentLoaded',removePaymentGuaranteeRow);
+  document.addEventListener('click',function(e){if(e.target.closest('[data-act="add-vendor"]')||e.target.closest('#addVendorBtn'))setTimeout(removePaymentGuaranteeRow,150);});
+})();
+</script>
 </html>

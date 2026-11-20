@@ -962,4 +962,121 @@
   <script src="/assets/pms-lnb.js"></script>
   <script src="/assets/pms-intake-wizard.js?v=20260921-2"></script>
 </body>
+<style>
+  .repay-alert-head,.repay-alert-cell{width:82px;min-width:82px;max-width:82px;white-space:nowrap;text-align:center}
+  .repay-alert-head{position:relative}
+  .repay-alert-info{display:inline-grid;place-items:center;width:15px;height:15px;margin-left:3px;padding:0;border:0;border-radius:50%;background:#64748b;color:#fff;font-size:11px;font-weight:700;line-height:1;vertical-align:middle;cursor:help}
+  .repay-alert-info:focus{outline:2px solid #2563eb;outline-offset:2px}
+  .repay-alert-tooltip{position:fixed;z-index:1400;width:330px;padding:10px 12px;border:1px solid #93c5fd;border-radius:5px;background:#eff6ff;color:#1e3a8a;font-size:12px;font-weight:400;line-height:1.5;text-align:left;box-shadow:0 6px 16px rgba(15,23,42,.14);pointer-events:none}
+  #reminder-btn{display:none !important}
+  .repay-alert-btn{padding:4px 6px;font-size:11px;line-height:1.2;border:1px solid #1d4ed8;border-radius:4px;background:#fff;color:#1d4ed8;cursor:pointer}
+  .repay-alert-btn:hover{background:#eff6ff}
+  .repay-alert-modal[hidden]{display:none}
+  .repay-alert-modal{position:fixed;inset:0;z-index:1200;display:grid;place-items:center;padding:24px;background:rgba(15,23,42,.55)}
+  .repay-alert-modal .modal{width:min(760px,calc(100vw - 48px));max-height:calc(100vh - 48px);overflow:hidden;background:#fff;border-radius:8px;box-shadow:0 24px 70px rgba(15,23,42,.3)}
+  .repay-alert-modal .modal-head{display:flex;align-items:center;min-height:56px;padding:0 20px;border-bottom:1px solid #dbe3ed;background:#f8fafc}
+  .repay-alert-modal .modal-head h3{margin:0;font-size:18px}
+  .repay-alert-modal .modal-close{margin-left:auto;width:34px;height:34px;border:0;border-radius:6px;background:transparent;color:#64748b;font-size:25px;cursor:pointer}
+  .repay-alert-modal .modal-body{padding:20px}
+  .repay-alert-modal .modal-foot{display:flex;justify-content:flex-end;gap:8px;padding:0 20px 20px}
+  .repay-alert-modal .modal-body{max-height:60vh;overflow:auto}
+  .repay-alert-summary{margin:0 0 12px;padding:10px 12px;border:1px solid #bfdbfe;background:#eff6ff;color:#1e3a8a;border-radius:5px}
+  .repay-alert-item{margin:12px 0;padding:14px;border:1px solid #dbe3ef;background:#fff;border-radius:6px;line-height:1.7}
+  .repay-alert-item h4{margin:0 0 8px;color:#0f172a}
+</style>
+<script>
+(function(){
+  var alertModal;
+  function money(n){return Number(n||0).toLocaleString('ko-KR')+'원';}
+  function makePreview(row){
+    var claim=row.state==='미수채권';
+    var projectName=claim?'천안 (주) 선영 LED 에너지효율화사업':row.name;
+    var rounds=claim?'2회차, 3회차, 4회차':'2회차, 3회차';
+    var lines=claim?['2회차 : 20,000,000원','3회차 : 51,437,100원','4회차 : 51,437,100원']:['2회차 : 31,437,100원','3회차 : 51,437,100원'];
+    var total=claim?'122,874,200원':'82,874,200원';
+    var description=claim?'귀사와 체결한 에너지 절약 사업의 상환금이 3회 연속 미상환되어 해당 프로젝트가 미수채권 관리 대상으로 분류되었습니다.':'귀사와 체결한 에너지 절약 사업의 미상환 내역을 안내드립니다.';
+    var closing=claim?'아래 미상환 내역을 확인해 주세요.':'아래 내용을 확인해 주세요.';
+    return '<div class="repay-alert-item"><h4>[켑코이에스] '+(claim?'미수채권':'미상환')+' 알림 발송</h4>'+
+      '<p>㈜선영 담당자님, 켑코이에스(주)입니다.</p>'+
+      '<p>'+description+'<br>'+closing+'</p>'+
+      '<p>▶ 프로젝트명 : '+projectName+'<br>▶ 미상환 회차 : '+rounds+'<br>▶ 회차별 미상환 잔액<br>　- '+lines.join('<br>　- ')+'<br>▶ 총 미상환액 : '+total+'<br>▶ 상환담당자 : 홍길동 (02-0000-0000)</p></div>';
+  }
+  /* Final alert preview renderer: completed rows use the completion notice. */
+  function makePreview(row){
+    var claim=row.state==='\uBBF8\uC218\uCC44\uAD8C';
+    var complete=row.state==='\uC0C1\uD658 \uC644\uB8CC';
+    var projectName=row.name||'\uCC9C\uC548 (\uC8FC)\uC120\uC601 LED \uC5D0\uB108\uC9C0\uD6A8\uC728\uD654\uC0AC\uC5C5';
+    if(complete){
+      return '<div class="repay-alert-item"><h4>[\uCF00\uD504\uCF54\uC774\uC5D0\uC2A4] \uC0C1\uD658 \uC644\uB8CC \uC548\uB0B4</h4><p>\u323C\uC120\uC601 \uB2F4\uB2F9\uC790\uB2D8, \uCF00\uD504\uCF54\uC774\uC5D0\uC2A4(\uC8FC)\uC785\uB2C8\uB2E4.</p><p>\uADC0\uC0AC\uC640 \uCCB4\uACB0\uD55C \uC544\uB798 \uC5D0\uB108\uC9C0 \uC808\uC57D \uC0AC\uC5C5\uC758 \uC804\uCCB4 \uC0C1\uD658\uAE08\uC561\uC774 \uC644\uB0A9\uB418\uC5B4 \uC0C1\uD658\uC774 \uC644\uB8CC\uB418\uC5C8\uC74C\uC744 \uC548\uB0B4\uB4DC\uB9BD\uB2C8\uB2E4.</p><p>\u25B6 \uD504\uB85C\uC81D\uD2B8\uBA85 : '+projectName+'<br>\u25B6 \uC0C1\uD658\uC644\uB8CC\uC77C : 0000.00.00<br>\u25B6 \uC0C1\uD658\uB2F4\uB2F9\uC790 : \uD64D\uAE38\uB3D9 (02-0000-0000)</p></div>';
+    }
+    var rounds=claim?'2\uD68C\uCC28, 3\uD68C\uCC28, 4\uD68C\uCC28':'2\uD68C\uCC28, 3\uD68C\uCC28';
+    var lines=claim?['2\uD68C\uCC28 : 31,437,100\uC6D0','3\uD68C\uCC28 : 51,437,100\uC6D0','4\uD68C\uCC28 : 51,437,100\uC6D0']:['2\uD68C\uCC28 : 31,437,100\uC6D0','3\uD68C\uCC28 : 51,437,100\uC6D0'];
+    var title=claim?'\uBBF8\uC218\uCC44\uAD8C':'\uBBF8\uC0C1\uD658';
+    var total=claim?'134,311,300\uC6D0':'82,874,200\uC6D0';
+    var description=claim?'\uADC0\uC0AC\uC640 \uCCB4\uACB0\uD55C \uC5D0\uB108\uC9C0 \uC808\uC57D \uC0AC\uC5C5\uC758 \uC0C1\uD658\uAE08\uC774 3\uD68C \uC5F0\uC18D \uBBF8\uC0C1\uD658\uB418\uC5B4 \uD574\uB2F9 \uD504\uB85C\uC81D\uD2B8\uAC00 \uBBF8\uC218\uCC44\uAD8C \uAD00\uB9AC \uB300\uC0C1\uC73C\uB85C \uBD84\uB958\uB418\uC5C8\uC2B5\uB2C8\uB2E4.':'\uADC0\uC0AC\uC640 \uCCB4\uACB0\uD55C \uC5D0\uB108\uC9C0 \uC808\uC57D \uC0AC\uC5C5\uC758 \uBBF8\uC0C1\uD658 \uB0B4\uC5ED\uC744 \uC548\uB0B4\uB4DC\uB9BD\uB2C8\uB2E4.';
+    return '<div class="repay-alert-item"><h4>[\uCF00\uD504\uCF54\uC774\uC5D0\uC2A4] '+title+' \uC54C\uB9BC \uBC1C\uC1A1</h4><p>\u323C\uC120\uC601 \uB2F4\uB2F9\uC790\uB2D8, \uCF00\uD504\uCF54\uC774\uC5D0\uC2A4(\uC8FC)\uC785\uB2C8\uB2E4.</p><p>'+description+'<br>\uC544\uB798 \uB0B4\uC5ED\uC744 \uD655\uC778\uD574 \uC8FC\uC138\uC694.</p><p>\u25B6 \uD504\uB85C\uC81D\uD2B8\uBA85 : '+projectName+'<br>\u25B6 \uBBF8\uC0C1\uD658 \uD68C\uCC28 : '+rounds+'<br>\u25B6 \uD68C\uCC28\uBCC4 \uBBF8\uC0C1\uD658 \uC794\uC561<br>　- '+lines.join('<br>　- ')+'<br>\u25B6 \uCD1D \uBBF8\uC0C1\uD658\uC561 : '+total+'<br>\u25B6 \uC0C1\uD658\uB2F4\uB2F9\uC790 : \uD64D\uAE38\uB3D9 (02-0000-0000)</p></div>';
+  }
+  function ensureModal(){
+    if(alertModal)return;
+    alertModal=document.createElement('div');
+    alertModal.className='modal-overlay repay-alert-modal';
+    alertModal.hidden=true;
+    alertModal.innerHTML='<div class="modal modal-wide" role="dialog" aria-modal="true" aria-labelledby="repayAlertTitle"><div class="modal-head"><h3 id="repayAlertTitle">알림 발송 미리보기</h3><button class="modal-close" type="button" aria-label="닫기">×</button></div><div class="modal-body"><div id="repayAlertSummary"></div><div id="repayAlertContent"></div></div><div class="modal-foot"><button class="btn btn-line" type="button" data-repay-alert-close>취소</button><button class="btn btn-dark" type="button" id="repayAlertSend">발송</button></div></div>';
+    document.body.appendChild(alertModal);
+    alertModal.querySelector('.modal-close').addEventListener('click',closeModal);
+    alertModal.querySelector('[data-repay-alert-close]').addEventListener('click',closeModal);
+    alertModal.querySelector('#repayAlertSend').addEventListener('click',function(){closeModal();if(typeof showToast==='function')showToast('알림을 발송했습니다.');else alert('알림을 발송했습니다.');});
+  }
+  function closeModal(){if(alertModal)alertModal.hidden=true;}
+  function openPreview(items,excluded){
+    ensureModal();
+    var summary=document.getElementById('repayAlertSummary');
+    var hasComplete=items.some(function(item){return item.state==='상환 완료';});
+    summary.className='repay-alert-summary';
+    summary.textContent='발송 대상이 여러 회차인 경우, 각 회차의 미상환 잔액과 합계를 한 건의 알림톡으로 발송합니다.'+(excluded?' '+excluded.count+'건은 '+excluded.reason+' 제외됩니다.':'');
+    summary.hidden=hasComplete;
+    document.getElementById('repayAlertContent').innerHTML=items.map(makePreview).join('').replace(/케프코이에스/g,'켑코이에스').replace(/케프코이에스\(주\)/g,'켑코이에스(주)');
+    alertModal.hidden=false;
+  }
+  function currentList(){return typeof filteredRows==='function'?filteredRows():[];}
+  function bindInfoTooltip(info){
+    if(info.dataset.tooltipBound)return;info.dataset.tooltipBound='1';
+    var tip;
+    function hide(){if(tip){tip.remove();tip=null;}}
+    function show(){hide();tip=document.createElement('div');tip.className='repay-alert-tooltip';tip.textContent=info.dataset.tooltip;document.body.appendChild(tip);var r=info.getBoundingClientRect(),w=330;var left=Math.max(8,Math.min(window.innerWidth-w-8,r.right-w));var top=Math.max(8,r.top-tip.offsetHeight-8);tip.style.left=left+'px';tip.style.top=top+'px';}
+    info.addEventListener('mouseenter',show);info.addEventListener('mouseleave',hide);info.addEventListener('focus',show);info.addEventListener('blur',hide);
+  }
+  function decorate(){
+    var head=document.querySelector('.table-list thead');
+    if(!head||head.querySelector('.repay-alert-head'))return;
+    var h=document.createElement('th');h.className='repay-alert-head';h.rowSpan=2;h.innerHTML='알림 발송 <button class="repay-alert-info" type="button" aria-label="알림 발송 안내" data-tooltip="상환 상태가 ‘미상환’, ‘미수채권’, ‘상환 완료’인 경우 알림을 발송할 수 있습니다. 미상환·미수채권 알림의 대상이 여러 회차인 경우, 각 회차의 미상환 잔액과 합계를 한 건의 알림톡으로 발송합니다.">ⓘ</button>';head.rows[0].insertBefore(h,head.rows[0].cells[9]||null);bindInfoTooltip(h.querySelector('.repay-alert-info'));
+    var list=currentList();
+    var body=document.getElementById('repayBody');
+    Array.from(body.rows).forEach(function(tr,index){
+      if(!list[index])return;
+      var cell=tr.insertCell(9);cell.className='repay-alert-cell';
+      if(list[index].state==='미상환'||list[index].state==='미수채권'||list[index].state==='상환 완료'){
+        var project=list[index];
+        var b=document.createElement('button');b.type='button';b.className='repay-alert-btn';b.textContent='알림 발송';b.dataset.pno=project.pno;b.dataset.alertKind=project.state==='미수채권'?'claim':(project.state==='상환 완료'?'complete':'unpaid');b.title=project.state==='미수채권'?'미수채권 알림 미리보기':(project.state==='상환 완료'?'상환 완료 알림 미리보기':'미상환 알림 미리보기');b.addEventListener('click',function(){openPreview([project],null);});cell.appendChild(b);
+      }
+    });
+  }
+  function refresh(){window.setTimeout(function(){var head=document.querySelector('.table-list thead');var wasDecorated=!!(head&&head.querySelector('.repay-alert-head'));if(wasDecorated){var old=head.querySelector('.repay-alert-head');if(old)old.remove();}var body=document.getElementById('repayBody');if(wasDecorated&&body)Array.from(body.rows).forEach(function(r){if(r.cells.length>9)r.deleteCell(9);});decorate();},0);}
+  document.addEventListener('DOMContentLoaded',function(){
+    decorate();
+    document.getElementById('search-btn')&&document.getElementById('search-btn').addEventListener('click',refresh);
+    document.getElementById('reset-btn')&&document.getElementById('reset-btn').addEventListener('click',refresh);
+    document.getElementById('reminder-btn')&&document.getElementById('reminder-btn').addEventListener('click',function(e){
+      e.preventDefault();e.stopImmediatePropagation();
+      var list=currentList(),checks=Array.from(document.querySelectorAll('#repayBody input[type="checkbox"]'));
+      var selected=[];checks.forEach(function(c,i){if(c.checked&&list[i]&&!selected.some(function(x){return x.pno===list[i].pno;}))selected.push(list[i]);});
+      if(!selected.length){alert('알림을 발송할 프로젝트를 선택해 주세요.');return;}
+      var excluded=selected.filter(function(x){return x.state!=='미상환'&&x.state!=='미수채권';});
+      var eligible=selected.filter(function(x){return x.state==='미상환'||x.state==='미수채권';});
+      if(!eligible.length){alert('선택한 프로젝트 중 알림을 발송할 수 있는 건이 없습니다.');return;}
+      openPreview(eligible,excluded.length?{count:excluded.length,reason:'발송 불가 상태로'}:null);
+    },true);
+  });
+})();
+</script>
 </html>

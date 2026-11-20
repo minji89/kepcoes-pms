@@ -947,6 +947,7 @@
   </div>
 </div>
 
+<style>#changeModal .change-energy-user-grid .energy-cell span{white-space:nowrap;display:inline-block;}</style>
 <script>
   /* ===== 협력업체 목록 (계약 대상 : ㈜포스무역) ===== */
   var vendors = [{ id: "pos", name: "㈜포스무역" }];
@@ -2123,5 +2124,546 @@
 <script>
 (function(){var input=document.getElementById('changeProjectManager');if(!input)return;var field=input.parentElement;if(field&&!field.querySelector('[data-manager-lookup]')){var b=document.createElement('button');b.type='button';b.className='btn btn-dark btn-sm';b.textContent='조회';b.setAttribute('data-manager-lookup','');field.appendChild(b);}})();
 </script>
+<style>
+  #changeModal .detail-payment-ratio-field { display:flex; flex-wrap:wrap; align-items:center; gap:6px; }
+  #changeModal .detail-payment-ratio-field input { width:72px; }
+  #changeModal .detail-payment-ratio-field select { width:110px; }
+  #changeModal .detail-payment-ratio-field span { white-space:nowrap; }
+  #changeModal .detail-issued-options { display:flex; align-items:center; gap:12px; }
+  #changeModal .detail-issued-options label { display:inline-flex; align-items:center; gap:4px; white-space:nowrap; }
+  #changeModal .detail-warranty-period { display:flex; align-items:center; gap:6px; }
+  #changeModal .detail-collateral-list { display:flex; flex-direction:column; gap:6px; }
+  #changeModal .detail-collateral-row { display:flex; align-items:center; gap:6px; }
+  #changeModal .detail-collateral-row input { flex:1 1 auto; min-width:0; }
+  #changeModal .detail-collateral-row button { flex:0 0 auto; }
+  #changeModal .epc-refresh-row { display:flex; align-items:center; justify-content:space-between; gap:8px; }
+  #changeModal .epc-refresh-btn { flex:0 0 auto; }
+</style>
+<script>
+(function(){
+  var modal=document.getElementById('changeModal'); if(!modal)return;
+  var detail=modal.querySelector('[data-change-pane="detail"]'); if(!detail)return;
+  var sections=detail.querySelectorAll('.change-basic-section');
+  var left=sections[0], right=sections[1];
+  if(!left||!right)return;
+  var leftGrid=left.querySelector('.change-grid'), rightGrid=right.querySelector('.change-grid');
+  if(!leftGrid||!rightGrid)return;
+
+  function pairByLabel(grid, selector){
+    var label=grid.querySelector(selector); return label ? [label,label.nextElementSibling] : null;
+  }
+  var issued=pairByLabel(leftGrid,'[data-change-issued]');
+  if(!issued){
+    var labels=leftGrid.querySelectorAll('.change-label');
+    for(var i=0;i<labels.length;i++){
+      if(labels[i].textContent.indexOf('\uC9C0\uAE09\uBCF4\uC99D\uBCF4\uD5D8')>-1){issued=[labels[i],labels[i].nextElementSibling];break;}
+    }
+  }
+  var reason=pairByLabel(leftGrid,'label[for="changeUnissuedReason"]') || pairByLabel(leftGrid,'[data-change-unissued-reason]');
+  var collateral=pairByLabel(leftGrid,'label[for="changeCollateral"]') || pairByLabel(leftGrid,'[data-change-collateral]');
+  if(!reason||!collateral){
+    var ls=leftGrid.querySelectorAll('.change-label');
+    for(var j=0;j<ls.length;j++){
+      var t=ls[j].textContent;
+      if(!reason && t.indexOf('\uBBF8\uBC1C\uAE09')>-1 && t.indexOf('\uC0AC\uC720')>-1) reason=[ls[j],ls[j].nextElementSibling];
+      if(!collateral && t.indexOf('\uB300\uCCB4\uB2F4\uBCF4')>-1) collateral=[ls[j],ls[j].nextElementSibling];
+    }
+  }
+  if(issued&&issued[0]&&issued[1]){
+    issued[0].setAttribute('data-change-issued','');
+    issued[1].innerHTML='<div class="detail-issued-options">'+
+      '<label><input type="radio" name="changePaymentGuaranteeIssued" value="\uBC1C\uAE09" checked>\uBC1C\uAE09</label>'+
+      '<label><input type="radio" name="changePaymentGuaranteeIssued" value="\uBBF8\uBC1C\uAE09">\uBBF8\uBC1C\uAE09</label></div>';
+    [issued,reason,collateral].forEach(function(p){ if(p&&p[0]&&p[1]){ leftGrid.appendChild(p[0]); leftGrid.appendChild(p[1]); } });
+    if(collateral&&collateral[1]){
+      collateral[1].innerHTML='<div class="detail-collateral-list"><div class="detail-collateral-row"><input type="text" value="-" data-collateral-input><button type="button" class="btn btn-sm" data-collateral-add>\uCD94\uAC00</button><button type="button" class="btn btn-sm" data-collateral-delete>\uC0AD\uC81C</button></div></div>';
+      var list=collateral[1].querySelector('.detail-collateral-list');
+      list.addEventListener('click',function(e){
+        if(e.target.matches('[data-collateral-add]')){
+          var row=document.createElement('div');row.className='detail-collateral-row';row.innerHTML='<input type="text" data-collateral-input><button type="button" class="btn btn-sm" data-collateral-add>\uCD94\uAC00</button><button type="button" class="btn btn-sm" data-collateral-delete>\uC0AD\uC81C</button>';list.appendChild(row);row.querySelector('input').focus();
+        }
+        if(e.target.matches('[data-collateral-delete]')){
+          var row=e.target.closest('.detail-collateral-row');if(list.children.length>1)row.remove();else row.querySelector('input').value='';
+        }
+      });
+    }
+    function sync(){
+      var missing=!!leftGrid.querySelector('input[name="changePaymentGuaranteeIssued"]:checked[value="\uBBF8\uBC1C\uAE09"]');
+      [reason,collateral].forEach(function(p){if(p&&p[0]&&p[1]){p[0].style.display=missing?'':'none';p[1].style.display=missing?'':'none';}});
+    }
+    leftGrid.querySelectorAll('input[name="changePaymentGuaranteeIssued"]').forEach(function(r){r.addEventListener('change',sync);}); sync();
+  }
+  var ratio=pairByLabel(rightGrid,'label[for="changePaymentRatio"]');
+  if(ratio&&ratio[1]&&!ratio[1].querySelector('.detail-payment-ratio-field')){
+    ratio[1].classList.add('detail-payment-ratio-field');
+    ratio[1].innerHTML='<select id="changePaymentType"><option>\uBD84\uD560\uC9C0\uAE09</option><option>\uC77C\uC2DC\uC9C0\uAE09</option></select>'+
+      '<span>\uC120\uAE08</span><input id="changeAdvanceRatio" type="number" value="30">'+
+      '<span>\uAE30\uC131\uAE08</span><input id="changeProgressRatio" type="number" value="40">'+
+      '<span>\uC900\uACF5\uAE08</span><input id="changeCompletionRatio" type="number" value="30">';
+  }
+  var warranty=pairByLabel(rightGrid,'label[for="changeWarrantyRate"]');
+  if(warranty&&warranty[0]&&!rightGrid.querySelector('[data-change-warranty-period]')){
+    var label=document.createElement('label'); label.className='change-label'; label.setAttribute('data-change-warranty-period',''); label.textContent='\uD558\uC790\uBCF4\uC218\uAE30\uAC04';
+    var field=document.createElement('div'); field.className='change-field detail-warranty-period'; field.innerHTML='<input id="changeWarrantyPeriod" type="number"><span>\uAC1C\uC6D4</span>';
+    rightGrid.appendChild(label); rightGrid.appendChild(field);
+  }
+  var epcPane=modal.querySelector('[data-change-pane="epc"]');
+  if(epcPane){
+    epcPane.querySelectorAll('.change-basic-section').forEach(function(section){
+      var subtitle=section.querySelector('.change-subtitle');
+      if(subtitle&&!section.querySelector('[data-epc-refresh]')){
+        var wrap=document.createElement('div');wrap.className='epc-refresh-row';
+        subtitle.parentNode.insertBefore(wrap,subtitle);wrap.appendChild(subtitle);
+        var button=document.createElement('button');button.type='button';button.className='btn btn-dark btn-sm epc-refresh-btn';button.textContent='\uC815\uBCF4 \uAC31\uC2E0';button.setAttribute('data-epc-refresh','');wrap.appendChild(button);
+        button.addEventListener('click',function(){
+          section.querySelectorAll('input,select,textarea').forEach(function(control){control.dispatchEvent(new Event('change',{bubbles:true}));});
+        });
+      }
+    });
+  }
+})();
+</script>
+<script>
+(function(){
+  var modal=document.getElementById('changeModal'); if(!modal)return;
+  var detail=modal.querySelector('[data-change-pane="detail"]');
+  var issued=detail&&detail.querySelector('[data-change-issued]');
+  var value='\uBC1C\uAE09';
+  if(issued){
+    var checked=issued.parentElement&&issued.parentElement.querySelector('input[name="changePaymentGuaranteeIssued"]:checked');
+    value=checked?checked.value:'\uBC1C\uAE09';
+    var field=issued.nextElementSibling;
+    if(field){field.innerHTML='<span class="change-readonly-value">'+value+'</span>';}
+    var grid=issued.parentElement;
+    if(grid){
+      grid.querySelectorAll('.change-label').forEach(function(label){
+        var text=label.textContent;
+        if(text.indexOf('\uBBF8\uBC1C\uAE09')>-1&&text.indexOf('\uC0AC\uC720')>-1){
+          var f=label.nextElementSibling;if(value!=='\uBBF8\uBC1C\uAE09'){label.style.display='none';if(f)f.style.display='none';}
+          else if(f){f.querySelectorAll('input').forEach(function(input){input.readOnly=true;});}
+        }
+        if(text.indexOf('\uB300\uCCB4\uB2F4\uBCF4')>-1){
+          var c=label.nextElementSibling;if(value!=='\uBBF8\uBC1C\uAE09'){label.style.display='none';if(c)c.style.display='none';}
+          else if(c){c.innerHTML='<span class="change-readonly-value">-</span>';}
+        }
+      });
+    }
+  }
+  var contract=modal.querySelector('[data-change-pane="contract"]');
+  var cert=contract&&contract.querySelector('[data-change-user-certificate]');
+  if(cert){
+    if(value!=='\uBC1C\uAE09'){cert.hidden=true;}
+    else{
+      cert.hidden=false;
+      cert.innerHTML='<h4 class="change-pane-title">\uC5D0\uB108\uC9C0 \uC0AC\uC6A9\uC790 \uC815\uBCF4</h4>'+\
+        '<div class="change-contract-file-row"><span class="change-contract-file-label">\uAE30\uC874 \uC99D\uAD8C \uD655\uC778</span><div class="change-contract-file-control"><a class="file-download-link" href="data:text/plain;charset=utf-8,'+encodeURIComponent('\uC9C0\uAE09\uC774\uD589\uBCF4\uC99D\uBCF4\uD5D8 \uC99D\uAD8C.pdf')+'" download="\uC9C0\uAE09\uC774\uD589\uBCF4\uC99D\uBCF4\uD5D8 \uC99D\uAD8C.pdf">\uC9C0\uAE09\uC774\uD589\uBCF4\uC99D\uBCF4\uD5D8 \uC99D\uAD8C.pdf</a></div></div>'+\
+        '<div class="change-contract-file-row"><span class="change-contract-file-label">\uAC31\uC2E0 \uC99D\uAD8C \uCCA8\uBD80</span><div class="change-contract-file-control"><input class="file-native" id="change-renewal-payment" type="file" accept=".pdf,.jpg,.jpeg,.png"><button class="btn btn-dark" type="button" data-renewal-pick>\uD30C\uC77C \uC120\uD0DD</button><span class="file-empty">\uC120\uD0DD\uB41C \uD30C\uC77C \uC5C6\uC74C</span></div></div>';
+      var pick=cert.querySelector('[data-renewal-pick]'), file=cert.querySelector('#change-renewal-payment');
+      if(pick&&file)pick.addEventListener('click',function(){file.click();});
+    }
+  }
+})();
+</script>
+<style>
+  #changeModal .change-readonly-value { display:inline-block; padding:6px 0; color:var(--text,#142b49); }
+  #changeModal [data-change-user-certificate] .change-contract-file-control { display:flex; align-items:center; gap:10px; }
+</style>
+<script>
+(function(){
+  var modal=document.getElementById('changeModal'); if(!modal)return;
+  var tries=0;
+  function lockIssued(){
+    var detail=modal.querySelector('[data-change-pane="detail"]');
+    if(!detail)return false;
+    var issued=detail.querySelector('[data-change-issued]');
+    if(!issued)return false;
+    var field=issued.nextElementSibling;
+    if(field){field.innerHTML='<span class="change-readonly-value">\uBBF8\uBC1C\uAE09</span>';}
+    var grid=issued.parentElement;
+    if(grid){
+      grid.querySelectorAll('.change-label').forEach(function(label){
+        var text=label.textContent, f=label.nextElementSibling;
+        if(text.indexOf('\uBBF8\uBC1C\uAE09')>-1&&text.indexOf('\uC0AC\uC720')>-1){if(f)f.querySelectorAll('input').forEach(function(input){input.readOnly=true;});}
+        if(text.indexOf('\uB300\uCCB4\uB2F4\uBCF4')>-1&&f){f.innerHTML='<span class="change-readonly-value">-</span>';}
+      });
+    }
+    var labels=grid?grid.querySelectorAll('.change-label'):[];
+    labels.forEach(function(label){
+      var text=label.textContent, f=label.nextElementSibling;
+      if(text.indexOf('\uBBF8\uBC1C\uAE09')>-1&&text.indexOf('\uC0AC\uC720')>-1){
+        label.style.display='';if(f){f.style.display='';f.innerHTML='<input value="-" readonly aria-readonly="true">';}
+      }
+      if(text.indexOf('\uB300\uCCB4\uB2F4\uBCF4')>-1&&f){
+        label.style.display='';f.style.display='';
+        if(!f.querySelector('[data-fixed-collateral-list]')){
+          f.innerHTML='<div data-fixed-collateral-list class="detail-collateral-list"><div class="detail-collateral-row"><input type="text" value="-"><button type="button" class="btn btn-sm" data-fixed-add>\uCD94\uAC00</button><button type="button" class="btn btn-sm" data-fixed-delete>\uC0AD\uC81C</button></div></div>';
+          var list=f.querySelector('[data-fixed-collateral-list]');
+          list.addEventListener('click',function(e){
+            if(e.target.matches('[data-fixed-add]')){var row=document.createElement('div');row.className='detail-collateral-row';row.innerHTML='<input type="text"><button type="button" class="btn btn-sm" data-fixed-add>\uCD94\uAC00</button><button type="button" class="btn btn-sm" data-fixed-delete>\uC0AD\uC81C</button>';list.appendChild(row);row.querySelector('input').focus();}
+            if(e.target.matches('[data-fixed-delete]')){var row=e.target.closest('.detail-collateral-row');if(list.children.length>1)row.remove();else row.querySelector('input').value='';}
+          });
+        }
+      }
+    });
+    var cert=modal.querySelector('[data-change-user-certificate]'); if(cert)cert.hidden=true;
+    return true;
+  }
+  var timer=setInterval(function(){if(lockIssued()||++tries>50)clearInterval(timer);},100);
+  lockIssued();
+})();
+</script>
+<script>
+(function(){
+  var modal=document.getElementById('changeModal'); if(!modal)return;
+  var tries=0;
+  function restoreContract(){
+    var pane=modal.querySelector('[data-change-pane="contract"]'); if(!pane)return false;
+    var detail=modal.querySelector('[data-change-pane="detail"]');
+    var issuedText=detail&&detail.querySelector('[data-change-issued]')?.nextElementSibling?.textContent.trim()||'';
+    var issued=issuedText==='\uBC1C\uAE09';
+    var sales=pane.querySelector('[data-change-sales-plan-row]'); if(sales)sales.hidden=false;
+    var epcTitle=[...pane.querySelectorAll('.change-pane-title')].find(function(el){return el.textContent.indexOf('EPC')>-1;});
+    if(!epcTitle)return false;
+    var section=pane.querySelector('[data-change-user-certificate]');
+    if(!section){
+      section=document.createElement('section');section.className='change-contract-files';section.setAttribute('data-change-user-certificate','');
+    }
+    section.hidden=false;
+    section.innerHTML='<h4 class="change-pane-title">\uC5D0\uB108\uC9C0 \uC0AC\uC6A9\uC790 \uC815\uBCF4</h4>'+\
+      '<div class="change-contract-file-row"><span class="change-contract-file-label">\uC5D0\uB108\uC9C0 \uC0AC\uC6A9\uC790\uBA85</span><div class="change-contract-file-control"><input value="(\uC8FC)\uC120\uC601" readonly></div></div>'+\
+      '<div class="change-contract-file-row"><span class="change-contract-file-label">\uAE30\uC874 \uC99D\uAD8C</span><div class="change-contract-file-control"><a class="file-download-link" href="data:text/plain;charset=utf-8,'+encodeURIComponent('\uC9C0\uAE09\uC774\uD589\uBCF4\uC99D\uBCF4\uD5D8 \uC99D\uAD8C.pdf')+'" download="\uC9C0\uAE09\uC774\uD589\uBCF4\uC99D\uBCF4\uD5D8 \uC99D\uAD8C.pdf">\uC9C0\uAE09\uC774\uD589\uBCF4\uC99D\uBCF4\uD5D8 \uC99D\uAD8C.pdf</a></div></div>'+\
+      '<div class="change-contract-file-row"><span class="change-contract-file-label">\uAC31\uC2E0 \uC99D\uAD8C</span><div class="change-contract-file-control"><input class="file-native" id="change-renewal-payment" type="file" accept=".pdf,.jpg,.jpeg,.png"><button class="btn btn-dark" type="button" data-renewal-pick>\uD30C\uC77C \uC120\uD0DD</button><span class="file-empty">\uC120\uD0DD\uB41C \uD30C\uC77C \uC5C6\uC74C</span></div></div>';
+    epcTitle.parentNode.insertBefore(section,epcTitle);
+    var certificateRows=section.querySelectorAll('.change-contract-file-row');
+    certificateRows.forEach(function(row,index){if(index>0)row.hidden=!issued;});
+    var pick=section.querySelector('[data-renewal-pick]'),file=section.querySelector('#change-renewal-payment');
+    if(pick&&file)pick.addEventListener('click',function(){file.click();});
+    return true;
+  }
+  var timer=setInterval(function(){if(restoreContract()||++tries>50)clearInterval(timer);},100);
+  restoreContract();
+})();
+</script>
+<script>
+(function(){
+  var modal=document.getElementById('changeModal');if(!modal)return;
+  var count=0;
+  function normalize(){
+    var pane=modal.querySelector('[data-change-pane="contract"]');if(!pane)return false;
+    var epc=[...pane.querySelectorAll('.change-pane-title')].find(function(x){return x.textContent.indexOf('EPC')>-1;});if(!epc)return false;
+    pane.querySelectorAll('.change-contract-file-row').forEach(function(row){
+      var t=row.textContent;
+      if(t.indexOf('\uAE30\uC874 \uC99D\uAD8C')>-1||t.indexOf('\uAC31\uC2E0 \uC99D\uAD8C(1\uCC28 \uBCC0\uACBD)')>-1)row.remove();
+    });
+    var section=pane.querySelector('[data-change-user-certificate]');
+    if(!section){section=document.createElement('section');section.className='change-contract-files';section.setAttribute('data-change-user-certificate','');}
+    section.hidden=false;
+    section.innerHTML='<h4 class="change-pane-title">\uC5D0\uB108\uC9C0 \uC0AC\uC6A9\uC790 \uC815\uBCF4</h4><div class="change-contract-file-row"><span class="change-contract-file-label">\uC5D0\uB108\uC9C0 \uC0AC\uC6A9\uC790\uBA85</span><div class="change-contract-file-control"><input value="(\uC8FC)\uC120\uC601" readonly></div></div><div class="change-contract-file-row" data-user-certificate-row><span class="change-contract-file-label">\uAE30\uC874 \uC9C0\uAE09\uC774\uD589\uBCF4\uC99D\uBCF4\uD5D8 \uC99D\uAD8C</span><div class="change-contract-file-control"><a class="file-download-link" href="data:text/plain;charset=utf-8,'+encodeURIComponent('\uC9C0\uAE09\uC774\uD589\uBCF4\uC99D\uBCF4\uD5D8 \uC99D\uAD8C.pdf')+'" download="\uC9C0\uAE09\uC774\uD589\uBCF4\uC99D\uBCF4\uD5D8 \uC99D\uAD8C.pdf">\uC9C0\uAE09\uC774\uD589\uBCF4\uC99D\uBCF4\uH5D8 \uC99D\uAD8C.pdf</a></div></div><div class="change-contract-file-row" data-renewal-certificate-row><span class="change-contract-file-label">\uAC31\uC2E0 \uC9C0\uAE09\uC774\uD589\uBCF4\uC99D\uBCF4\uD5D8 \uC99D\uAD8C</span><div class="change-contract-file-control"><input class="file-native" id="change-renewal-payment-final" type="file" accept=".pdf,.jpg,.jpeg,.png"><button class="btn btn-dark" type="button" data-renewal-pick-final>\uD30C\uC77C \uC120\uD0DD</button><span class="file-empty">\uC120\uD0DD\uB41C \uD30C\uC77C \uC5C6\uC74C</span></div></div>';
+    epc.parentNode.insertBefore(section,epc);
+    var missing=modal.querySelector('[data-change-issued]')?.nextElementSibling?.textContent.trim()==='\uBBF8\uBC1C\uAE09';
+    section.querySelector('[data-user-certificate-row]').hidden=missing;section.querySelector('[data-renewal-certificate-row]').hidden=missing;
+    var pick=section.querySelector('[data-renewal-pick-final]'),file=section.querySelector('#change-renewal-payment-final');if(pick&&file)pick.onclick=function(){file.click();};
+    var sales=pane.querySelector('[data-change-sales-plan-row]');if(sales)sales.hidden=false;
+    return true;
+  }
+  var timer=setInterval(function(){normalize();if(++count>60)clearInterval(timer);},100);normalize();
+})();
+</script>
+<script>
+(function(){
+  var m=document.getElementById('changeModal');if(!m)return;
+  function run(){
+    var p=m.querySelector('[data-change-pane="contract"]');if(!p)return;
+    var e=[...p.querySelectorAll('.change-pane-title')].find(function(x){return /EPC/.test(x.textContent)});if(!e)return;
+    p.querySelectorAll('.change-contract-file-row').forEach(function(r){if(/\uAE30\uC874 \uC99D\uAD8C|\uAC31\uC2E0 \uC99D\uAD8C/.test(r.textContent))r.remove()});
+    var s=p.querySelector('[data-change-user-certificate]')||document.createElement('section');s.className='change-contract-files';s.setAttribute('data-change-user-certificate','');s.hidden=false;
+    s.innerHTML='<h4 class="change-pane-title">\uC5D0\uB108\uC9C0 \uC0AC\uC6A9\uC790 \uC815\uBCF4</h4><div class="change-contract-file-row"><span class="change-contract-file-label">\uC5D0\uB108\uC9C0 \uC0AC\uC6A9\uC790\uBA85</span><div class="change-contract-file-control"><input value="(\uC8FC)\uC120\uC601" readonly></div></div><div class="change-contract-file-row" data-cert-row><span class="change-contract-file-label">\uAE30\uC874 \uC9C0\uAE09\uC774\uD589\uBCF4\uC99D\uBCF4\uD5D8 \uC99D\uAD8C</span><div class="change-contract-file-control"><span>\uC9C0\uAE09\uC774\uD589\uBCF4\uC99D\uBCF4\uD5D8.pdf</span></div></div><div class="change-contract-file-row" data-renew-row><span class="change-contract-file-label">\uAC31\uC2E0 \uC9C0\uAE09\uC774\uD589\uBCF4\uC99D\uBCF4\uD5D8 \uC99D\uAD8C</span><div class="change-contract-file-control"><input type="file" id="renewal-final"><button type="button" class="btn btn-dark" data-renew-final>\uD30C\uC77C \uC120\uD0DD</button><span>\uC120\uD0DD\uB41C \uD30C\uC77C \uC5C6\uC74C</span></div></div>';
+    e.parentNode.insertBefore(s,e);
+    var missing=m.querySelector('[data-change-issued]')?.nextElementSibling?.textContent.trim()==='\uBBF8\uBC1C\uAE09';s.querySelector('[data-cert-row]').hidden=missing;s.querySelector('[data-renew-row]').hidden=missing;
+    var b=s.querySelector('[data-renew-final]'),f=s.querySelector('#renewal-final');if(b&&f)b.onclick=function(){f.click()};
+    var sales=p.querySelector('[data-change-sales-plan-row]');if(sales)sales.hidden=false;
+  }
+  document.querySelectorAll('[data-change-tab="contract"]').forEach(function(b){b.addEventListener('click',function(){setTimeout(run,0);});});
+  run();
+})();
+</script>
+<script>
+(function(){
+  var modal=document.getElementById('changeModal');if(!modal)return;
+  function addTemplate(label,filename){
+    if(!label||label.querySelector('[data-template-download]'))return;
+    var b=document.createElement('button');b.type='button';b.className='btn btn-line btn-sm';b.textContent='\uC591\uC2DD \uB2E4\uC6B4\uB85C\uB4DC';b.setAttribute('data-template-download','');
+    b.addEventListener('click',function(){var a=document.createElement('a');a.href='data:text/plain;charset=utf-8,'+encodeURIComponent(filename);a.download=filename;a.click();});label.appendChild(b);
+  }
+  function run(){
+    var pane=modal.querySelector('[data-change-pane="contract"]');if(!pane)return;
+    var title=[...pane.querySelectorAll('.change-pane-title')].find(function(x){return x.textContent.indexOf('\uD504\uB85C\uC81D\uD2B8 \uACC4\uC57D\uC815\uBCF4')>-1});
+    var files=title&&title.nextElementSibling;if(!files)return;
+    var rows=files.querySelectorAll('.change-contract-file-row');
+    var schedule=[...rows].find(function(r){return r.textContent.indexOf('\uC0C1\uD658 \uC2A4\uCF00\uC904')>-1});
+    if(schedule){schedule.hidden=false;addTemplate(schedule.querySelector('.change-contract-file-label'),'\uC120\uC601 \uC0C1\uD658 \uC2A4\uCF00\uC904 \uC591\uC2DD.xlsx');}
+    var sales=files.querySelector('[data-change-sales-plan-row]');
+    if(!sales){
+      sales=document.createElement('div');sales.className='change-contract-file-row';sales.setAttribute('data-change-sales-plan-row','');sales.innerHTML='<label class="change-contract-file-label">\uB9E4\uCD9C \uACC4\uD68D\uD45C <span class="change-required">*</span></label><div class="change-contract-file-control"><input class="file-native" type="file" accept=".xls,.xlsx,.csv"><button class="btn btn-dark" type="button">\uD30C\uC77C \uC120\uD0DD</button><span class="file-empty">\uC120\uD0DD\uB41C \uD30C\uC77C \uC5C6\uC74C</span></div>';files.appendChild(sales);
+    }
+    sales.hidden=false;addTemplate(sales.querySelector('.change-contract-file-label'),'\uC120\uC601 \uB9E4\uCD9C \uACC4\uD68D\uD45C \uC591\uC2DD.xlsx');
+  }
+  run();
+})();
+</script>
+<style>
+  #changeModal [data-change-pane="contract"] .change-contract-files[aria-labelledby] .change-contract-file-label,
+  #changeModal [data-change-pane="contract"] .change-contract-files:first-of-type .change-contract-file-label { flex:0 0 260px; width:260px; display:flex; align-items:center; gap:8px; white-space:nowrap; }
+  #changeModal [data-change-pane="contract"] section[aria-labelledby="changeProjectContractTitle"] .change-contract-file-row { grid-template-columns:260px minmax(0,1fr); }
+  #changeModal [data-change-pane="contract"] [data-template-download] { flex:0 0 auto; white-space:nowrap; min-width:112px; }
+  #changeModal [data-change-pane="contract"] .change-contract-files .change-contract-file-row { min-width:0; }
+  #changeModal .change-energy-user-grid { border:1px solid var(--border,#d7e0ea); border-radius:4px; overflow:hidden; background:#fff; }
+  #changeModal .change-energy-user-grid .energy-cell { min-height:42px; box-sizing:border-box; border-right:1px solid var(--border,#d7e0ea); border-bottom:1px solid var(--border,#d7e0ea); color:#1f334d; font-size:13px; }
+  #changeModal .change-energy-user-grid .energy-cell:nth-child(4n) { border-right:0; }
+  #changeModal .change-energy-user-grid .energy-cell:nth-last-child(-n+4) { border-bottom:0; }
+  #changeModal .change-energy-user-grid .energy-label { background:#eef2f6; font-weight:700; white-space:nowrap; }
+  #changeModal .change-energy-user-grid input { height:32px; box-sizing:border-box; border:1px solid #cbd5e1; border-radius:4px; background:#fff; padding:0 10px; color:#334155; font:inherit; }
+  #changeModal .change-energy-user-grid input[readonly] { background:#f8fafc; }
+  #changeModal .change-energy-user-grid .btn { height:32px; padding:0 13px; border-radius:4px; white-space:nowrap; }
+  #changeModal [data-contract-energy-user] > .change-pane-title { margin:0; padding:12px 15px; border:1px solid var(--border,#d7e0ea); border-bottom:0; background:#f8fafc; font-size:14px; font-weight:700; }
+</style>
+<style>
+  #changeModal .change-energy-user-grid { display:grid; grid-template-columns:130px minmax(0,1fr) 150px minmax(0,1fr); }
+  #changeModal .change-energy-user-grid .energy-cell { min-width:0; display:flex; align-items:center; gap:6px; padding:8px 10px; border-bottom:1px solid var(--border); }
+  #changeModal .change-energy-user-grid .energy-label { background:#eef2f6; font-weight:700; }
+  #changeModal .change-energy-user-grid input { min-width:0; width:100%; }
+</style>
+<script>
+(function(){
+  var m=document.getElementById('changeModal');if(!m)return;
+  function run(){
+    var p=m.querySelector('[data-change-pane="contract"]');if(!p)return;
+    var s=p.querySelector('[data-change-user-certificate]');
+    if(!s){var epc=[...p.querySelectorAll('.change-pane-title')].find(function(x){return /EPC/.test(x.textContent)});if(!epc)return;s=document.createElement('section');s.className='change-contract-files';s.setAttribute('data-change-user-certificate','');epc.parentNode.insertBefore(s,epc);}
+    if(s.querySelector('.change-energy-user-grid'))return;
+    s.innerHTML='<h4 class="change-pane-title">\uC5D0\uB108\uC9C0 \uC0AC\uC6A9\uC790 \uC815\uBCF4</h4><div class="change-energy-user-grid">'+
+    '<div class="energy-cell energy-label">\uC0C1\uD658\uC870\uAC74 *</div><div class="energy-cell"><input value="\uC120\uD0DD" readonly></div><div class="energy-cell energy-label">\uC0C1\uD658\uAE30\uAC04 *</div><div class="energy-cell"><input readonly><span>\uAC1C\uC6D4</span></div>'+\
+    '<div class="energy-cell energy-label">\uCD1D \uC0AC\uC5C5\uAE08\uC561(VAT\uBCC4\uB3C4/\uC6D0) *</div><div class="energy-cell"><input value="220000000" readonly></div><div class="energy-cell energy-label">\uD22C\uC790\uAE08\uC561(VAT\uBCC4\uB3C4/\uC6D0) *</div><div class="energy-cell"><input value="180000000" readonly></div>'+\
+    '<div class="energy-cell energy-label">\uC774\uC728 *</div><div class="energy-cell"><input readonly></div><div class="energy-cell energy-label">\uC218\uC775\uB960</div><div class="energy-cell"><input readonly></div>'+\
+    '<div class="energy-cell energy-label">IRR</div><div class="energy-cell"><input value="16" readonly></div><div class="energy-cell energy-label">XIRR</div><div class="energy-cell"><input readonly></div>'+\
+    '<div class="energy-cell energy-label">\uC18C\uC720\uAD8C \uC774\uC804 \uC2DC\uC810 *</div><div class="energy-cell"><input value="\uC120\uD0DD" readonly></div><div class="energy-cell energy-label">\uC9C0\uC5F0 \uC774\uC790\uC728</div><div class="energy-cell"><input readonly></div>'+\
+    '<div class="energy-cell energy-label">\uC801\uC6A9 \uD560\uC778\uC728(EPC)</div><div class="energy-cell"><input readonly></div><div class="energy-cell energy-label">\uCD5C\uCD08 \uC138\uAE08\uACC4\uC0B0\uC11C \uBC1C\uD589\uC77C *</div><div class="energy-cell"><input value="2026-07-30" readonly></div>'+\
+    '<div class="energy-cell energy-label">\uC0C1\uD658 \uAC1C\uC2DC\uC77C *</div><div class="energy-cell"><input value="2026-07-30" readonly></div><div class="energy-cell energy-label">\uC0C1\uD658 \uC644\uB8CC\uC77C *</div><div class="energy-cell"><input value="2029-01-19" readonly></div>'+\
+    '<div class="energy-cell energy-label">\uC0C1\uD658 \uB2F4\uB2F9\uC790</div><div class="energy-cell"><input value="\uAE40\uBBF8\uC601" readonly><button class="btn btn-dark btn-sm">\uC870\uD68C</button></div><div class="energy-cell energy-label">\uC9C0\uAE09\uC774\uD589\uBCF4\uC99D\uBCF4\uD5D8 \uC99D\uAD8C *</div><div class="energy-cell"><span>\uC99D\uAD8C \uC815\uBCF4</span></div></div>';
+  }
+  run();
+})();
+</script>
+<script>
+(function(){
+  var m=document.getElementById('changeModal');if(!m)return;
+  var T=['\uC0C1\uD658\uC870\uAC74','\uCD1D \uC0AC\uC5C5\uAE08\uC561(VAT\uBCC4\uB3C4/\uC6D0)','\uC774\uC728','IRR','\uC18C\uC720\uAD8C \uC774\uC804 \uC2DC\uC810','\uC801\uC6A9 \uD560\uC778\uC728(EPC)','\uC0C1\uD658 \uAC1C\uC2DC\uC77C','\uC0C1\uD658 \uB2F4\uB2F9\uC790'];
+  var R=['\uC0C1\uD658\uAE30\uAC04','\uD22C\uC790\uAE08\uC561(VAT\uBCC4\uB3C4/\uC6D0)','\uC218\uC775\uB960','XIRR','\uC9C0\uC5F0 \uC774\uC790\uC728','\uCD5C\uCD08 \uC138\uAE08\uACC4\uC0B0\uC11C \uBC1C\uD589\uC77C','\uC0C1\uD658 \uC644\uB8CC\uC77C','\uC9C0\uAE09\uC774\uD589\uBCF4\uC99D\uBCF4\uD5D8 \uC99D\uAD8C'];
+  function cell(text,cls){var e=document.createElement('div');e.className='energy-cell '+(cls||'');e.textContent=text;return e;}
+  function run(){var p=m.querySelector('[data-change-pane="contract"]');if(!p)return;var epc=[...p.querySelectorAll('.change-pane-title')].find(function(x){return /EPC/.test(x.textContent)});if(!epc)return;var s=p.querySelector('[data-contract-energy-user]');if(!s){s=document.createElement('section');s.className='change-contract-files';s.setAttribute('data-contract-energy-user','');epc.parentNode.insertBefore(s,epc);}var g=document.createElement('div');g.className='change-energy-user-grid';for(var i=0;i<8;i++){g.appendChild(cell(T[i],'energy-label'));var a=cell('', '');var input=document.createElement('input');input.readOnly=true;input.value=i===1?'220000000':i===3?'16':i===6?'2026-07-30':i===7?'김미영':'선택';a.appendChild(input);if(i===0)a.append(' 개월');if(i===7){var b=document.createElement('button');b.className='btn btn-dark btn-sm';b.textContent='조회';a.appendChild(b);}g.appendChild(a);g.appendChild(cell(R[i],'energy-label'));var bcell=cell('');var inp=document.createElement('input');inp.readOnly=true;inp.value=i===1?'180000000':i===6?'2026-07-30':i===5?'2026-07-30':i===7?'증권 정보':'';bcell.appendChild(inp);g.appendChild(bcell);}s.innerHTML='';var h=document.createElement('h4');h.className='change-pane-title';h.textContent='에너지 사용자 정보';s.append(h,g);}
+  document.querySelectorAll('[data-change-tab="contract"]').forEach(function(b){b.addEventListener('click',function(){setTimeout(run,0);});});run();
+})();
+</script>
+<style>
+  #changeModal .change-energy-user-grid { grid-template-columns:180px minmax(0,1fr) 165px minmax(0,1fr); }
+  #changeModal .change-energy-user-grid .energy-label { overflow:visible; white-space:nowrap; }
+  #changeModal .change-energy-user-grid select { width:100%; height:32px; border:1px solid #cbd5e1; border-radius:4px; padding:0 10px; background:#fff; color:#334155; font:inherit; }
+</style>
+<script>
+(function(){
+  var m=document.getElementById('changeModal');if(!m)return;
+  function selectIn(c){var o=c.querySelector('input');if(!o)return;var s=document.createElement('select');s.innerHTML='<option>\uC120\uD0DD</option><option>\uC120\uD0DD1</option><option>\uC120\uD0DD2</option>';s.value=o.value||'\uC120\uD0DD';o.replaceWith(s);}
+  function dateIn(c){var o=c.querySelector('input');if(o){o.type='date';o.readOnly=false;}}
+  function run(){var g=m.querySelector('.change-energy-user-grid');if(!g)return;var c=g.children;if(c[1]){c[1].querySelectorAll('span').forEach(function(x){x.remove()});selectIn(c[1]);}if(c[17])c[17].querySelectorAll('span').forEach(function(x){x.remove()});if(c[3]&&!c[3].querySelector('span')){var x=document.createElement('span');x.textContent=' \uAC1C\uC6D4';c[3].appendChild(x);} [9,17,21].forEach(function(i){if(c[i])selectIn(c[i]);});[23,25,27].forEach(function(i){if(c[i])dateIn(c[i]);});if(c[31]){c[31].innerHTML='';var o=document.createElement('input');o.type='file';o.accept='.pdf,.jpg,.jpeg,.png';var b=document.createElement('button');b.type='button';b.className='btn btn-dark btn-sm';b.textContent='\uD30C\uC77C \uC120\uD0DD';b.onclick=function(){o.click()};var e=document.createElement('span');e.textContent=' \uC120\uD0DD\uB41C \uD30C\uC77C \uC5C6\uC74C';c[31].append(o,b,e);}}
+  run();
+})();
+</script>
+<script>
+(function(){
+  function makeCell(text, cls){
+    var e=document.createElement('div');
+    e.className='energy-cell '+(cls||'');
+    if(text)e.textContent=text;
+    return e;
+  }
+  function input(value, type){
+    var e=document.createElement('input');
+    e.value=value||'';
+    e.type=type||'text';
+    if(type==='date') e.readOnly=false;
+    else e.readOnly=true;
+    return e;
+  }
+  function select(value){
+    var e=document.createElement('select');
+    ['선택','선택 1','선택 2'].forEach(function(v){
+      var o=document.createElement('option'); o.value=v; o.textContent=v; e.appendChild(o);
+    });
+    e.value=value||'선택';
+    return e;
+  }
+  function valueCell(node){
+    var e=makeCell(''); e.appendChild(node); return e;
+  }
+  function fileCell(){
+    var e=makeCell('');
+    var file=document.createElement('input'); file.type='file'; file.accept='.pdf,.jpg,.jpeg,.png'; file.hidden=true;
+    var b=document.createElement('button'); b.type='button'; b.className='btn btn-dark btn-sm'; b.textContent='파일 선택';
+    var label=document.createElement('span'); label.textContent=' 선택된 파일 없음';
+    b.onclick=function(){file.click();};
+    file.onchange=function(){label.textContent=file.files.length?' '+file.files[0].name:' 선택된 파일 없음';};
+    e.append(file,b,label); return e;
+  }
+  function rebuild(){
+    var modal=document.getElementById('changeModal');
+    if(!modal)return;
+    var pane=modal.querySelector('[data-change-pane="contract"]');
+    if(!pane)return;
+    var titles=pane.querySelectorAll('.change-pane-title'), epc=null;
+    for(var i=0;i<titles.length;i++){if(titles[i].textContent.indexOf('EPC')>-1){epc=titles[i];break;}}
+    if(!epc)return;
+    var section=pane.querySelector('[data-final-energy-user]');
+    if(!section){section=document.createElement('section');section.className='change-contract-files';section.setAttribute('data-final-energy-user','');epc.parentNode.insertBefore(section,epc);}
+    section.innerHTML='';
+    var h=document.createElement('h4');h.className='change-pane-title';h.textContent='에너지 사용자 정보';section.appendChild(h);
+    var grid=document.createElement('div');grid.className='change-energy-user-grid';
+    var left=['상환조건 *','총 사업금액(VAT별도/원) *','이율 *','IRR','소유권 이전 시점 *','적용 할인율(EPC)','상환 개시일 *','상환 담당자'];
+    var right=['상환기간 *','투자금액(VAT별도/원) *','수익률','XIRR','지연 이자율','최초 세금계산서 발행일 *','상환 완료일 *','지급이행보증보험 증권 *'];
+    for(var r=0;r<8;r++){
+      grid.appendChild(makeCell(left[r],'energy-label'));
+      var lv;
+      if(r===0||r===2||r===4||r===5)lv=valueCell(select(r===0?'선택':''));
+      else if(r===6)lv=valueCell(input('2026-07-30','date'));
+      else lv=valueCell(input(r===1?'220000000':r===3?'16':r===7?'김미영':''));
+      if(r===7){var q=document.createElement('button');q.type='button';q.className='btn btn-dark btn-sm';q.textContent='조회';lv.appendChild(q);}
+      grid.appendChild(lv);
+      grid.appendChild(makeCell(right[r],'energy-label'));
+      var rv;
+      if(r===0)rv=valueCell(input(''));
+      else if(r===1)rv=valueCell(input('180000000'));
+      else if(r===5||r===6)rv=valueCell(input(r===5?'2026-07-30':'2029-01-19','date'));
+      else if(r===7)rv=fileCell();
+      else rv=valueCell(input(''));
+      grid.appendChild(rv);
+      if(r===0){var note=document.createElement('span');note.textContent='개월';rv.appendChild(note);}
+    }
+    section.appendChild(grid);
+  }
+  document.addEventListener('DOMContentLoaded',rebuild);
+  document.addEventListener('click',function(e){if(e.target.closest('[data-change-tab="contract"]'))setTimeout(rebuild,20);});
+  setTimeout(rebuild,0);
+})();
+</script>
 </body>
+<script>
+(function(){
+function C(t,k){var e=document.createElement('div');e.className='energy-cell '+(k||'');e.textContent=t;return e;}
+function I(v,typ){var e=document.createElement('input');e.type=typ||'text';e.value=v||'';e.readOnly=e.type!=='date';return e;}
+function S(){var e=document.createElement('select');['\uC120\uD0DD','\uC120\uD0DD 1','\uC120\uD0DD 2'].forEach(function(v){var o=document.createElement('option');o.textContent=v;e.appendChild(o);});return e;}
+function V(x){var e=C('');e.appendChild(x);return e;}
+function F(){var e=C(''),f=document.createElement('input'),b=document.createElement('button'),s=document.createElement('span');f.type='file';f.accept='.pdf,.jpg,.jpeg,.png';f.hidden=true;b.type='button';b.className='btn btn-dark btn-sm';b.textContent='\uD30C\uC77C \uC120\uD0DD';s.textContent=' \uC120\uD0DD\uB41C \uD30C\uC77C \uC5C6\uC74C';b.onclick=function(){f.click();};f.onchange=function(){s.textContent=f.files.length?' '+f.files[0].name:' \uC120\uD0DD\uB41C \uD30C\uC77C \uC5C6\uC74C';};e.append(f,b,s);return e;}
+function R(){var m=document.getElementById('changeModal');if(!m)return;var p=m.querySelector('[data-change-pane="contract"]');if(!p)return;var ts=p.querySelectorAll('.change-pane-title'),epc=null,i;for(i=0;i<ts.length;i++){if(ts[i].textContent.indexOf('EPC')>=0){epc=ts[i];break;}}if(!epc)return;var s=p.querySelector('[data-final-energy-user]');if(!s){s=document.createElement('section');s.className='change-contract-files';s.setAttribute('data-final-energy-user','');epc.parentNode.insertBefore(s,epc);}s.innerHTML='';var h=document.createElement('h4');h.className='change-pane-title';h.textContent='\uC5D0\uB108\uC9C0 \uC0AC\uC6A9\uC790 \uC815\uBCF4';s.appendChild(h);var g=document.createElement('div');g.className='change-energy-user-grid';var L=['\uC0C1\uD658\uC870\uAC74 *','\uCD1D \uC0AC\uC5C5\uAE08\uC561(VAT\uBCC4\uB3C4/\uC6D0) *','\uC774\uC728 *','IRR','\uC18C\uC720\uAD8C \uC774\uC804 \uC2DC\uC810 *','\uC801\uC6A9 \uD560\uC778\uC728(EPC)','\uC0C1\uD658 \uAC1C\uC2DC\uC77C *','\uC0C1\uD658 \uB2F4\uB2F9\uC790'];var Q=['\uC0C1\uD658\uAE30\uAC04 *','\uD22C\uC790\uAE08\uC561(VAT\uBCC4\uB3C4/\uC6D0) *','\uC218\uC775\uB960','XIRR','\uC9C0\uC5F0 \uC774\uC790\uC728','\uCD5C\uCD08 \uC138\uAE08\uACC4\uC0B0\uC11C \uBC1C\uD589\uC77C *','\uC0C1\uD658 \uC644\uB8CC\uC77C *','\uC9C0\uAE09\uC774\uD589\uBCF4\uC99D\uBCF4\uD5D8 \uC99D\uAD8C *'];for(i=0;i<8;i++){g.appendChild(C(L[i],'energy-label'));var a=(i===0||i===2||i===4||i===5)?V(S()):(i===6?V(I('2026-07-30','date')):V(I(i===1?'220000000':i===3?'16':i===7?'\uAE40\uBBF8\uC601':'')));if(i===7){var q=document.createElement('button');q.className='btn btn-dark btn-sm';q.textContent='\uC870\uD68C';a.appendChild(q);}g.appendChild(a);g.appendChild(C(Q[i],'energy-label'));var b=i===0?V(I('')):(i===1?V(I('180000000')):(i===5||i===6?V(I(i===5?'2026-07-30':'2029-01-19','date')):(i===7?F():V(I('')))));g.appendChild(b);if(i===0){var n=document.createElement('span');n.textContent='\uAC1C\uC6D4';b.appendChild(n);}}s.appendChild(g);}
+document.addEventListener('DOMContentLoaded',R);document.addEventListener('click',function(e){if(e.target.closest('[data-change-tab="contract"]'))setTimeout(R,30);});setTimeout(R,50);
+})();
+</script>
+<script>
+(function(){
+ function fix(){var m=document.getElementById('changeModal'),g=m&&m.querySelector('.change-energy-user-grid');if(!g)return;var c=g.children;
+  if(c[3]){c[3].querySelectorAll('span').forEach(function(x){x.remove();});var n=document.createElement('span');n.textContent='\uAC1C\uC6D4';c[3].appendChild(n);}
+  if(c[1]){c[1].querySelectorAll('span').forEach(function(x){x.remove();});if(c[1].querySelector('input')){var s=document.createElement('select');s.innerHTML='<option>\uC120\uD0DD</option><option>\uC120\uD0DD 1</option><option>\uC120\uD0DD 2</option>';c[1].querySelector('input').replaceWith(s);}}
+  [9,17,21].forEach(function(i){if(c[i]&&c[i].querySelector('input')){var s=document.createElement('select');s.innerHTML='<option>\uC120\uD0DD</option><option>\uC120\uD0DD 1</option>';c[i].querySelector('input').replaceWith(s);}});
+  [23,25,27].forEach(function(i){if(c[i]&&c[i].querySelector('input'))c[i].querySelector('input').type='date';});
+ }
+ document.addEventListener('click',function(e){if(e.target.closest('[data-change-tab="contract"]'))setTimeout(fix,40);});fix();
+})();
+</script>
+<script>
+(function(){
+ function clean(e){Array.prototype.slice.call(e.childNodes).forEach(function(n){if(n.nodeType===3)n.remove();});}
+ function fixMonths(){var m=document.getElementById('changeModal'),g=m&&m.querySelector('.change-energy-user-grid');if(!g)return;var c=g.children;if(!c[1]||!c[3])return;clean(c[1]);clean(c[3]);var s=document.createElement('span');s.textContent='\uAC1C\uC6D4';c[3].appendChild(s);}
+ document.addEventListener('click',function(e){if(e.target.closest('[data-change-tab="contract"]'))setTimeout(fixMonths,50);});fixMonths();
+})();
+</script>
+<script>
+(function(){
+ function fix(){var m=document.getElementById('changeModal'),g=m&&m.querySelector('.change-energy-user-grid');if(!g)return;var c=g.children;if(!c[3])return;
+  Array.prototype.slice.call(c[3].childNodes).forEach(function(n){if(n.nodeType===3||n.nodeName==='SPAN')n.remove();});
+  var n=document.createElement('span');n.textContent='\uAC1C\uC6D4';n.style.whiteSpace='nowrap';c[3].appendChild(n);
+  if(c[21]){var old=c[21].querySelector('select');if(old){var x=document.createElement('input');x.type='text';x.value='';x.readOnly=false;x.placeholder='';old.replaceWith(x);}}
+ }
+ document.addEventListener('click',function(e){if(e.target.closest('[data-change-tab="contract"]'))setTimeout(fix,80);});
+ document.addEventListener('DOMContentLoaded',function(){setTimeout(fix,80);});
+})();
+</script>
+<script>
+(function(){
+ function fix(){var m=document.getElementById('changeModal'),g=m&&m.querySelector('.change-energy-user-grid');if(!g)return;var c=g.children;
+  if(c[8])c[8].textContent='\uC774\uC724';
+  if(c[9]){var s=c[9].querySelector('select');if(s){var i=document.createElement('input');i.type='text';i.readOnly=false;s.replaceWith(i);}}
+  [23,25,27].forEach(function(k){if(c[k]){var i=c[k].querySelector('input');if(i){i.type='date';i.readOnly=false;}}});
+ }
+ document.addEventListener('click',function(e){if(e.target.closest('[data-change-tab="contract"]'))setTimeout(fix,100);});
+ document.addEventListener('DOMContentLoaded',function(){setTimeout(fix,100);});
+})();
+</script>
+<script>
+(function(){
+ function fix(){var m=document.getElementById('changeModal'),g=m&&m.querySelector('.change-energy-user-grid');if(!g)return;var c=g.children;if(!c[31])return;var cell=c[31];if(cell.getAttribute('data-file-fixed'))return;cell.setAttribute('data-file-fixed','1');cell.innerHTML='';var f=document.createElement('input'),b=document.createElement('button'),s=document.createElement('span');f.type='file';f.accept='.pdf,.jpg,.jpeg,.png';f.hidden=true;b.type='button';b.className='btn btn-dark btn-sm';b.textContent='\uCC3E\uAE30';s.textContent=' \u323C\uC120\uC601 \uC0AC\uC5C5\uCD94\uC9C4 \uACC4\uD68D\uC548.pdf X';b.onclick=function(){f.click();};f.onchange=function(){s.textContent=f.files.length?' '+f.files[0].name+' X':' \u323C\uC120\uC601 \uC0AC\uC5C5\uCD94\uC9C4 \uACC4\uD68D\uC548.pdf X';};cell.append(f,b,s);}
+ document.addEventListener('click',function(e){if(e.target.closest('[data-change-tab="contract"]'))setTimeout(fix,120);});
+ document.addEventListener('DOMContentLoaded',function(){setTimeout(fix,120);});
+})();
+</script>
+<script>
+(function(){
+ function dedupe(){var m=document.getElementById('changeModal'),p=m&&m.querySelector('[data-change-pane="contract"]');if(!p)return;var list=[];p.querySelectorAll('.change-contract-files').forEach(function(s){var h=s.querySelector('.change-pane-title');if(h&&h.textContent.indexOf('\uC5D0\uB108\uC9C0 \uC0AC\uC6A9\uC790 \uC815\uBCF4')>-1)list.push(s);});if(!list.length)return;var keep=list[0],top=keep.getBoundingClientRect().top;list.forEach(function(s){var y=s.getBoundingClientRect().top;if(y<top){keep=s;top=y;}});list.forEach(function(s){if(s!==keep)s.remove();});}
+ document.addEventListener('click',function(e){if(e.target.closest('[data-change-tab="contract"]'))setTimeout(dedupe,150);});
+ document.addEventListener('DOMContentLoaded',function(){setTimeout(dedupe,150);});
+})();
+</script>
+<script>
+(function(){
+ function removeOld(){return;}
+ document.addEventListener('click',function(e){if(e.target.closest('[data-change-tab="contract"]'))setTimeout(removeOld,160);});
+ document.addEventListener('DOMContentLoaded',function(){setTimeout(removeOld,160);});
+})();
+</script>
+<script>
+(function(){
+ function rebuild(){var m=document.getElementById('changeModal'),p=m&&m.querySelector('[data-change-pane="contract"]');if(!p)return;var s=p.querySelector('[data-change-user-certificate]');if(!s)return;if(s.querySelector('.change-energy-user-grid'))return;s.innerHTML='<h4 class="change-pane-title">\uC5D0\uB108\uC9C0 \uC0AC\uC6A9\uC790 \uC815\uBCF4</h4><div class="change-energy-user-grid">'+
+ '<div class="energy-cell energy-label">\uC0C1\uD658\uC870\uAC74 *</div><div class="energy-cell"><select><option>\uC120\uD0DD</option></select></div><div class="energy-cell energy-label">\uC0C1\uD658\uAE30\uAC04 *</div><div class="energy-cell"><input><span>\uAC1C\uC6D4</span></div>'+ 
+ '<div class="energy-cell energy-label">\uCD1D \uC0AC\uC5C5\uAE08\uC561(VAT\uBCC4\uB3C4/\uC6D0) *</div><div class="energy-cell"><input value="220000000"></div><div class="energy-cell energy-label">\uD22C\uC790\uAE08\uC561(VAT\uBCC4\uB3C4/\uC6D0) *</div><div class="energy-cell"><input value="180000000"></div>'+ 
+ '<div class="energy-cell energy-label">\uC774\uC724 *</div><div class="energy-cell"><input></div><div class="energy-cell energy-label">\uC218\uC775\uB960</div><div class="energy-cell"><input></div>'+ 
+ '<div class="energy-cell energy-label">IRR</div><div class="energy-cell"><input value="16"></div><div class="energy-cell energy-label">XIRR</div><div class="energy-cell"><input></div>'+ 
+ '<div class="energy-cell energy-label">\uC18C\uC720\uAD8C \uC774\uC804 \uC2DC\uC810 *</div><div class="energy-cell"><select><option>\uC120\uD0DD</option></select></div><div class="energy-cell energy-label">\uC9C0\uC5F0 \uC774\uC790\uC728</div><div class="energy-cell"><input></div>'+ 
+ '<div class="energy-cell energy-label">\uC801\uC6A9 \uD560\uC778\uC728(EPC)</div><div class="energy-cell"><input></div><div class="energy-cell energy-label">\uCD5C\uCD08 \uC138\uAE08\uACC4\uC0B0\uC11C \uBC1C\uD589\uC77C *</div><div class="energy-cell"><input type="date" value="2026-07-30"></div>'+ 
+ '<div class="energy-cell energy-label">\uC0C1\uD658 \uAC1C\uC2DC\uC77C *</div><div class="energy-cell"><input type="date" value="2026-07-30"></div><div class="energy-cell energy-label">\uC0C1\uD658 \uC644\uB8CC\uC77C *</div><div class="energy-cell"><input type="date" value="2029-01-19"></div>'+ 
+ '<div class="energy-cell energy-label">\uC0C1\uD658 \uB2F4\uB2F9\uC790</div><div class="energy-cell"><input value="\uAE40\uBBF8\uC601"><button class="btn btn-dark btn-sm">\uC870\uD68C</button></div><div class="energy-cell energy-label">\uC9C0\uAE09\uC774\uD589\uBCF4\uC99D\uBCF4\uD5D8 \uC99D\uAD8C *</div><div class="energy-cell"><button class="btn btn-dark btn-sm">\uCC3E\uAE30</button><span> \u323C\uC120\uC601 \uC0AC\uC5C5\uCD94\uC9C4 \uACC4\uD68D\uC548.pdf X</span></div></div>';
+ }
+ document.addEventListener('click',function(e){if(e.target.closest('[data-change-tab="contract"]'))setTimeout(rebuild,100);});document.addEventListener('DOMContentLoaded',function(){setTimeout(rebuild,100);});
+})();
+</script>
+<script>
+(function(){
+ function apply(){var m=document.getElementById('changeModal');if(!m)return;var grid=m.querySelector('[data-change-pane="contract"] .change-contract-grid');if(!grid)return;
+  var labels=grid.querySelectorAll('.change-label'), pay=null, detail=null;
+  labels.forEach(function(x){var t=x.textContent;if(t.indexOf('\uC9C0\uAE09')>-1&&t.indexOf('\uC0C1\uC138')<0)pay=x;if(t.indexOf('\uC9C0\uAE09')>-1&&t.indexOf('\uC0C1\uC138')>-1)detail=x;});
+  if(pay&&detail){pay.textContent='\uACF5\uC0AC\uAE08\uC561 \uC9C0\uAE09(%) \uC9C0\uAE09 \uC0C1\uC138';var pv=pay.nextElementSibling,dv=detail.nextElementSibling;if(pv&&dv){pv.innerHTML='<select><option>\uBD84\uD560\uC9C0\uAE09</option><option>\uC77C\uC2DC\uC9C0\uAE09</option></select><span>\uC120\uAE08</span><input value="30"><span>\uAE30\uC131\uAE08</span><input value="40"><span>\uC900\uACF5\uAE08</span><input value="30">';dv.remove();}}
+  var old=document.getElementById('changeContractFile');if(old&&!old.getAttribute('data-file-ready')){old.setAttribute('data-file-ready','1');var cell=old.parentElement;cell.innerHTML='';var f=document.createElement('input'),b=document.createElement('button'),s=document.createElement('span');f.type='file';f.accept='.pdf,.hwp,.hwpx,.doc,.docx';f.hidden=true;b.type='button';b.className='btn btn-dark btn-sm';b.textContent='\uCC3E\uAE30';s.textContent=' \uC120\uC601 EPC\uACC4\uC57D\uC11C.pdf X';b.onclick=function(){f.click();};f.onchange=function(){s.textContent=f.files.length?' '+f.files[0].name+' X':' \uC120\uC601 EPC\uACC4\uC57D\uC11C.pdf X';};cell.append(f,b,s);}}
+ document.addEventListener('click',function(e){if(e.target.closest('[data-change-tab="contract"]'))setTimeout(apply,100);});document.addEventListener('DOMContentLoaded',function(){setTimeout(apply,100);});
+})();
+</script>
+<script>
+(function(){
+ function apply(){var m=document.getElementById('changeModal'),g=m&&m.querySelector('[data-change-pane="contract"] .change-contract-grid');if(!g||g.getAttribute('data-epc-aligned'))return;if(!g.querySelector('.change-label'))return;g.setAttribute('data-epc-aligned','1');g.innerHTML='<div class="change-vendor">\u323C\uD3EC\uC2A4\uBB34\uC5ED</div><div class="change-label">\uACC4\uC57D \uCCB4\uACB0\uC77C *</div><div class="change-field"><input type="date" value="2026-12-15"></div><div class="change-label">\uACF5\uC0AC\uC2DC\uC791\uC77C *</div><div class="change-field"><input type="date" value="2026-12-20"></div>'+
+ '<div class="change-label">\uAD6C\BD84 *</div><div class="change-field"><select><option>\uC77C\uBC18 \uACF5\uC0AC\uBE44</option><option>\uC790\uC7AC\uBE44</option></select></div><div class="change-label">\uACF5\uC0AC\uC885\uB8CC\uC77C *</div><div class="change-field"><input type="date" value="2027-01-20"></div>'+
+ '<div class="change-label">\uACC4\uC57D\uAE08\uC561(VAT\uBCC4\uB3C4/\uC6D0) *</div><div class="change-field"><input value="220000000"></div><div class="change-label">\uACF5\uC0AC\uAE08\uC561\uC9C0\uAE09\uBE44\uC728(%) *</div><div class="change-field"><select><option>\uBD84\uD560\uC9C0\uAE09</option></select><span>\uC120\uAE08</span><input class="ratio-input" value="30"><span>\uAE30\uC131\uAE08</span><input class="ratio-input" value="40"><span>\uC900\uACF5\uAE08</span><input class="ratio-input" value="30"></div>'+
+ '<div class="change-label">\uACF5\uAE09\uAC00\uC561(\uC6D0) *</div><div class="change-field"><input value="200000000"></div><div class="change-label">\uACC4\uC57D\uC11C *</div><div class="change-field"><input type="file" accept=".pdf,.hwp,.hwpx,.doc,.docx"><button class="btn btn-dark btn-sm" type="button">\uCC3E\uAE30</button><span> \uC120\uC601 EPC\uACC4\uC57D\uC11C.pdf X</span></div>'+
+ '<div class="change-label">\uBD80\uAC00\uC138(\uC6D0) *</div><div class="change-field"><input value="20000000"></div><div class="change-label">\uD569\uACC4\uC561(VAT\uD3EC\uD568/\uC6D0) *</div><div class="change-field"><input value="220000000"></div>';}
+ document.addEventListener('click',function(e){if(e.target.closest('[data-change-tab="contract"]'))setTimeout(apply,130);});document.addEventListener('DOMContentLoaded',function(){setTimeout(apply,130);});
+})();
+</script>
+<style>#changeModal .change-contract-grid .ratio-input{width:42px;min-width:42px;margin:0 5px;}#changeModal .change-contract-grid input[type=file]{display:none;}</style>
+<script>
+(function(){function fix(){var m=document.getElementById('changeModal');if(!m)return;m.querySelectorAll('[data-change-pane="contract"] .change-contract-grid .change-label').forEach(function(e){if(e.textContent.indexOf('BD84')>-1||e.textContent.indexOf('\uAD6C')>-1&&e.textContent.indexOf('\uBD84')<0)e.textContent=String.fromCharCode(44396,48516)+' *';});}document.addEventListener('click',function(e){if(e.target.closest('[data-change-tab="contract"]'))setTimeout(fix,150);});document.addEventListener('DOMContentLoaded',function(){setTimeout(fix,150);});})();
+</script>
 </html>

@@ -225,6 +225,7 @@
   .pill-blue { background: #e6effb; color: #1d4ed8; }
   .pill-amber { background: #fef3c7; color: #b45309; }
   .pill-gray { background: #eef2f7; color: #64748b; }
+  .pill-red { background: #fee2e2; color: #b91c1c; }
   .schedule-table { min-width: 1100px; table-layout: fixed; }
 
   /* 사용자 입금 현황 : 5열 고정 비율 (금액 열은 넓게) */
@@ -578,7 +579,7 @@
                   <th scope="col">세금계산서발행일</th>
                   <th scope="col">상환액(원)</th>
                   <th scope="col">부가세(원)</th>
-                  <th scope="col">지연이자(원)</th>
+                  <th scope="col">이자(원)</th>
                   <th scope="col">회차별 상환총액(원)</th>
                   <th class="divide" scope="col">실제 상환일</th>
                   <th scope="col">상환액(원)</th>
@@ -637,7 +638,7 @@
     </div>
     <div class="modal-body">
       <p class="schedule-guide">· 상환금 회수 스케줄은 회차 단위로 수정할 수 있습니다.<br>· 상환예정일 기준, 지나간 스케줄은 변경할 수 없습니다.<br>· 수정 진행 후 스케줄 업로드 기능을 통해 최종 저장합니다.</p>
-      <div class="schedule-edit-wrap"><table class="schedule-edit-table"><colgroup><col style="width:54px"><col style="width:118px"><col style="width:128px"><col style="width:122px"><col style="width:108px"><col style="width:108px"><col style="width:132px"><col style="width:220px"><col style="width:92px"></colgroup><thead><tr><th rowspan="2">회차</th><th colspan="6">예정 스케줄</th><th rowspan="2">비고(특이사항)</th><th rowspan="2"><span class="sr-only">수정</span></th></tr><tr><th>상환예정일</th><th>세금계산서발행일</th><th>상환액(원)</th><th>부가세(원)</th><th>지연이자(원)</th><th>회차별 상환총액(원)</th></tr></thead><tbody id="scheduleEditBody"></tbody><tfoot id="scheduleEditTotal"></tfoot></table></div>
+      <div class="schedule-edit-wrap"><table class="schedule-edit-table"><colgroup><col style="width:54px"><col style="width:118px"><col style="width:128px"><col style="width:122px"><col style="width:108px"><col style="width:108px"><col style="width:132px"><col style="width:220px"><col style="width:92px"></colgroup><thead><tr><th rowspan="2">회차</th><th colspan="6">예정 스케줄</th><th rowspan="2">비고(특이사항)</th><th rowspan="2"><span class="sr-only">수정</span></th></tr><tr><th>상환예정일</th><th>세금계산서발행일</th><th>상환액(원)</th><th>부가세(원)</th><th>이자(원)</th><th>회차별 상환총액(원)</th></tr></thead><tbody id="scheduleEditBody"></tbody><tfoot id="scheduleEditTotal"></tfoot></table></div>
     </div>
     <div class="modal-foot">
       <button class="btn btn-line" type="button" data-close>취소</button>
@@ -731,14 +732,26 @@
     {
       due: "2026.11.23", tax: "2026.11.15",
       principal: 46761000, vat: 4676100, interest: 0,
-      paidDate: "", paid: null, remain: 20000000,
+      paidDate: "2026.11.20", paid: 20000000, remain: 31437100,
       state: "미상환", note: "에너지 사용자 자금 사정으로 상환 지연",
     },
     {
       due: "2027.01.23", tax: "2027.01.15",
       principal: 46761000, vat: 4676100, interest: 0,
-      paidDate: "", paid: null, remain: null,
-      state: "", note: "",
+      paidDate: "", paid: null, remain: 51437100,
+      state: "미상환", note: "",
+    },
+    {
+      due: "2027.02.23", tax: "2027.02.15",
+      principal: 46761000, vat: 4676100, interest: 0,
+      paidDate: "", paid: null, remain: 51437100,
+      state: "미상환", note: "",
+    },
+    {
+      due: "2027.03.23", tax: "2027.03.15",
+      principal: 46761000, vat: 4676100, interest: 0,
+      paidDate: "", paid: null, remain: 20000000,
+      state: "미수채권", note: "",
     },
   ];
 
@@ -760,6 +773,7 @@
     if (text === "상환완료") cls = "pill-green";
     else if (text === "미상환") cls = "pill-amber";
     else if (text === "상환 진행 중") cls = "pill-blue";
+    if (text === "미수채권") cls = "pill-red";
     return '<span class="pill ' + cls + '">' + text + "</span>";
   }
 
@@ -802,7 +816,7 @@
 
       var tr = document.createElement("tr");
       if (row.afterPrepayment) tr.classList.add("schedule-future-row");
-      if (row.state === "미상환") tr.classList.add("schedule-unpaid-row");
+      if (row.state === "미상환" || row.state === "미수채권") tr.classList.add("schedule-unpaid-row");
       cell(tr, i + 1);
       cell(tr, row.due, { divide: true });
       cell(tr, row.tax);
@@ -1114,7 +1128,7 @@
     button.addEventListener("click", function () {
       var type = button.dataset.noticeType || "unpaid";
       var title = type === "claim" ? "미수채권 알림 발송" : type === "complete" ? "상환 완료 알림 발송" : "미상환 알림 발송";
-      document.getElementById("reminderTitle").textContent = title;
+      document.getElementById("reminderTitle").textContent = "알림 발송 미리보기";
       document.querySelector(".reminder-preview").innerHTML =
         "<h4>발송 내용 미리보기</h4>" +
         "<p>[켑코이에스] " + title + "</p>" +
@@ -1124,6 +1138,14 @@
       openModal("reminderOverlay");
     });
   });
+  document.addEventListener("click", function (event) {
+    var previewButton = event.target.closest && event.target.closest('[data-act="reminder"]');
+    if (!previewButton) return;
+    window.setTimeout(function () {
+      var title = document.getElementById("reminderTitle");
+      if (title) title.textContent = "알림 발송 미리보기";
+    }, 0);
+  }, true);
   document.getElementById("reminderSend").addEventListener("click", function () {
     closeModal(document.getElementById("reminderOverlay"));
     showToast("미상환 독촉 알림을 발송했습니다.");
@@ -1177,4 +1199,158 @@
   <script src="/assets/pms-lnb.js?v=20260930-2"></script>
   <script src="/assets/pms-intake-wizard.js?v=20260921-2"></script>
 </body>
+<style>
+.repayment-insurance-info{margin-top:18px;padding-top:14px;border-top:1px solid #dbe3ec}
+.repayment-insurance-info .sec-title{margin:0 0 10px;font-size:15px}
+.repayment-insurance-kv{display:grid;grid-template-columns:176px minmax(0,1fr);border:1px solid #dbe3ec;border-radius:6px;overflow:hidden}
+.repayment-insurance-kv .k,.repayment-insurance-kv .v{min-height:42px;padding:10px 12px;border-bottom:1px solid #dbe3ec;box-sizing:border-box}
+.repayment-insurance-kv .k{background:#eef2f7;font-weight:700}
+.repayment-insurance-kv .v{background:#fff}
+.repayment-insurance-kv>*:nth-last-child(-n+2){border-bottom:0}
+</style>
+<script>
+(function(){
+ function addInsuranceInfo(){
+  var summary=document.querySelector('.kv.summary');if(!summary||document.querySelector('.repayment-insurance-info'))return;
+  var box=document.createElement('div');box.className='repayment-insurance-info';box.setAttribute('aria-labelledby','repaymentInsuranceTitle');
+  box.innerHTML='<h4 class="sec-title" id="repaymentInsuranceTitle">지급보증보험 정보</h4><div class="kv repayment-insurance-kv"><div class="k">지급보증보험 발급 여부</div><div class="v">미발급</div><div class="k">미발급 사유</div><div class="v">에너지 사용자와 협의하여 대체담보를 설정함</div><div class="k">대체담보</div><div class="v">부동산 근저당권<br>지급보증서</div></div>';
+  summary.parentElement.appendChild(box);
+ }
+ document.addEventListener('DOMContentLoaded',addInsuranceInfo);
+})();
+</script>
+<style>
+.schedule-info-tip{position:relative;display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;margin-right:6px;border:1px solid #1d4ed8;border-radius:50%;color:#1d4ed8;background:#fff;font-size:12px;font-weight:700;cursor:help;outline:none}
+.schedule-info-tip .schedule-info-tooltip{position:absolute;right:0;bottom:calc(100% + 8px);z-index:20;width:290px;padding:9px 11px;border:1px solid #cbd5e1;border-radius:5px;background:#fff;color:#334155;font-size:12px;font-weight:400;line-height:1.5;box-shadow:0 4px 12px rgba(15,23,42,.14);opacity:0;visibility:hidden;pointer-events:none;transition:opacity .12s ease}
+.schedule-info-tip:hover .schedule-info-tooltip,.schedule-info-tip:focus .schedule-info-tooltip,.schedule-info-tip:focus-visible .schedule-info-tooltip{opacity:1;visibility:visible}
+.reminder-audience-note{margin-top:16px;padding:10px 14px;border:1px solid #bfdbfe;border-radius:6px;background:#eff6ff;color:#1e40af;font-size:13px;line-height:1.5}
+</style>
+<script>
+(function(){
+ function addScheduleTip(){
+  var btn=document.querySelector('[data-notice-type="unpaid"]');if(!btn||document.querySelector('.schedule-info-tip'))return;
+  var tip=document.createElement('span');tip.className='schedule-info-tip';tip.tabIndex=0;tip.setAttribute('role','img');tip.setAttribute('aria-label','알림 발송 안내');tip.textContent='ⓘ';
+  var text=document.createElement('span');text.className='schedule-info-tooltip';text.setAttribute('role','tooltip');text.textContent='알림 발송 조건을 충족하면, 상환 상태에 해당하는 발송 버튼이 자동으로 표시됩니다.';tip.appendChild(text);
+  btn.parentNode.insertBefore(tip,btn);
+ }
+ document.addEventListener('DOMContentLoaded',addScheduleTip);
+})();
+</script>
+<script>
+(function () {
+  function numberValue(value) {
+    var n = Number(value);
+    return Number.isFinite(n) ? n : 0;
+  }
+
+  function unpaidItems() {
+    return (window.schedule || []).map(function (row, index) {
+      var planned = numberValue(row.principal) + numberValue(row.vat) + numberValue(row.interest);
+      var paid = numberValue(row.paid);
+      var balance = row.remain !== null && row.remain !== undefined && row.remain !== ""
+        ? numberValue(row.remain)
+        : Math.max(planned - paid, 0);
+      var hasRecordedRemain = row.remain !== null && row.remain !== undefined && row.remain !== "";
+      var eligible = (hasRecordedRemain && balance > 0) || (!!row.paidDate && balance > 0);
+      return { round: row.round || index + 1, balance: balance, row: row, eligible: eligible };
+    }).filter(function (item) {
+      /* 잔여액이 있는 미상환 건만 포함합니다. 완납/예정 건은 잔여액이 0 또는 없음입니다. */
+      return item.eligible && (!item.row.state || String(item.row.state).indexOf("완료") === -1);
+    }).sort(function (a, b) { return a.round - b.round; });
+  }
+
+  function renderUnpaidPreview() {
+    var preview = document.querySelector(".reminder-preview");
+    if (!preview) return;
+    preview.innerHTML =
+      "<h4>발송 내용 미리보기</h4>" +
+      "<p>[켑코이에스] 미상환 알림 발송</p>" +
+      "<p>㈜선영 담당자님, 켑코이에스(주)입니다.</p>" +
+      "<p>귀사와 체결한 에너지 절약 사업의 미상환 내역을 안내드립니다.<br>아래 내용을 확인해 주세요.</p>" +
+      "<p>▶ 프로젝트명 : 천안 (주) 선영 LED 에너지효율화사업<br>" +
+      "▶ 미상환 회차 : 2회차, 3회차<br>" +
+      "▶ 회차별 미상환 잔액<br>　- 2회차 : 20,000,000원<br>　- 3회차 : 51,437,100원<br>" +
+      "▶ 총 미상환액 : 71,437,100원<br>" +
+      "▶ 상환담당자 : 홍길동 (02-0000-0000)</p>";
+  }
+
+  function renderClaimPreview() {
+    var preview = document.querySelector(".reminder-preview");
+    if (!preview) return;
+    preview.innerHTML =
+      "<h4>발송 내용 미리보기</h4>" +
+      "<p>[켑코이에스] 미수채권 알림 발송</p>" +
+      "<p>㈜선영 담당자님, 켑코이에스(주)입니다.</p>" +
+      "<p>귀사와 체결한 에너지 절약 사업의 상환금이 3회 연속 미상환되어 해당 프로젝트가 미수채권 관리 대상으로 분류되었습니다.<br>아래 미상환 내역을 확인해 주세요.</p>" +
+      "<p>▶ 프로젝트명 : 천안 (주) 선영 LED 에너지효율화사업<br>" +
+      "▶ 미상환 회차 : 2회차, 3회차, 4회차<br>" +
+      "▶ 회차별 미상환 잔액<br>　- 2회차 : 20,000,000원<br>　- 3회차 : 51,437,100원<br>　- 4회차 : 51,437,100원<br>" +
+      "▶ 총 미상환액 : 122,874,200원<br>" +
+      "▶ 상환담당자 : 홍길동 (02-0000-0000)</p>";
+  }
+
+  function renderCompletePreview() {
+    var preview = document.querySelector(".reminder-preview");
+    if (!preview) return;
+    preview.innerHTML =
+      "<h4>발송 내용 미리보기</h4>" +
+      "<p>[켑코이에스] 상환 완료 안내</p>" +
+      "<p>㈜선영 담당자님, 켑코이에스(주)입니다.</p>" +
+      "<p>귀사와 체결한 아래 에너지 절약 사업의 전체 상환금액이 완납되어 상환이 완료되었음을 안내드립니다.</p>" +
+      "<p>▶ 프로젝트명 :천안 (주) 선영 LED 에너지효율화사업<br>" +
+      "▶ 상환완료일 : 0000.00.00<br>" +
+      "▶ 상환담당자 : 홍길동 (02-0000-0000)</p>";
+  }
+
+  function addReminderAudienceNote() {
+    var preview = document.querySelector(".reminder-preview");
+    if (!preview || document.querySelector(".reminder-audience-note")) return;
+    var note = document.createElement("div");
+    note.className = "reminder-audience-note";
+    note.textContent = "발송 대상이 여러 회차인 경우, 각 회차의 미상환 잔액과 합계를 한 건의 알림톡으로 발송합니다.";
+    preview.parentNode.insertBefore(note, preview);
+  }
+
+  document.addEventListener("click", function (event) {
+    var button = event.target.closest && event.target.closest('[data-act="reminder"]');
+    if (!button || button.dataset.noticeType !== "unpaid") return;
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    document.getElementById("reminderTitle").textContent = "알림 발송 미리보기";
+    document.getElementById("reminderTitle").textContent = "미상환 알림 발송";
+    renderUnpaidPreview();
+    window.setTimeout(function () {
+      var preview = document.querySelector(".reminder-preview");
+      if (!preview) return;
+      preview.innerHTML = preview.innerHTML
+        .replace("▶ 미상환 회차 : 2회차, 3회차", "▶ 미상환 회차 : 2회차, 3회차, 4회차")
+        .replace("- 2회차 : 20,000,000원", "- 2회차 : 31,437,100원")
+        .replace("- 3회차 : 51,437,100원<br>", "- 3회차 : 51,437,100원<br>　- 4회차 : 51,437,100원<br>")
+        .replace("▶ 총 미상환액 : 71,437,100원", "▶ 총 미상환액 : 134,311,300원");
+    }, 0);
+    addReminderAudienceNote();
+    openModal("reminderOverlay");
+  }, true);
+
+  document.addEventListener("click", function (event) {
+    var button = event.target.closest && event.target.closest('[data-act="reminder"]');
+    if (!button) return;
+    if (button.dataset.noticeType === "complete") {
+      var note = document.querySelector(".reminder-audience-note");
+      if (note) note.remove();
+      window.setTimeout(renderCompletePreview, 0);
+      return;
+    }
+    if (button.dataset.noticeType !== "claim") return;
+    window.setTimeout(function () {
+      addReminderAudienceNote();
+      renderClaimPreview();
+      var claimPreview = document.querySelector(".reminder-preview");
+      if (claimPreview) claimPreview.innerHTML = claimPreview.innerHTML
+        .replace("- 2회차 : 20,000,000원", "- 2회차 : 31,437,100원")
+        .replace("▶ 총 미상환액 : 122,874,200원", "▶ 총 미상환액 : 134,311,300원");
+    }, 0);
+  }, true);
+})();
+</script>
 </html>

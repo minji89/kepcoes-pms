@@ -275,6 +275,9 @@
   <link rel="stylesheet" href="/assets/pms-lnb.css" />
   <link rel="stylesheet" href="/assets/pms-intake-wizard.css?v=20260917-3" />
   <link rel="stylesheet" href="/assets/pms-overview-list.css" />
+  <style>
+    .pms-overview__item--divider { border-bottom: 1px solid #dbe3ee; }
+  </style>
 </head>
 <body>
 <div class="layout">
@@ -427,11 +430,10 @@
 
           <div class="pms-overview" aria-label="프로젝트 발주계약 개요">
             <div class="pms-overview__item"><div class="pms-overview__label">프로젝트 번호</div><div class="pms-overview__value">2026_06_12</div></div>
-            <div class="pms-overview__item"><div class="pms-overview__label">사업명</div><div class="pms-overview__value">천안 (주)선영 LED 에너지효율화사업</div></div>
-            <div class="pms-overview__item"><div class="pms-overview__label">총 사업금액(VAT별도/원)</div><div class="pms-overview__value pms-overview__value--number">220,000,000</div></div>
+            <div class="pms-overview__item"><div class="pms-overview__label">프로젝트명</div><div class="pms-overview__value">천안 (주)선영 LED 에너지효율화사업</div></div>
+            <div class="pms-overview__item pms-overview__item--divider"><div class="pms-overview__label">총 사업금액(VAT별도/원)</div><div class="pms-overview__value pms-overview__value--number">220,000,000</div></div>
             <div class="pms-overview__item"><div class="pms-overview__label">투자금액(VAT별도/원)</div><div class="pms-overview__value pms-overview__value--number">180,000,000</div></div>
             <div class="pms-overview__item"><div class="pms-overview__label">총 지급액(원)</div><div class="pms-overview__value pms-overview__value--number">100,000,000</div></div>
-            <div class="pms-overview__item"><div class="pms-overview__label">상태</div><div class="pms-overview__value"><span class="pms-status-badge">발주 진행 중</span></div></div>
           </div>
 
           <h4 class="order-table-title pms-list-section-title">발주계약 목록</h4>
@@ -443,25 +445,23 @@
               <thead>
                 <tr class="pms-list__columns">
                   <th scope="col">순번</th>
-                  <th scope="col">계약 구분</th>
+                  <th scope="col">계약 유형</th>
                   <th scope="col">발주 형태</th>
                   <th scope="col">발주 구분</th>
                   <th scope="col">프로젝트 번호</th>
                   <th scope="col">프로젝트명</th>
-                  <th scope="col">(수주)계약번호</th>
-                  <th scope="col">(수주)계약명</th>
                   <th scope="col">발주계약번호</th>
                   <th scope="col">발주계약명</th>
                   <th scope="col">계약체결일</th>
                   <th scope="col">거래처</th>
                   <th scope="col">계약방법</th>
                   <th scope="col">계약금액</th>
-                  <th scope="col">납기일/공사기간</th>
-                  <th scope="col">거래처 필요면허</th>
+                  <th scope="col">계약기간</th>
+                  <th scope="col">계약업체 면허</th>
                   <th scope="col">선급이행 보증금율(%)</th>
                   <th scope="col">계약이행 보증금율(%)</th>
                   <th scope="col">하자이행 보증금율(%)</th>
-                  <th scope="col">하자이행 보증기간(개월)</th>
+                  <th scope="col">하자이행 기간(개월)</th>
                   <th scope="col">계약서류</th>
                   <th scope="col">등록자</th>
                   <th scope="col">등록일</th>
@@ -612,8 +612,6 @@
         "<td>" + row.orderChannel + "</td>" +
         '<td><a class="doc-link" href="' + projectHome + '">' + row.projectNo + "</a></td>" +
         '<td class="cell-name"><a class="doc-link" href="' + projectHome + '">' + row.projectName + "</a></td>" +
-        "<td>" + row.salesNo + "</td>" +
-        '<td class="cell-name">' + row.salesName + "</td>" +
         '<td><a class="doc-link" href="/pms-order-detail.html?no=' + encodeURIComponent(row.no) + '">' + row.no + "</a></td>" +
         '<td class="cell-name"><a class="doc-link" href="/pms-order-detail.html?no=' +
           encodeURIComponent(row.no) + '">' + row.name + "</a></td>" +
@@ -650,9 +648,9 @@
       detailRow("계약명", row.name, true) + detailRow("계약방법", row.method) + detailRow("계약체결일", row.proposedAt) +
       detailRow("계약 대상자", row.partner) + detailRow("계약 근거(사유)", row.basis || "") +
       detailRow("입찰 참가자격", row.qualification) + detailRow("낙찰자 결정방법", row.selection) +
-      detailRow("계약 대상자 필요면허", row.license, true) + detailRow("필요면허 상세", row.licenseDetail, true) +
+      detailRow("계약업체 면허", row.license, true) + detailRow("필요면허 상세", row.licenseDetail, true) +
       detailRow("공급가액(원)", won(row.supply), false, true) + detailRow("부가세(원)", won(row.vat), false, true) +
-      detailRow("합계(원)", won(row.total), true, true) + detailRow("공사기간", row.period) + detailRow("하자이행 보증기간(개월)", row.defectTerm) +
+      detailRow("합계(원)", won(row.total), true, true) + detailRow("계약기간", row.period) + detailRow("하자이행 기간(개월)", row.defectTerm) +
       detailRow("선급이행 보증금율(%)", row.advanceRate) + detailRow("선급이행 보증보험", '<span class="detail-file">' + row.advanceFile + '</span>') +
       detailRow("계약이행 보증금율(%)", row.contractRate) + detailRow("계약이행 보증보험", '<span class="detail-file">' + row.contractFile + '</span>') +
       detailRow("하자이행 보증보험율(%)", row.defectRate) + detailRow("하자이행 보증보험", '<span class="detail-file">' + row.defectFile + '</span>') +

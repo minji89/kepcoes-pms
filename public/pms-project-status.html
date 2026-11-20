@@ -298,6 +298,10 @@
 </style>
   <link rel="stylesheet" href="/assets/pms-lnb.css" />
   <link rel="stylesheet" href="/assets/pms-intake-wizard.css?v=20260917-3" />
+<style>
+.admin-only-project-controls{display:flex;align-items:center;gap:6px}.project-admin-info{border:0;background:transparent;color:#2563eb;font-size:20px;cursor:help;padding:2px 4px;position:relative}.project-admin-info:after{content:attr(data-tooltip);position:absolute;right:0;bottom:calc(100% + 8px);width:260px;padding:9px 11px;background:#172554;color:#fff;border-radius:6px;font-size:12px;line-height:1.45;text-align:left;opacity:0;pointer-events:none;z-index:50}.project-admin-info:hover:after,.project-admin-info:focus-visible:after{opacity:1}.project-select-cell,.project-select-head{width:54px;min-width:54px;text-align:center}.project-select-cell input{width:16px;height:16px;accent-color:#1d4ed8}.project-bulk-modal[hidden]{display:none}.project-bulk-modal{position:fixed;inset:0;z-index:3000;display:flex;align-items:center;justify-content:center;background:rgba(15,23,42,.58);padding:20px}.project-bulk-dialog{width:min(720px,100%);background:#fff;border-radius:10px;box-shadow:0 20px 60px rgba(15,23,42,.28);overflow:hidden}.project-bulk-head{display:flex;justify-content:space-between;align-items:center;padding:18px 22px;border-bottom:1px solid #e2e8f0}.project-bulk-head h2{margin:0;font-size:18px}.project-bulk-close{border:0;background:#f1f5f9;border-radius:6px;width:32px;height:32px;font-size:20px;cursor:pointer}.project-bulk-body{padding:22px}.project-bulk-count{margin:0 0 18px;color:#1e3a8a;font-weight:700}.project-bulk-field{display:grid;grid-template-columns:130px 1fr auto;gap:10px;align-items:center;border:1px solid #dbe3ef;padding:14px;border-radius:6px}.project-bulk-field label{font-weight:700}.project-bulk-field input{height:38px;border:1px solid #cbd5e1;border-radius:5px;padding:0 10px}.project-manager-options{margin-top:10px;display:grid;gap:8px}.project-manager-option{border:1px solid #cbd5e1;background:#f8fafc;padding:10px;text-align:left;border-radius:5px;cursor:pointer}.project-manager-option:hover{border-color:#2563eb;background:#eff6ff}.project-bulk-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:22px}.project-bulk-actions button{border:0;border-radius:5px;padding:10px 18px;cursor:pointer}.project-bulk-cancel{background:#e2e8f0}.project-bulk-submit{background:#1e3a5f;color:#fff}
+</style>
+<style>.project-bulk-history{margin-top:22px;border-top:1px solid #dbe3ef;padding-top:18px}.project-bulk-history h3{margin:0 0 10px;font-size:15px}.project-bulk-history table{width:100%;min-width:0;border-collapse:collapse}.project-bulk-history th,.project-bulk-history td{border:1px solid #dbe3ef;padding:10px;text-align:center;font-size:12px}.project-bulk-history th{background:#f1f5f9;color:#64748b}.project-bulk-history .empty{text-align:left;font-weight:600;color:#64748b}</style>
 </head>
 <body>
 <div class="layout">
@@ -521,6 +525,10 @@
       <div class="result-bar">
         <p class="result-count" id="result-count">조회 결과 : 242건</p>
         <div class="result-right">
+          <div class="admin-only-project-controls" id="projectAdminControls">
+            <button class="btn btn-dark" type="button" id="bulk-assignee-btn">사업담당자 변경</button>
+            <button class="project-admin-info" id="project-admin-info" type="button" aria-label="사업담당자 변경 안내">ⓘ</button>
+          </div>
           <label class="sr-only" for="page-size">페이지당 표시 개수</label>
           <select class="ctrl" id="page-size"><option>10개</option><option>30개</option><option>50개</option></select>
           <button class="btn btn-excel" type="button">다운로드(Excel)</button>
@@ -838,5 +846,60 @@
 </script>
   <script src="/assets/pms-lnb.js"></script>
   <script src="/assets/pms-intake-wizard.js?v=20260921-2"></script>
+<div class="project-bulk-modal" id="projectBulkModal" hidden>
+  <section class="project-bulk-dialog" role="dialog" aria-modal="true" aria-labelledby="projectBulkTitle">
+    <header class="project-bulk-head"><h2 id="projectBulkTitle">담당자 변경 <small style="font-size:12px;color:#64748b;font-weight:400">(* 담당자 변경은 관리자만 노출됩니다.)</small></h2><button class="project-bulk-close" id="projectBulkClose" type="button" aria-label="닫기">×</button></header>
+    <div class="project-bulk-body">
+      <p class="project-bulk-count" id="projectBulkCount">선택한 프로젝트 0건</p>
+      <div class="project-bulk-field"><label for="bulkManagerName">사업담당자</label><input id="bulkManagerName" type="text" readonly placeholder="담당자를 조회해 주세요."><button class="btn btn-dark" id="bulkManagerLookup" type="button">조회</button></div>
+      <div class="project-manager-options" id="projectManagerOptions" hidden>
+        <button class="project-manager-option" type="button" data-manager="김도현" data-employee="1611001" data-department="경영지원본부">김도현 (1611001) · 경영지원본부</button>
+        <button class="project-manager-option" type="button" data-manager="홍길동" data-employee="1611002" data-department="사업개발팀">홍길동 (1611002) · 사업개발팀</button>
+      </div>
+      <div class="project-bulk-actions"><button class="project-bulk-submit" id="projectBulkSubmit" type="button">변경</button></div>
+      <section class="project-bulk-history" aria-labelledby="projectBulkHistoryTitle"><h3 id="projectBulkHistoryTitle">변경 이력</h3><table><thead><tr><th>변경 일시</th><th>구분</th><th>변경 전</th><th>변경 후</th><th>변경자</th></tr></thead><tbody><tr><td colspan="5" class="empty">담당자 변경 이력이 없습니다.</td></tr></tbody></table></section>
+      <div class="project-bulk-actions"><button class="project-bulk-cancel" id="projectBulkCancel" type="button">닫기</button></div>
+    </div>
+  </section>
+</div>
+<script>
+(function(){
+  var admin = window.currentUserRole ? window.currentUserRole === "admin" : true;
+  var controls=document.getElementById("projectAdminControls");
+  var info=document.getElementById("project-admin-info");
+  if(!admin){if(controls)controls.hidden=true;return;}
+  if(info)info.dataset.tooltip="사업담당자 변경 버튼은 관리자 계정에서만 확인할 수 있습니다.";
+  var table=document.querySelector(".table-wrap table"), head=table&&table.tHead, body=table&&table.tBodies[0];
+  if(!table||!head||!body)return;
+  window.projectBulkSelection=window.projectBulkSelection||new Set();
+  var managers={};
+  function decorateHeader(){
+    if(head.querySelector(".project-select-head"))return;
+    head.rows[0].cells[0].colSpan=Number(head.rows[0].cells[0].colSpan||1)+1;
+    var th=document.createElement("th");th.className="project-select-head";th.rowSpan=2;th.scope="col";th.textContent="선택";head.rows[1].insertBefore(th,head.rows[1].firstElementChild);
+  }
+  function decorateRows(){
+    body.querySelectorAll("tr").forEach(function(row){
+      if(!row.id&&!row.querySelector(".proj-link"))return;
+      var link=row.querySelector(".proj-link"); if(!link)return;
+      var number=(row.querySelector(".project-row-select")?row.children[1]:row.children[0]).textContent.trim();
+      if(!row.querySelector(".project-row-select")){
+        var cell=document.createElement("td");cell.className="project-select-cell";var cb=document.createElement("input");cb.type="checkbox";cb.className="project-row-select";cb.setAttribute("aria-label",number+" 선택");cb.checked=window.projectBulkSelection.has(number);cb.addEventListener("change",function(){cb.checked?window.projectBulkSelection.add(number):window.projectBulkSelection.delete(number);});cell.appendChild(cb);row.insertBefore(cell,row.firstElementChild);
+      }
+      if(!managers[number])managers[number]={name:number.endsWith("1")?"홍길동":"김도현",employee:number.endsWith("1")?"1611002":"1611001",department:number.endsWith("1")?"사업개발팀":"경영지원본부",history:[]};
+      if(row.children[12])row.children[12].textContent=managers[number].name+" ("+managers[number].employee+")";
+      if(row.children[13])row.children[13].textContent=managers[number].department;
+    });
+  }
+  decorateHeader();decorateRows();
+  new MutationObserver(function(){decorateRows();}).observe(body,{childList:true});
+  var modal=document.getElementById("projectBulkModal"),count=document.getElementById("projectBulkCount"),nameInput=document.getElementById("bulkManagerName"),options=document.getElementById("projectManagerOptions"),chosen=null;
+  function open(){var n=window.projectBulkSelection.size;if(!n){alert("사업담당자를 변경할 프로젝트를 선택해 주세요.");return;}count.textContent="선택한 프로젝트 "+n+"건";nameInput.value="";chosen=null;options.hidden=true;modal.hidden=false;}
+  function close(){modal.hidden=true;}
+  document.getElementById("bulk-assignee-btn").addEventListener("click",open);document.getElementById("projectBulkClose").addEventListener("click",close);document.getElementById("projectBulkCancel").addEventListener("click",close);document.getElementById("bulkManagerLookup").addEventListener("click",function(){options.hidden=false;});
+  options.querySelectorAll(".project-manager-option").forEach(function(btn){btn.addEventListener("click",function(){chosen={name:btn.dataset.manager,employee:btn.dataset.employee,department:btn.dataset.department};nameInput.value=chosen.name+" ("+chosen.employee+") · "+chosen.department;options.hidden=true;});});
+  document.getElementById("projectBulkSubmit").addEventListener("click",function(){if(!chosen){alert("변경할 사업담당자를 조회·선택해 주세요.");return;}var history=JSON.parse(localStorage.getItem("pms-assignee-history")||"{}");window.projectBulkSelection.forEach(function(number){var old=managers[number]||{name:"-",employee:"",department:"-",history:[]};managers[number]={name:chosen.name,employee:chosen.employee,department:chosen.department,history:old.history||[]};managers[number].history.unshift({date:new Date().toLocaleString("ko-KR"),before:old.name+" ("+old.employee+")",after:chosen.name+" ("+chosen.employee+")",changer:"이희성"});history[number]=managers[number].history;});localStorage.setItem("pms-assignee-history",JSON.stringify(history));decorateRows();close();alert("선택한 프로젝트의 사업담당자가 변경되었습니다.");});
+})();
+</script>
 </body>
 </html>

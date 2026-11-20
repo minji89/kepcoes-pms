@@ -904,4 +904,30 @@
 <script src="/assets/pms-lnb.js"></script>
 <script src="/assets/pms-intake-wizard.js?v=20260921-2"></script>
 </body>
+<style>
+  #reminder-btn{display:none !important}
+  .unpaid-alert-head,.unpaid-alert-cell{width:82px;min-width:82px;max-width:82px;white-space:nowrap;text-align:center}
+  .unpaid-alert-btn{padding:4px 6px;font-size:11px;line-height:1.2;border:1px solid #1d4ed8;border-radius:4px;background:#fff;color:#1d4ed8;cursor:pointer}
+  .unpaid-alert-modal[hidden]{display:none}.unpaid-alert-modal{position:fixed;inset:0;z-index:1200;display:grid;place-items:center;padding:24px;background:rgba(15,23,42,.55)}
+  .unpaid-alert-modal .modal{width:min(760px,calc(100vw - 48px));max-height:calc(100vh - 48px);overflow:hidden;background:#fff;border-radius:8px;box-shadow:0 24px 70px rgba(15,23,42,.3)}
+  .unpaid-alert-modal .modal-head{display:flex;align-items:center;min-height:56px;padding:0 20px;border-bottom:1px solid #dbe3ed;background:#f8fafc}.unpaid-alert-modal .modal-head h3{margin:0;font-size:18px}.unpaid-alert-modal .modal-close{margin-left:auto;width:34px;height:34px;border:0;border-radius:6px;background:transparent;color:#64748b;font-size:25px;cursor:pointer}.unpaid-alert-modal .modal-body{padding:20px}.unpaid-alert-modal .modal-foot{display:flex;justify-content:flex-end;gap:8px;padding:0 20px 20px}.unpaid-alert-note{margin:0 0 14px;padding:10px 12px;border:1px solid #bfdbfe;background:#eff6ff;color:#1e3a8a;border-radius:5px;font-size:12px}.unpaid-alert-preview{padding:14px;border:1px solid #dbe3ef;background:#f8fafc;line-height:1.8;white-space:normal}
+</style>
+<script>
+(function(){
+  var modal;
+  function close(){if(modal)modal.hidden=true}
+  function open(row){
+    if(!modal){
+      modal=document.createElement('div');modal.className='unpaid-alert-modal';modal.hidden=true;
+    modal.innerHTML='<div class="modal" role="dialog" aria-modal="true"><div class="modal-head"><h3>알림 발송 미리보기</h3><button class="modal-close" type="button">×</button></div><div class="modal-body"><div class="unpaid-alert-note">발송 대상이 여러 회차인 경우, 각 회차의 미상환 잔액과 합계를 한 건의 알림톡으로 발송합니다.</div><h4>발송 내용 미리보기</h4><div class="unpaid-alert-preview"></div></div><div class="modal-foot"><button class="btn btn-line" type="button">취소</button><button class="btn btn-dark" type="button">발송</button></div></div>';
+      document.body.appendChild(modal);modal.querySelector('.modal-close').addEventListener('click',close);modal.querySelector('.btn-line').addEventListener('click',close);modal.querySelector('.btn-dark').addEventListener('click',function(){close();});
+    }
+    modal.querySelector('.unpaid-alert-preview').innerHTML='[켑코이에스] 미수채권 알림 발송<br><br>㈜선영 담당자님, 켑코이에스(주)입니다.<br><br>귀사와 체결한 에너지 절약 사업의 상환금이 3회 연속 미상환되어 해당 프로젝트가 미수채권 관리 대상으로 분류되었습니다.<br>아래 미상환 내역을 확인해 주세요.<br><br>▶ 프로젝트명 : '+(row.name||'천안 (주) 선영 LED 에너지효율화사업')+'<br>▶ 미상환 회차 : 2회차, 3회차, 4회차<br>▶ 회차별 미상환 잔액<br>　- 2회차 : 20,000,000원<br>　- 3회차 : 51,437,100원<br>　- 4회차 : 51,437,100원<br>▶ 총 미상환액 : 122,874,200원<br>▶ 상환담당자 : 홍길동 (02-0000-0000)';
+    modal.hidden=false;
+  }
+  function decorate(){var head=document.querySelector('.table-list thead'),body=document.getElementById('unpaidBody');if(!head||!body||head.querySelector('.unpaid-alert-head'))return;var h=document.createElement('th');h.className='unpaid-alert-head';h.rowSpan=2;h.textContent='알림 발송';head.rows[0].insertBefore(h,head.rows[0].cells[9]||null);Array.from(body.rows).forEach(function(tr){if(tr.cells.length<10)return;var c=tr.insertCell(9);c.className='unpaid-alert-cell';var b=document.createElement('button');b.type='button';b.className='unpaid-alert-btn';b.textContent='알림 발송';b.addEventListener('click',function(){open({name:tr.cells[3].textContent.trim()});});c.appendChild(b);});}
+  function refresh(){setTimeout(function(){var head=document.querySelector('.table-list thead'),old=head&&head.querySelector('.unpaid-alert-head');if(old)old.remove();var body=document.getElementById('unpaidBody');if(body)Array.from(body.rows).forEach(function(r){if(r.cells.length>22)r.deleteCell(9)});decorate()},0)}
+  document.addEventListener('DOMContentLoaded',function(){decorate();document.getElementById('search-btn')&&document.getElementById('search-btn').addEventListener('click',refresh);document.getElementById('reset-btn')&&document.getElementById('reset-btn').addEventListener('click',refresh)});
+})();
+</script>
 </html>
