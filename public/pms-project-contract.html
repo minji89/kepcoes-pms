@@ -2091,5 +2091,27 @@
   sync();new MutationObserver(sync).observe(box,{attributes:true,attributeFilter:['hidden']});
 })();
 </script>
+<script>
+(function(){
+  var modal=document.getElementById('changeModal');if(!modal)return;
+  var basic=modal.querySelector('[data-change-pane="basic"]');
+  if(basic){
+    var name=basic.querySelector('label[for="changeName"]');if(name)name.textContent='프로젝트명';
+    basic.querySelectorAll('.change-label').forEach(function(el){if(el.textContent.indexOf('지급보증보험')>-1){var next=el.nextElementSibling;el.remove();if(next)next.remove();}});
+    var effect=basic.querySelector('.change-effect-grid');
+    if(effect){effect.querySelectorAll('.change-label').forEach(function(el){if(el.textContent.indexOf('절감률')>-1){var field=el.nextElementSibling;if(field&&!field.querySelector('.percent-suffix')){var span=document.createElement('span');span.className='percent-suffix';span.textContent='%';field.appendChild(span);}}});}
+    var full=basic.querySelector('.change-full-section');
+    if(full){
+      var source=full.querySelector('.change-basic-columns'), grids=source?source.querySelectorAll('.change-grid'):[];
+      if(source&&grids.length>=2){
+        var map=['changeEnergyUser','changeAddress','changeUserManager','changeUserTel','changeProjectManager','changeTeam'], labels=['에너지 사용자명','사용자 소재지','에너지 사용자 담당자','에너지 사용자 담당자 연락처','사업 담당자','담당부서'], grid=document.createElement('div');grid.className='change-grid';
+        map.forEach(function(id,index){var input=document.getElementById(id),label=source.querySelector('label[for="'+id+'"]'),field=input&&input.parentElement;if(label&&field){label.textContent=labels[index];grid.appendChild(label);grid.appendChild(field);}});
+        var manager=document.getElementById('changeProjectManager');if(manager&&manager.parentElement&&!manager.parentElement.querySelector('[data-manager-lookup]')){var b=document.createElement('button');b.type='button';b.className='btn btn-dark btn-sm';b.textContent='조회';b.setAttribute('data-manager-lookup','');manager.parentElement.appendChild(b);}
+        source.innerHTML='';var section=document.createElement('div');section.className='change-basic-section';section.appendChild(grid);source.appendChild(section);
+      }
+    }
+  }
+})();
+</script>
 </body>
 </html>
