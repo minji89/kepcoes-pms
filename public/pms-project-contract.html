@@ -2025,5 +2025,16 @@
   source.forEach(function(pair){box.appendChild(pair?pair[0]:box.lastElementChild.previousElementSibling);box.appendChild(pair?pair[1]:box.lastElementChild)});
 })();
 </script>
+<script>
+(function(){
+  var box=document.getElementById('kvConcluded'); if(!box)return;
+  var pairs=[]; for(var i=0;i<box.children.length;i+=2)pairs.push([box.children[i],box.children[i+1]]);
+  if(pairs.length<15)return;
+  var labels=['프로젝트 번호','프로젝트명','프로젝트 계약서','상환 스케줄','매출 계획표','계약번호','계약일','지급이행보증보험 증권','총 사업금액','투자금액','IRR','착공일자','준공(예상일자)','상환개시일','상환완료일'];
+  var values=['2026_06_12','천안 (주)선영 LED 에너지효율화사업','(주)선영 사업추진 계획안.pdf','선영 상환 스케줄.xlsx','선영 매출 계획표.xlsx','20010-2003-03-11-S','2026.07.30','지급이행보증보험 증권.pdf','220,000,000','180,000,000','16','2026.12.20','2027.01.20','2027.02.19','2029.01.19'];
+  for(var j=0;j<15;j++){pairs[j][0].textContent=labels[j];pairs[j][1].textContent=values[j];}
+  pairs[6][0].textContent='계약일';
+})();
+</script>
 </body>
 </html>
