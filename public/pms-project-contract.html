@@ -2005,5 +2005,25 @@
   modal.querySelectorAll('[for="changeWarrantyRate"]').forEach(function(el){el.textContent='하자이행 보증율(%)'});
 })();
 </script>
+<script>
+(function(){
+  var box=document.getElementById('kvConcluded'); if(!box)return;
+  var children=Array.from(box.children), pairs=[];
+  for(var i=0;i<children.length;i+=2)pairs.push([children[i],children[i+1]]);
+  if(pairs.length<14)return;
+  var labels=['프로젝트 번호','프로젝트명','프로젝트 계약서','상환 스케줄','매출 계획표','계약번호','계약일','지급이행보증보험 증권','총 사업금액','투자금액','IRR','착공일자','준공(예상일자)','상환개시일','상환완료일'];
+  var source=[pairs[0],pairs[1],pairs[11],pairs[12],pairs[13],pairs[2],pairs[3],null,pairs[4],pairs[5],pairs[6],pairs[7],pairs[8],pairs[9],pairs[10]];
+  source.forEach(function(pair,index){
+    var label=pair?pair[0]:document.createElement('div'), value=pair?pair[1]:document.createElement('div');
+    label.className='k'; value.className='v';
+    if(index===6){label.innerHTML='계약일 <span class="info-tip" title="계약 품의일자">ⓘ</span>'}
+    else if(index===7){label.textContent='지급이행보증보험 증권';value.textContent='-'}
+    else label.innerHTML=labels[index]+(index>=8&&index<=14? ' <span class="req">*</span>':'');
+    box.appendChild(label);box.appendChild(value);
+  });
+  children.forEach(function(node){node.remove()});
+  source.forEach(function(pair){box.appendChild(pair?pair[0]:box.lastElementChild.previousElementSibling);box.appendChild(pair?pair[1]:box.lastElementChild)});
+})();
+</script>
 </body>
 </html>
