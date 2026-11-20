@@ -1966,5 +1966,9 @@
     value.style.gridColumn='7 / span 1';
   })();
   </script>
+<style>
+  .grid.bonds .v:has(> #pos-warranty) { grid-column: 7 / span 1 !important; }
+  .grid.bonds .k:has(+ .v > #pos-warranty) { grid-column: 3 / span 4 !important; white-space: nowrap !important; }
+</style>
 </body>
 </html>
