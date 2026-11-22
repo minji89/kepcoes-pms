@@ -986,7 +986,7 @@
   var trigger=document.getElementById('managerTrigger'), pop=document.getElementById('managerPopover');
   if(trigger&&pop){var submit=pop.querySelector('.manager-submit'), rows=pop.querySelectorAll('.manager-row');if(rows[1])rows[1].style.display='none';if(submit)submit.addEventListener('click',function(){var input=rows[0]&&rows[0].querySelector('input');if(input&&input.value){trigger.firstChild.textContent=input.value+' ';pop.hidden=true}})}
 })();
-(function(){var repayment=document.querySelector('.repayment-info');if(!repayment)return;var cols=repayment.querySelectorAll('.repayment-info-col');if(cols.length<2)return;var left=cols[0],right=cols[1];function move(label,target){var rows=repayment.querySelectorAll('.repayment-info-row');for(var i=0;i<rows.length;i++){if(rows[i].querySelector('dt')&&rows[i].querySelector('dt').textContent.indexOf(label)!==-1){target.appendChild(rows[i]);return}}}move('상태',left);move('미발급 사유',left);move('지급보증보험',right);move('대체 담보',right)})();
+(function(){var repayment=document.querySelector('.repayment-info');if(!repayment)return;var cols=repayment.querySelectorAll('.repayment-info-col');if(cols.length<2)return;var left=cols[0];function move(label){var rows=repayment.querySelectorAll('.repayment-info-row');for(var i=0;i<rows.length;i++){if(rows[i].querySelector('dt')&&rows[i].querySelector('dt').textContent.indexOf(label)!==-1){left.appendChild(rows[i]);return}}}move('상태');move('지급보증보험');move('미발급 사유');move('대체 담보')})();
 </script>
 <script>
 (function(){
