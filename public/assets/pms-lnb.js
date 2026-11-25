@@ -10,7 +10,7 @@
   var MENU = {
     대시보드: [
       { label: "대시보드", href: "/pms-dashboard.html" },
-      { label: "공지사항", href: "/pms-notice-management.html" },
+      { label: "자료실", href: "/pms-notice-management.html" },
       { label: "양식 등 자료실", href: "/pms-resource-management.html" },
     ],
     사업접수: [
@@ -128,9 +128,9 @@
   ACTIVE_BY_PATH["/pms-business-trip-settlements.html"] = "\uCD9C\uC7A5 \uC815\uC0B0\uB0B4\uC5ED";
   ACTIVE_BY_PATH["/pms-trip-rate-settings.html"] = "\uCD9C\uC7A5 \uB2E8\uAC00 \uBC0F \uAE30\uC900 \uC124\uC815";
   ACTIVE_BY_PATH["/pms-dashboard.html"] = "대시보드";
-  ACTIVE_BY_PATH["/pms-notice-management.html"] = "공지사항";
-  ACTIVE_BY_PATH["/pms-notice-view.html"] = "공지사항";
-  ACTIVE_BY_PATH["/pms-notice-form.html"] = "공지사항";
+  ACTIVE_BY_PATH["/pms-notice-management.html"] = "자료실";
+  ACTIVE_BY_PATH["/pms-notice-view.html"] = "자료실";
+  ACTIVE_BY_PATH["/pms-notice-form.html"] = "자료실";
   ACTIVE_BY_PATH["/pms-resource-management.html"] = "양식 등 자료실";
   ACTIVE_BY_PATH["/pms-resource-view.html"] = "양식 등 자료실";
   ACTIVE_BY_PATH["/pms-resource-form.html"] = "양식 등 자료실";
