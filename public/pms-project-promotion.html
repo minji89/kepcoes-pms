@@ -352,7 +352,8 @@
   .fval.plain { font-weight: 500; }
   .hint { color: var(--muted); font-size: 12.5px; font-weight: 400; }
   .contact-hint { color: #334155; font-size: 12px; font-weight: 400; white-space: nowrap; }
-  .erp-hint { display: block; margin-top: 4px; }
+  .erp-customer-field { flex-wrap: wrap; }
+  .erp-hint { display: block; flex: 0 0 100%; width: 100%; margin-top: 4px; }
   .divider-v { color: #cbd5e1; margin: 0 6px; }
   /* 툴팁 (절감률 산출식 안내) */
   .tooltip-wrap {
@@ -845,14 +846,14 @@
               <div class="ftable" style="border-radius: 8px 0 0 8px; border-right: 0;">
                 <div class="frow">
                   <div class="fkey">에너지 사용자명 <span class="req" aria-hidden="true">*</span></div>
-                  <div class="fval">
+                  <div class="fval erp-customer-field">
                     <label class="sr-only" for="user1">에너지 사용자명</label>
                     <input id="user1" type="text" value="" placeholder="사용자명 입력" />
                     <label class="sr-only" for="erpCustomerName">ERP 사용자 거래처</label>
                     <input id="erpCustomerName" type="text" value="" placeholder="사용자 거래처 조회" readonly />
                     <input id="erpBusinessNumber" type="hidden" value="" />
                     <button class="btn sm" type="button" data-open="erpCustomerModal">조회</button>
-                    <span class="contact-hint erp-hint">ERP 거래처 등록 선행 후 입력</span>
+                    <span class="contact-hint erp-hint">* ERP 거래처 등록 선행 후 입력</span>
                   </div>
                 </div>
                 <div class="frow">
