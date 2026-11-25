@@ -735,7 +735,7 @@
       <section class="card" aria-label="추진 단계">
         <div style="padding: 22px 24px 26px; display: grid; gap: 18px;">
           <div class="steps" role="tablist" aria-label="추진 단계 선택">
-            <button class="step on" type="button" role="tab" aria-selected="true">기본 정보</button>
+            <button class="step on" type="button" role="tab" aria-selected="true">프로젝트 기본 정보</button>
             <button class="step" type="button" role="tab" aria-selected="false">세부 정보</button>
             <button class="step" type="button" role="tab" aria-selected="false">협력업체 정보</button>
             <button class="step" type="button" role="tab" aria-selected="false">사업심의</button>
@@ -743,7 +743,7 @@
           </div>
 
           <!-- ===== 1) 기본 정보 ===== -->
-          <div class="panel" data-panel="0" role="tabpanel" aria-label="기본 정보">
+          <div class="panel" data-panel="0" role="tabpanel" aria-label="프로젝트 기본 정보">
           <div class="notes">
             <p style="margin:0;">기본 정보 및 추가정보를 입력하실 수 있습니다.</p>
             <p style="margin:0;">프로젝트 진행을 위해 필요한 필수 정보는 모두 입력하셔야 진행이 가능합니다.</p>
@@ -752,7 +752,7 @@
           <div class="cols">
             <!-- 기본 정보 -->
             <section>
-              <h3 class="block-title">기본 정보</h3>
+              <h3 class="block-title">프로젝트 기본 정보</h3>
               <div class="ftable">
                 <div class="frow">
                   <div class="fkey"><label for="pno">프로젝트 번호</label></div>
@@ -794,7 +794,7 @@
 
             <!-- 기본 정보(프로젝트 수행 효과) -->
             <section>
-              <h3 class="block-title">기본 정보(프로젝트 수행 효과)</h3>
+              <h3 class="block-title">프로젝트 수행 효과</h3>
               <div class="ftable">
                 <div class="frow">
                   <div class="fkey"><label for="kwh">절감량(kWh/년)</label> <span class="req" aria-hidden="true">*</span></div>
@@ -1940,7 +1940,7 @@
     var withRequest = body.getAttribute("data-review") === "request";
 
     var groups = [
-      { panel: 0, title: "기본 정보" },
+      { panel: 0, title: "프로젝트 기본 정보" },
       { panel: 1, title: "세부 정보" },
       { panel: 2, title: "협력업체 정보" },
     ];
