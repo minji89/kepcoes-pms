@@ -6,6 +6,46 @@
 (function () {
   "use strict";
 
+  /* 프로젝트 공통 항목명 표기 정규화 */
+  function normalizeProjectLabels(root) {
+    if (!root || !document.createTreeWalker) return;
+    var replacements = {
+      "계약 형태": "계약형태",
+      "심의 대상": "심의대상",
+      "계약 유형": "계약유형",
+      "접수 경로": "접수경로",
+      "사업 구분": "사업구분",
+      "대상 설비": "대상설비"
+    };
+    var walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+    var node;
+    while ((node = walker.nextNode())) {
+      var parent = node.parentElement;
+      if (!parent || /^(SCRIPT|STYLE|NOSCRIPT|TEXTAREA)$/.test(parent.tagName)) continue;
+      var text = node.nodeValue;
+      Object.keys(replacements).forEach(function (from) {
+        text = text.split(from).join(replacements[from]);
+      });
+      node.nodeValue = text;
+    }
+  }
+
+  function observeProjectLabels() {
+    normalizeProjectLabels(document.body);
+    if (!window.MutationObserver) return;
+    var observer = new MutationObserver(function (mutations) {
+      mutations.forEach(function (mutation) {
+        Array.prototype.forEach.call(mutation.addedNodes, function (node) {
+          if (node.nodeType === 1) normalizeProjectLabels(node);
+        });
+      });
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+  }
+
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", observeProjectLabels);
+  else observeProjectLabels();
+
   /* 1depth 라벨(공백 제거 기준) → 2depth 목록 */
   var MENU = {
     대시보드: [
