@@ -771,13 +771,14 @@
     var state = getProjectRoundState();
     var count = state.current;
     if (count === 1) {
-      host.innerHTML = '<span>계약 현황 차수</span><strong class="project-round-current">1차</strong>';
+      host.innerHTML = '<span>계약 현황 차수</span><strong class="project-round-current">최초</strong>';
       selectProjectRound(1);
       return;
     }
     var options = "";
     for (var round = count; round >= 1; round -= 1) {
-      options += '<option value="' + round + '"' + (round === state.selected ? " selected" : "") + '>' + round + '차</option>';
+      var label = round === 1 ? "최초" : "변경 " + (round - 1) + "차";
+      options += '<option value="' + round + '"' + (round === state.selected ? " selected" : "") + '>' + label + '</option>';
     }
     host.innerHTML = '<label for="projectRoundSelect">계약 현황 차수</label><select id="projectRoundSelect" aria-label="계약 현황 차수">' + options + "</select>";
     host.querySelector("select").addEventListener("change", function () {
