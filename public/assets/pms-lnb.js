@@ -1421,6 +1421,9 @@
     logout.setAttribute("aria-label", "로그아웃 후 로그인 페이지로 이동");
     logout.addEventListener("click", function (event) {
       event.preventDefault();
+      localStorage.removeItem("pmsLoginSession");
+      localStorage.removeItem("pmsUserId");
+      localStorage.removeItem("pmsUserRole");
       window.top.location.assign("/pms-login.html");
     });
 

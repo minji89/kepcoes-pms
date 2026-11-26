@@ -104,6 +104,12 @@
   var gwFirstLoginBtn = document.getElementById("gwFirstLoginBtn");
   var gwDirectLoginBtn = document.getElementById("gwDirectLoginBtn");
 
+  /* 이미 로그인한 상태에서 새로 로그인 페이지를 열면 대시보드로 복귀 */
+  if (localStorage.getItem("pmsLoginSession") === "true") {
+    window.top.location.replace("/pms-dashboard.html");
+    return;
+  }
+
   /* 저장된 아이디 복원 */
   var savedId = localStorage.getItem("pmsSavedId");
   if (savedId) {
@@ -122,11 +128,15 @@
   if (gwFirstLoginBtn) {
     gwFirstLoginBtn.addEventListener("click", function () {
       localStorage.removeItem("pmsDirectPasswordSet");
+      localStorage.setItem("pmsLoginSession", "true");
+      localStorage.setItem("pmsUserRole", "user");
     });
   }
   if (gwDirectLoginBtn) {
     gwDirectLoginBtn.addEventListener("click", function () {
       localStorage.setItem("pmsDirectPasswordSet", "true");
+      localStorage.setItem("pmsLoginSession", "true");
+      localStorage.setItem("pmsUserRole", "user");
     });
   }
 
@@ -150,12 +160,9 @@
       return;
     }
 
-    /* 설정된 PMS 비밀번호가 있는 경우 검증 */
-    var savedPw = localStorage.getItem("pmsDirectPassword");
-    var isPwSet = localStorage.getItem("pmsDirectPasswordSet") === "true";
-
-    if (isPwSet && savedPw && enteredPw !== savedPw) {
-      error.textContent = "비밀번호가 일치하지 않습니다.";
+    /* 프로토타입 로그인 계정: 일반 사원 1/1, 관리자 2/1 */
+    if (!((enteredId === "1" || enteredId === "2") && enteredPw === "1")) {
+      error.textContent = "아이디 또는 비밀번호가 올바르지 않습니다.";
       password.focus();
       return;
     }
@@ -166,7 +173,10 @@
       localStorage.removeItem("pmsSavedId");
     }
 
+    localStorage.setItem("pmsLoginSession", "true");
+    localStorage.setItem("pmsUserId", enteredId);
     localStorage.setItem("pmsUserRole", enteredId === "2" ? "admin" : "user");
+    localStorage.setItem("pmsDirectPasswordSet", "true");
     window.top.location.href = "/pms-dashboard.html";
   });
 })();
