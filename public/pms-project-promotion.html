@@ -804,40 +804,40 @@
               <h3 class="block-title">프로젝트 수행 효과</h3>
               <div class="ftable">
                 <div class="frow">
-                  <div class="fkey"><label for="kwh">절감량(kWh/년)</label> <span class="req" aria-hidden="true">*</span></div>
-                  <div class="fval"><input id="kwh" type="text" value="461,444" /></div>
+                  <div class="fkey"><label for="before">사업전 사용량(kWh/년)</label> <span class="req" aria-hidden="true">*</span></div>
+                  <div class="fval"><input id="before" type="text" value="1,200,000" /></div>
                 </div>
                 <div class="frow">
-                  <div class="fkey"><label for="toe">절감량(toe/년)</label> <span class="req" aria-hidden="true">*</span></div>
-                  <div class="fval"><input id="toe" type="text" value="105.569" /></div>
+                  <div class="fkey"><label for="after">사업후 사용량(kWh/년)</label> <span class="req" aria-hidden="true">*</span></div>
+                  <div class="fval"><input id="after" type="text" value="738,556" /></div>
                 </div>
                 <div class="frow">
-                  <div class="fkey"><label for="co2">온실가스 감축량(tCO2/년)</label> <span class="req" aria-hidden="true">*</span></div>
-                  <div class="fval"><input id="co2" type="text" value="218.837" /></div>
-                </div>
-                <div class="frow">
-                  <div class="fkey"><label for="before">사업전 사용량(toe/년)</label> <span class="req" aria-hidden="true">*</span></div>
-                  <div class="fval"><input id="before" type="text" value="27.51" /></div>
+                  <div class="fkey"><label for="kwh">에너지 절감량(kWh/년)</label></div>
+                  <div class="fval"><input id="kwh" type="text" value="461,444" readonly /></div>
                 </div>
                 <div class="frow">
                   <div class="fkey"><label for="eers">EERS 절감량(kWh/년)</label></div>
                   <div class="fval"><input id="eers" type="text" value="47" /></div>
                 </div>
                 <div class="frow">
+                  <div class="fkey"><label for="toe">절감량(toe/년)</label></div>
+                  <div class="fval"><input id="toe" type="text" value="105.569" readonly /></div>
+                </div>
+                <div class="frow">
+                  <div class="fkey"><label for="co2">온실가스 감축량(tCO2/년)</label> <span class="req" aria-hidden="true">*</span></div>
+                  <div class="fval"><input id="co2" type="text" value="218.837" /></div>
+                </div>
+                <div class="frow">
                   <div class="fkey">
-                    <label for="rate">절감률</label>
+                    <label for="rate">에너지 절감률[%]</label> <span class="req" aria-hidden="true">*</span>
                     <span class="tooltip-wrap">
                       <button class="help-btn" id="rateHelpBtn" type="button" aria-label="절감률 산출식 안내" aria-describedby="rateTooltip">?</button>
                     </span>
                   </div>
                   <div class="fval">
-                    <input id="rate" type="text" value="383.75" readonly />
+                    <input id="rate" type="text" value="38.45" />
                     <span class="unit">%</span>
                   </div>
-                </div>
-                <div class="frow">
-                  <div class="fkey"><label for="expectedSaving">예상 절감량(toe/년)</label></div>
-                  <div class="fval"><input id="expectedSaving" type="text" value="32.2" /></div>
                 </div>
               </div>
               <div class="pms-floating-tooltip" id="rateTooltip" role="tooltip" hidden>절감량 ÷ 사업 전 사용량 × 100</div>
@@ -2453,33 +2453,36 @@
   // 최초 진입 시의 기본값도 계약 화면에서 확인할 수 있도록 보관합니다.
   persistPromotionReview();
 
-  // 기본 정보(프로젝트 수행 효과) : 절감률 자동 계산 (절감량 ÷ 사업 전 사용량 × 100)
+  // 프로젝트 수행 효과 : 에너지 절감량과 toe를 자동 계산합니다.
   (function setupSavingRateCalculation() {
-    var toeInput = document.getElementById("toe");
     var beforeInput = document.getElementById("before");
-    var rateInput = document.getElementById("rate");
-    if (!toeInput || !beforeInput || !rateInput) return;
+    var afterInput = document.getElementById("after");
+    var kwhInput = document.getElementById("kwh");
+    var toeInput = document.getElementById("toe");
+    if (!beforeInput || !afterInput || !kwhInput || !toeInput) return;
 
-    function calcSavingRate() {
-      var toeVal = parseFloat((toeInput.value || "").replace(/,/g, ""));
+    function calcSavingEffect() {
       var beforeVal = parseFloat((beforeInput.value || "").replace(/,/g, ""));
-      if (!isNaN(toeVal) && !isNaN(beforeVal) && beforeVal > 0) {
-        var rate = (toeVal / beforeVal) * 100;
-        rateInput.value = (Math.round(rate * 100) / 100).toFixed(2);
+      var afterVal = parseFloat((afterInput.value || "").replace(/,/g, ""));
+      if (!isNaN(beforeVal) && !isNaN(afterVal) && beforeVal >= afterVal) {
+        var saving = beforeVal - afterVal;
+        kwhInput.value = saving.toLocaleString("ko-KR");
+        toeInput.value = (saving * (105.569 / 461444)).toFixed(3);
       } else {
-        rateInput.value = "";
+        kwhInput.value = "";
+        toeInput.value = "";
       }
     }
 
-    toeInput.addEventListener("input", function () {
-      calcSavingRate();
-      persistPromotionReview();
-    });
     beforeInput.addEventListener("input", function () {
-      calcSavingRate();
+      calcSavingEffect();
       persistPromotionReview();
     });
-    calcSavingRate();
+    afterInput.addEventListener("input", function () {
+      calcSavingEffect();
+      persistPromotionReview();
+    });
+    calcSavingEffect();
   })();
 
   // 기본 정보(프로젝트 수행 효과) : 절감률 산출식 플로팅 툴팁 (overflow:hidden 잘림 방지)
