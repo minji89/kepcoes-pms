@@ -812,7 +812,7 @@
                   <div class="fval"><input id="after" type="text" value="738,556" /></div>
                 </div>
                 <div class="frow">
-                  <div class="fkey"><label for="kwh">에너지 절감량(kWh/년)</label></div>
+                  <div class="fkey"><label for="kwh">에너지 절감량(kWh/년)</label><button class="help-btn formula-help" type="button" aria-label="에너지 절감량 계산식 안내" aria-describedby="kwhTooltip">?</button></div>
                   <div class="fval"><input id="kwh" type="text" value="461,444" readonly /></div>
                 </div>
                 <div class="frow">
@@ -820,11 +820,11 @@
                   <div class="fval"><input id="eers" type="text" value="47" /></div>
                 </div>
                 <div class="frow">
-                  <div class="fkey"><label for="toe">절감량(toe/년)</label></div>
+                  <div class="fkey"><label for="toe">절감량(toe/년)</label><button class="help-btn formula-help" type="button" aria-label="절감량 계산식 안내" aria-describedby="toeTooltip">?</button></div>
                   <div class="fval"><input id="toe" type="text" value="105.569" readonly /></div>
                 </div>
                 <div class="frow">
-                  <div class="fkey"><label for="co2">온실가스 감축량(tCO2/년)</label> <span class="req" aria-hidden="true">*</span></div>
+                  <div class="fkey"><label for="co2">온실가스 감축량(tCO2/년)</label><button class="help-btn formula-help" type="button" aria-label="온실가스 감축량 계산식 안내" aria-describedby="co2Tooltip">?</button> <span class="req" aria-hidden="true">*</span></div>
                   <div class="fval"><input id="co2" type="text" value="191.522" readonly /></div>
                 </div>
                 <div class="frow">
@@ -841,6 +841,9 @@
                 </div>
               </div>
               <div class="pms-floating-tooltip" id="rateTooltip" role="tooltip" hidden>절감량 ÷ 사업 전 사용량 × 100</div>
+              <div class="pms-floating-tooltip" id="kwhTooltip" role="tooltip" hidden>사업전 사용량 − 사업후 사용량</div>
+              <div class="pms-floating-tooltip" id="toeTooltip" role="tooltip" hidden>에너지 절감량 × 0.229 ÷ 1,000</div>
+              <div class="pms-floating-tooltip" id="co2Tooltip" role="tooltip" hidden>에너지 절감량 ÷ 1,000 × 0.4149</div>
             </section>
           </div>
 
@@ -2532,6 +2535,25 @@
     window.addEventListener("scroll", hideTooltip, true);
     window.addEventListener("resize", hideTooltip);
   })();
+
+  (function setupFormulaTooltips() {
+    document.querySelectorAll(".formula-help").forEach(function (btn) {
+      var tooltip = document.getElementById(btn.getAttribute("aria-describedby"));
+      if (!tooltip) return;
+      function show() {
+        tooltip.hidden = false;
+        var rect = btn.getBoundingClientRect();
+        var left = rect.left + rect.width / 2 - tooltip.offsetWidth / 2;
+        tooltip.style.left = Math.max(10, Math.min(left, window.innerWidth - tooltip.offsetWidth - 10)) + "px";
+        tooltip.style.top = Math.max(8, rect.top - tooltip.offsetHeight - 8) + "px";
+      }
+      function hide() { tooltip.hidden = true; }
+      btn.addEventListener("mouseenter", show);
+      btn.addEventListener("mouseleave", hide);
+      btn.addEventListener("focus", show);
+      btn.addEventListener("blur", hide);
+    });
+  }());
 
   // 권한 그룹 전환
   document.querySelectorAll(".seg-btn").forEach(function (btn) {
