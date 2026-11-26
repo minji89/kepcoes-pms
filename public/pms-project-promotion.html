@@ -2590,6 +2590,42 @@
     toggleGuaranteeRows();
   })();
 </script>
+<style>
+  .promotion-table-stack { display: grid !important; grid-template-columns: minmax(0, 1fr) !important; gap: 18px !important; }
+</style>
+<script>
+(function () {
+  function arrangePromotionTables() {
+    var basicPanel = document.querySelector('.panel[data-panel="0"]');
+    var detailPanel = document.querySelector('.panel[data-panel="1"]');
+    if (!basicPanel || !detailPanel || basicPanel.getAttribute('data-tables-arranged') === 'true') return;
+
+    var basicStack = basicPanel.querySelector(':scope > .cols');
+    var detailStack = detailPanel.querySelector(':scope > .cols');
+    if (!basicStack || !detailStack) return;
+
+    var basicInfo = basicStack.children[0];
+    var effectInfo = basicStack.children[1];
+    var energyInfo = Array.prototype.find.call(basicPanel.children, function (node) {
+      return node.tagName === 'SECTION' && node.querySelector('h3') && node.querySelector('h3').textContent.indexOf('에너지사용자 및 담당자') > -1;
+    });
+    var contractInfo = detailStack.children[0];
+    var epcInfo = detailStack.children[1];
+    if (!basicInfo || !effectInfo || !energyInfo || !contractInfo || !epcInfo) return;
+
+    basicStack.classList.add('promotion-table-stack');
+    detailStack.classList.add('promotion-table-stack');
+    basicStack.appendChild(basicInfo);
+    basicStack.appendChild(contractInfo);
+    basicStack.appendChild(effectInfo);
+    detailStack.appendChild(energyInfo);
+    detailStack.appendChild(epcInfo);
+    basicPanel.setAttribute('data-tables-arranged', 'true');
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', arrangePromotionTables);
+  else arrangePromotionTables();
+})();
+</script>
   <script src="/assets/pms-lnb.js?v=20260930-2"></script>
   <script src="/assets/pms-intake-wizard.js?v=20260921-2"></script>
 
