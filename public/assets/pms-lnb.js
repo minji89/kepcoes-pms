@@ -192,7 +192,7 @@
     if (!window.PMSIntakeWizardLoaded &&
         !document.querySelector('script[src^="/assets/pms-intake-wizard.js"]')) {
       var script = document.createElement("script");
-      script.src = "/assets/pms-intake-wizard.js?v=20261127-1";
+      script.src = "/assets/pms-intake-wizard.js?v=20261127-2";
       document.body.appendChild(script);
     }
   }

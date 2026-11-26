@@ -37,7 +37,7 @@
       key: "review",
       title: "사업심의 여부를 선택해 주세요.",
       options: [
-        { value: "target", label: "사업심의 대상", description: "심의 대상 사업" },
+        { value: "target", label: "사업심의\u00a0대상", description: "심의 대상 사업" },
         { value: "exempt", label: "사업심의 면제", description: "심의 면제 사업" },
       ],
     },
