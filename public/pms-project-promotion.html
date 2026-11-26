@@ -825,11 +825,11 @@
                 </div>
                 <div class="frow">
                   <div class="fkey"><label for="co2">온실가스 감축량(tCO2/년)</label> <span class="req" aria-hidden="true">*</span></div>
-                  <div class="fval"><input id="co2" type="text" value="218.837" /></div>
+                  <div class="fval"><input id="co2" type="text" value="191.522" readonly /></div>
                 </div>
                 <div class="frow">
                   <div class="fkey">
-                    <label for="rate">에너지 절감률[%]</label> <span class="req" aria-hidden="true">*</span>
+                    <label for="rate">에너지 절감률(%)</label> <span class="req" aria-hidden="true">*</span>
                     <span class="tooltip-wrap">
                       <button class="help-btn" id="rateHelpBtn" type="button" aria-label="절감률 산출식 안내" aria-describedby="rateTooltip">?</button>
                     </span>
@@ -2459,7 +2459,8 @@
     var afterInput = document.getElementById("after");
     var kwhInput = document.getElementById("kwh");
     var toeInput = document.getElementById("toe");
-    if (!beforeInput || !afterInput || !kwhInput || !toeInput) return;
+    var co2Input = document.getElementById("co2");
+    if (!beforeInput || !afterInput || !kwhInput || !toeInput || !co2Input) return;
 
     function calcSavingEffect() {
       var beforeVal = parseFloat((beforeInput.value || "").replace(/,/g, ""));
@@ -2467,10 +2468,12 @@
       if (!isNaN(beforeVal) && !isNaN(afterVal) && beforeVal >= afterVal) {
         var saving = beforeVal - afterVal;
         kwhInput.value = saving.toLocaleString("ko-KR");
-        toeInput.value = (saving * (105.569 / 461444)).toFixed(3);
+        toeInput.value = (saving * 0.229 / 1000).toFixed(3);
+        co2Input.value = (saving / 1000 * 0.4149).toFixed(3);
       } else {
         kwhInput.value = "";
         toeInput.value = "";
+        co2Input.value = "";
       }
     }
 
