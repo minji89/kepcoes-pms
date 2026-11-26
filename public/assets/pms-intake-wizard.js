@@ -130,7 +130,7 @@
       '<div class="iw-summary" aria-label="선택 정보" hidden>' +
       '<div><span>계약 형태</span><strong data-summary="form"></strong></div>' +
       '<div><span>계약 유형</span><strong data-summary="type"></strong></div>' +
-      '<div><span>사업 심의</span><strong data-summary="review"></strong></div>' +
+      '<div><span>사업심의</span><strong data-summary="review"></strong></div>' +
       "</div>" +
       '<div class="iw-actions">' +
       '<button class="iw-btn primary" type="button" data-act="submit" hidden>프로젝트 등록</button>' +
