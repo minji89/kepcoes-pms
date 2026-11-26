@@ -351,6 +351,7 @@
   }
   .fval.plain { font-weight: 500; }
   .hint { color: var(--muted); font-size: 12.5px; font-weight: 400; }
+  .amount-korean { color: var(--muted); font-size: 12px; font-weight: 400; white-space: nowrap; }
   .contact-hint { color: #334155; font-size: 12px; font-weight: 400; white-space: nowrap; }
   .erp-customer-field { flex-wrap: wrap; }
   .erp-hint { display: block; flex: 0 0 100%; width: 100%; margin-top: 4px; }
@@ -901,15 +902,15 @@
             <div class="cols">
               <!-- 계약 정보(기본) -->
               <section>
-                <h3 class="block-title">계약 정보(기본)</h3>
+                <h3 class="block-title">프로젝트 계약 정보</h3>
                 <div class="ftable">
                   <div class="frow">
                     <div class="fkey"><label for="total-amt">총 사업금액(VAT별도/원)</label> <span class="req" aria-hidden="true">*</span></div>
-                    <div class="fval wide"><input id="total-amt" type="text" /></div>
+                    <div class="fval wide"><input id="total-amt" type="text" /><span class="amount-korean" aria-live="polite"></span></div>
                   </div>
                   <div class="frow">
                     <div class="fkey"><label for="invest-amt">투자금액(VAT별도/원)</label> <span class="req" aria-hidden="true">*</span></div>
-                    <div class="fval wide"><input id="invest-amt" type="text" /></div>
+                    <div class="fval wide"><input id="invest-amt" type="text" /><span class="amount-korean" aria-live="polite"></span></div>
                   </div>
                   <div class="frow">
                     <div class="fkey"><label for="irr">IRR(%)</label> <span class="req" aria-hidden="true">*</span></div>
@@ -925,7 +926,7 @@
                     </div>
                   </div>
                   <div class="frow">
-                    <div class="fkey"><label for="end-date">준공(예상) 일자</label> <span class="req" aria-hidden="true">*</span></div>
+                    <div class="fkey"><label for="end-date">준공일자</label> <span class="req" aria-hidden="true">*</span></div>
                     <div class="fval">
                       <span class="date-field">
                         <input id="end-date" type="text" value="2026.07.30" />
@@ -2144,6 +2145,37 @@
       persistPromotionReview();
     }
   });
+
+  /* 금액 입력값을 우측에 한글 금액으로 함께 표시합니다. */
+  (function () {
+    var digits = ["", "일", "이", "삼", "사", "오", "육", "칠", "팔", "구"];
+    var smallUnits = ["", "십", "백", "천"];
+    function readKoreanAmount(value) {
+      var number = Number(String(value || "").replace(/[^0-9]/g, ""));
+      if (!number) return "";
+      function group(n) {
+        var text = "";
+        String(n).padStart(4, "0").split("").forEach(function (digit, index) {
+          var value = Number(digit);
+          if (!value) return;
+          text += (value === 1 && index < 3 ? "" : digits[value]) + smallUnits[3 - index];
+        });
+        return text;
+      }
+      var eok = Math.floor(number / 100000000);
+      var man = Math.floor((number % 100000000) / 10000);
+      var won = number % 10000;
+      return (eok ? group(eok) + "억 " : "") + (man ? group(man) + "만 " : "") + (won ? group(won) : "") + "원";
+    }
+    ["total-amt", "invest-amt"].forEach(function (id) {
+      var input = document.getElementById(id);
+      if (!input) return;
+      var output = input.parentElement.querySelector(".amount-korean");
+      var update = function () { output.textContent = readKoreanAmount(input.value); };
+      input.addEventListener("input", update);
+      update();
+    });
+  }());
   document.addEventListener("change", function (e) {
     if (e.target.closest('.panel[data-panel="0"], .panel[data-panel="1"], .panel[data-panel="2"]')) {
       persistPromotionReview();
