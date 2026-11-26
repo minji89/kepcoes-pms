@@ -644,12 +644,11 @@
     savedRounds.forEach(function (round) {
       var changedRound = state.rounds[round];
       var previousRound = state.rounds[round - 1];
-      if (round <= 1 || !changedRound || !changedRound.reason || !previousRound) return;
-      previousRound.changeReasons = previousRound.changeReasons || {};
-      previousRound.changeReasons[changedRound.section || "basic"] = {
-        round: round,
-        reason: changedRound.reason,
-      };
+      if (round <= 1 || !changedRound || !previousRound || !previousRound.changeReasons) return;
+      Object.keys(previousRound.changeReasons).forEach(function (section) {
+        var entry = previousRound.changeReasons[section];
+        if (entry && Number(entry.round) === round) delete previousRound.changeReasons[section];
+      });
     });
     if (!state.selected || state.selected > state.current) state.selected = state.current;
     return state;
@@ -680,7 +679,7 @@
       if (!reason) return;
       var notice = document.createElement("div");
       notice.className = "project-round-reason";
-      notice.innerHTML = '<strong>' + selectedRound + '차 | 변경사유</strong><span></span>';
+      notice.innerHTML = '<strong>' + (entry && entry.round ? '변경 ' + entry.round + '차' : selectedRound + '차') + ' | 변경사유</strong><span></span>';
       notice.querySelector("span").textContent = reason;
 
       if (window.location.pathname === "/pms-project-promotion.html") {
@@ -1502,7 +1501,7 @@
     initialRoundState.selected = navigationRound ? Number(navigationRound) : initialRoundState.selected;
     saveProjectRoundState(initialRoundState);
     var roundStyle = document.createElement("style");
-    roundStyle.textContent = '[data-project-round]{margin-left:auto;display:flex;align-items:center;gap:12px;color:#64748b;font-size:14px}[data-project-round] .project-round-current{min-width:54px;color:#0f172a;font-weight:700;text-align:center}[data-project-round] select{width:140px;min-width:140px;height:36px;padding:0 28px 0 8px;border:1px solid #cbd5e1;border-radius:7px;background:#fff;color:#0f172a;font:inherit;font-weight:500;cursor:pointer;appearance:auto;-webkit-appearance:auto}.project-round-text{display:inline-flex;align-items:center;min-height:34px;color:#334155;line-height:1.5;white-space:pre-wrap}.project-round-reason{display:grid;grid-template-columns:130px minmax(0,1fr);gap:12px;margin-bottom:16px;padding:13px 16px;border:1px solid #f1d48a;border-radius:7px;background:#fffbeb;color:#475569}.project-round-reason strong{color:#92400e;white-space:nowrap}.project-round-readonly .fval,.project-round-readonly .change-field{background:#fff}.project-round-readonly [data-act="draft"]:disabled,.project-round-readonly [data-act="conclude"]:disabled,[data-act="review-request"]:disabled,[data-act="go-contract"]:disabled{opacity:.42;cursor:not-allowed;pointer-events:none}';
+    roundStyle.textContent = '[data-project-round]{margin-left:auto;display:flex;align-items:center;gap:12px;color:#64748b;font-size:14px}[data-project-round] .project-round-current{min-width:54px;color:#0f172a;font-weight:700;text-align:center}[data-project-round] select{width:140px;min-width:140px;height:36px;padding:0 28px 0 8px;border:1px solid #cbd5e1;border-radius:7px;background:#fff;color:#0f172a;font:inherit;font-weight:500;cursor:pointer;appearance:auto;-webkit-appearance:auto}.project-round-text{display:inline-flex;align-items:center;min-height:34px;color:#334155;line-height:1.5;white-space:pre-wrap}.project-round-reason{display:grid;grid-template-columns:130px minmax(0,1fr);gap:12px;margin-bottom:8px;padding:7px 12px;border:1px solid #f1d48a;border-radius:7px;background:#fffbeb;color:#475569}.project-round-reason strong{color:#92400e;white-space:nowrap}.project-round-readonly .fval,.project-round-readonly .change-field{background:#fff}.project-round-readonly [data-act="draft"]:disabled,.project-round-readonly [data-act="conclude"]:disabled,[data-act="review-request"]:disabled,[data-act="go-contract"]:disabled{opacity:.42;cursor:not-allowed;pointer-events:none}';
     document.head.appendChild(roundStyle);
     renderProjectRound();
     var contentRoot = document.querySelector("main.content");
