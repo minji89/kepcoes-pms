@@ -351,8 +351,8 @@
   }
   .fval.plain { font-weight: 500; }
   .hint { color: var(--muted); font-size: 12.5px; font-weight: 400; }
-  .amount-korean { color: var(--muted); font-size: 12px; font-weight: 400; white-space: nowrap; }
-  .period-fields { gap: 8px; flex-wrap: wrap; }
+  .amount-korean { color: var(--muted); font-size: 12px; font-weight: 400; white-space: nowrap; flex: 0 0 auto; margin-left: 8px; }
+  .period-fields { gap: 14px; flex-wrap: wrap; }
   .period-fields > span:not(.date-field):not(.period-separator):not(.period-months) { color: #475569; font-size: 13px; white-space: nowrap; width: 52px; }
   .period-separator { color: #64748b; }
   .period-months { color: var(--muted); font-size: 12px; white-space: nowrap; }
@@ -2156,6 +2156,11 @@
       var update = function () { output.textContent = readKoreanAmount(input.value); };
       input.addEventListener("input", update);
       update();
+    });
+    document.addEventListener("input", function (event) {
+      if (event.target.id !== "total-amt" && event.target.id !== "invest-amt") return;
+      var output = event.target.parentElement.querySelector(".amount-korean");
+      if (output) output.textContent = readKoreanAmount(event.target.value);
     });
   }());
 
