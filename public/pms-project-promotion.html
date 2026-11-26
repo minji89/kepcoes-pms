@@ -352,6 +352,7 @@
   .fval.plain { font-weight: 500; }
   .hint { color: var(--muted); font-size: 12.5px; font-weight: 400; }
   .amount-korean { color: var(--muted); font-size: 12px; font-weight: 400; white-space: nowrap; flex: 0 0 auto; margin-left: 8px; }
+  #total-amt, #invest-amt { width: 50%; max-width: 50%; flex: 0 0 50%; }
   .period-fields { gap: 14px; flex-wrap: wrap; }
   .period-fields > span:not(.date-field):not(.period-separator):not(.period-months) { color: #475569; font-size: 13px; white-space: nowrap; width: 52px; }
   .period-separator { color: #64748b; }
@@ -2147,7 +2148,8 @@
       var eok = Math.floor(number / 100000000);
       var man = Math.floor((number % 100000000) / 10000);
       var won = number % 10000;
-      return (eok ? group(eok) + "억 " : "") + (man ? group(man) + "만 " : "") + (won ? group(won) : "") + "원";
+      var phrase = (eok ? group(eok) + "억" : "") + (man ? (eok ? " " : "") + group(man) + "만" : "") + (won ? (eok || man ? " " : "") + group(won) : "");
+      return "(" + phrase + "원, VAT 별도)";
     }
     ["total-amt", "invest-amt"].forEach(function (id) {
       var input = document.getElementById(id);
