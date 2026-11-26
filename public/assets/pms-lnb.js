@@ -15,6 +15,7 @@
       "계약 유형": "계약유형",
       "접수 경로": "접수경로",
       "사업 구분": "사업구분",
+      "사업 심의": "사업심의",
       "대상 설비": "대상설비"
     };
     var walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
