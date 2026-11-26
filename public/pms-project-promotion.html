@@ -2138,10 +2138,11 @@
       if (!number) return "";
       function group(n) {
         var text = "";
-        String(n).padStart(4, "0").split("").forEach(function (digit, index) {
-          var value = Number(digit);
+        var chars = String(Math.floor(n)).padStart(4, "0").slice(-4).split("");
+        chars.forEach(function (digit, index) {
+          var value = Number(digit), unit = smallUnits[3 - index];
           if (!value) return;
-          text += (value === 1 && index < 3 ? "" : digits[value]) + smallUnits[3 - index];
+          text += (value === 1 && index < 3 ? "" : digits[value]) + unit;
         });
         return text;
       }
