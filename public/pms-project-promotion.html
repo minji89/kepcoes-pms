@@ -427,7 +427,10 @@
   .panel[hidden] { display: none; }
 
   /* 세부 정보 전용 */
-  .panel[data-panel="1"] .fkey { width: 240px; min-width: 240px; }
+  .panel[data-panel="0"] .fkey,
+  .panel[data-panel="1"] .fkey { width: 220px; min-width: 220px; }
+  .panel[data-panel="0"] .help-btn,
+  .panel[data-panel="1"] .help-btn { flex: 0 0 17px; }
   .fval.stack { flex-direction: column; align-items: stretch; gap: 8px; }
   .fval.wide input[type="text"] { max-width: 100%; }
   .date-field { position: relative; display: inline-flex; align-items: center; max-width: 176px; width: 100%; }
